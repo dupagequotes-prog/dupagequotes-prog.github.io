@@ -5,6 +5,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:#E9ECEA;font-family:-apple-system,Helvetica,Arial,sans-serif;color:#1f2723;font-size:15px;line-height:1.45}
 .bar{max-width:8.5in;margin:0 auto;padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#5d6862}
+.bact{display:flex;gap:8px;align-items:center}.bar select{border:1px solid #c9d1cd;background:#fff;border-radius:8px;padding:6px 8px;font-size:13px;color:#333}
 .bar button{border:1px solid #c9d1cd;background:#fff;border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer}
 .paper{max-width:8.5in;margin:12px auto 40px;background:#fff;box-shadow:0 6px 30px rgba(0,0,0,.12);border-radius:4px;padding:44px 48px 40px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:4px solid var(--p);padding-bottom:14px}
@@ -66,7 +67,7 @@ td{padding:10px 11px;border-bottom:1px solid #e2e7e4;vertical-align:top}td:last-
 @media(prefers-reduced-motion:reduce){#dq-load *{animation:none!important}}
 </style></head>
 <body><div id="dq-load"><div class="tile"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading your quote…</div></div>
-<div class="bar"><span id="barTxt"></span><button onclick="window.print()" id="printBtn"></button></div>
+<div class="bar"><span id="barTxt"></span><span class="bact"><select id="langSel" aria-label="Language"><option value="English">English</option><option value="Spanish">Español</option><option value="Italian">Italiano</option></select><button onclick="window.print()" id="printBtn"></button></span></div>
 <div class="paper" id="paper"></div>
 <div class="foot">Quote prepared by DuPage Quotes for the contractor above · dupagequotes@gmail.com</div>
 <script>
@@ -87,12 +88,20 @@ const TH = {Classic:{p:'#234E3A',a:'#C8892B',s:'#F3F6F4',f:"Georgia,'Times New R
 const T = {English:{quote:'QUOTE',no:'No.',date:'Date',valid:'Valid for 30 days',prep:'Prepared for',proj:'Project',start:'Planned start',scope:'Scope of work',det:'Details',total:'Total price',dep:'Deposit due to schedule',bal:'Balance due on completion',pay:'Payment',paytxt:'Deposit reserves your start date; balance due the day the work is completed. Any changes to the scope will be agreed in writing before work begins.',inc:'Included',notes:'Notes',
   sigT:'Client signature – type your full name',ph:'Your full name',agree:'I accept this quote, the price and the payment terms above.',btn:'Accept quote',acc:'Accepted',accBy:'Accepted electronically',kT:'Contractor',print:'Download / print',bar:'Review your quote below, then sign at the bottom.',need:'Please type your full name and check the box.',thanks:'Thank you! Your contractor has been notified.',signedOn:'on'},
  Spanish:{quote:'COTIZACIÓN',no:'No.',date:'Fecha',valid:'Válida por 30 días',prep:'Preparada para',proj:'Proyecto',start:'Inicio planeado',scope:'Trabajo a realizar',det:'Detalles',total:'Precio total',dep:'Depósito para agendar',bal:'Saldo al terminar el trabajo',pay:'Pago',paytxt:'El depósito reserva su fecha de inicio; el saldo se paga el día que se termina el trabajo. Cualquier cambio al trabajo se acordará por escrito antes de empezar.',inc:'Incluido',notes:'Notas',
-  sigT:'Firma del cliente – escriba su nombre completo',ph:'Su nombre completo',agree:'Acepto esta cotización, el precio y las condiciones de pago.',btn:'Aceptar cotización',acc:'Aceptada',accBy:'Aceptada electrónicamente',kT:'Contratista',print:'Descargar / imprimir',bar:'Revise su cotización y firme abajo.',need:'Escriba su nombre completo y marque la casilla.',thanks:'¡Gracias! Su contratista ya fue avisado.',signedOn:'el'}};
-const th = D.theme || TH[D.style] || TH.Classic, L = Object.assign({}, T[D.language] || T.English, D.doc_title ? {quote: D.doc_title} : {}); if (D.doc_title && (D.language||'English')==='English') { const w=D.doc_title.toLowerCase(); L.btn='Accept '+w; L.agree='I accept this '+w+', the price and the payment terms above.'; L.bar='Review your '+w+' below, then sign at the bottom.'; }
+  sigT:'Firma del cliente – escriba su nombre completo',ph:'Su nombre completo',agree:'Acepto esta cotización, el precio y las condiciones de pago.',btn:'Aceptar cotización',acc:'Aceptada',accBy:'Aceptada electrónicamente',kT:'Contratista',print:'Descargar / imprimir',bar:'Revise su cotización y firme abajo.',need:'Escriba su nombre completo y marque la casilla.',thanks:'¡Gracias! Su contratista ya fue avisado.',signedOn:'el'},
+ Italian:{quote:'PREVENTIVO',no:'N.',date:'Data',valid:'Valido 30 giorni',prep:'Preparato per',proj:'Progetto',start:'Inizio previsto',scope:'Lavori da eseguire',det:'Dettagli',total:'Prezzo totale',dep:'Acconto per fissare la data',bal:'Saldo a fine lavori',pay:'Pagamento',paytxt:'L’acconto riserva la data di inizio; il saldo si paga il giorno in cui il lavoro è finito. Eventuali modifiche ai lavori saranno concordate per iscritto prima di iniziare.',inc:'Incluso',notes:'Note',
+  sigT:'Firma del cliente – scrivi nome e cognome',ph:'Nome e cognome',agree:'Accetto questo preventivo, il prezzo e le condizioni di pagamento.',btn:'Accetta preventivo',acc:'Accettato',accBy:'Accettato elettronicamente',kT:'Impresa',print:'Scarica / stampa',bar:'Leggi il preventivo qui sotto, poi firma in fondo.',need:'Scrivi nome e cognome e spunta la casella.',thanks:'Grazie! La tua impresa è stata avvisata.',signedOn:'il'}};
+const th = D.theme || TH[D.style] || TH.Classic; let L;
+function setL(lang){ L = Object.assign({}, T[lang] || T.English, (D.doc_title && lang==='English') ? {quote: D.doc_title} : {});
+  if (D.doc_title && lang==='English') { const w=D.doc_title.toLowerCase(); L.btn='Accept '+w; L.agree='I accept this '+w+', the price and the payment terms above.'; L.bar='Review your '+w+' below, then sign at the bottom.'; } }
+let QLANG = (()=>{ try { return localStorage.getItem('qlang_'+D.quote_no); } catch(x){ return null; } })() || (T[D.language] ? D.language : 'English');
+setL(QLANG);
 const r = document.documentElement.style; r.setProperty('--p',th.p); r.setProperty('--a',th.a); r.setProperty('--s',th.s); r.setProperty('--f',th.f);
 const e = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const m = x => '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-document.getElementById('barTxt').textContent = L.bar; document.getElementById('printBtn').textContent = L.print;
+function setBar(){ document.getElementById('barTxt').textContent = L.bar; document.getElementById('printBtn').textContent = L.print; document.getElementById('langSel').value = QLANG; document.documentElement.lang = ({English:'en',Spanish:'es',Italian:'it'})[QLANG]||'en'; }
+setBar();
+document.getElementById('langSel').onchange = ev => { QLANG = ev.target.value; try { localStorage.setItem('qlang_'+D.quote_no, QLANG); } catch(x){} setL(QLANG); setBar(); render(); };
 const c = D.client||{}, dep = Number(D.deposit_pct||0), price = Number(D.price);
 const initials = (D.contractor.match(/[A-Za-z]+/g)||['Q']).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 const items = D.items.map(i=>`<tr><td><b>${e(i.title)}</b>${i.description?'<br>'+e(i.description):''}</td><td>${e(i.detail || (i.amount!=null&&i.amount!==''?m(i.amount):L.inc))}</td></tr>`).join('');
