@@ -54,6 +54,19 @@ audio{width:100%;margin-top:10px}
 .empty{color:var(--mute);text-align:center;padding:22px 0}
 .filter{display:flex;gap:8px;overflow-x:auto;margin:-2px 0 12px;scrollbar-width:none}.filter::-webkit-scrollbar{display:none}
 .filter button{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 13px;font:600 13px Inter,sans-serif;color:var(--mute);cursor:pointer}.filter button.on{background:var(--n);color:#fff;border-color:var(--n)}
+.t-ready{background:#efe6ff;color:#6b21a8}
+.pv{margin-top:12px;border:1.5px solid var(--c);border-radius:16px;overflow:hidden}
+.pvh{background:var(--c);color:#fff;display:flex;justify-content:space-between;gap:8px;padding:8px 12px;font-size:12px}.pvh span{font-weight:700;letter-spacing:.03em}
+.pvb{padding:10px 14px 12px;font-size:14px}.pvc{color:var(--mute);font-size:13px}.pvc b{color:var(--ink)}.pvp{font-weight:700;font-size:15.5px;margin:6px 0 2px;color:var(--c)}
+.pvb ul{margin:6px 0 8px;padding-left:18px}.pvb li{margin:3px 0}.pvb i{font-style:normal;color:var(--mute);font-weight:600}
+.pvt{display:flex;justify-content:space-between;border-top:2px solid var(--c);padding-top:6px;font-size:15px}.pvt b{color:var(--c)}.pvd{font-size:12.5px;color:var(--mute);margin-top:3px}
+.wait{margin-top:10px;font-size:13px;color:#6b21a8;background:#f6f0ff;border-radius:10px;padding:8px 10px}.wait.ok{color:#15803d;background:#ecf8f0}.wait a{color:inherit;font-weight:700}
+.fl{display:block;font-size:12px;font-weight:600;color:var(--mute);margin:10px 2px 4px}
+.tx{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:500 14.5px Inter,-apple-system,sans-serif;background:#fff;outline:none;resize:vertical}.tx:focus{border-color:var(--n);box-shadow:0 0 0 3px rgba(34,43,69,.12)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+.ln{position:relative;border:1px dashed var(--line);border-radius:12px;padding:8px 34px 8px 8px;margin-bottom:8px;display:grid;gap:6px}.ln .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:50%;background:#eef0f6;cursor:pointer;font-size:15px}
+.ln .lead{font-weight:700}.ln.it{grid-template-columns:1fr}.btn.sm{padding:7px 11px;font-size:12.5px}
+.chk{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-top:10px}.orig{margin-top:10px;font-size:13px;color:var(--mute)}.orig summary{cursor:pointer;font-weight:600}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-150%);z-index:60;background:#111317;color:#fff;border-radius:99px;padding:10px 16px;font:600 13.5px Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .4s var(--spring);white-space:nowrap}
 #toast.on{transform:translate(-50%,0)}
 @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
@@ -107,7 +120,7 @@ if(!j.ok){ fail(j.error||'This link is not valid.'); return; }
 const D0 = j.data;
 
 
-let D = D0, TAB = 0, RF = 'open', SEEN = null;
+let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {};
 const K = (typeof P !== 'undefined' && P.get('k')) || '';
 const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)||0).toLocaleString('en-US');
@@ -122,6 +135,7 @@ const quote = q => site() + 'q.html?q=' + encodeURIComponent(q.quote_no) + '&t='
 async function copy(t, msg){ try { await navigator.clipboard.writeText(t); } catch(x){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); } toast(msg||'Copied ✓'); }
 const stTag = s => s==='Done' ? '<span class="tag t-done">Done</span>' : s==='Working' ? '<span class="tag t-work">Working on it</span>' : '<span class="tag t-new">New</span>';
 
+function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); const last = qs[qs.length-1]||{}; return { p:(last.theme&&last.theme.p)||'#222B45', doc:last.doc_title||'QUOTE' }; }
 function render(){
   const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', David';
   document.getElementById('upd').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
@@ -131,18 +145,49 @@ function render(){
   const waiting = Q.filter(q=>q.status!=='Accepted'), month = (D.today||'').slice(0,7), accM = Q.filter(q=>q.status==='Accepted' && (q.date_iso||'').slice(0,7)===month);
   document.title = (newR.length ? '('+newR.length+') ' : '') + 'DuPage Quotes – HQ';
   const list = RF==='open' ? open : RF==='new' ? newR : R;
-  const reqCard = x => { const a=[x.address].filter(Boolean).join(''); return `<div class="card ${x.status==='New'?'new':''}" id="rq_${e(x.id)}">
-    <div class="rh"><div><div class="who">${e(x.contractor)}</div><div class="sub">${when(x.created)} · ${ago(x.created)} · ${e(x.id)}</div></div>${stTag(x.status)}</div>
+  const reqCard = x => { const a=[x.address].filter(Boolean).join(''), th = themeOf(x.contractor_token), pj = x.polished, ed = EDIT[x.id];
+    const qdone = x.quote_no && Q.find(q=>q.quote_no===x.quote_no);
+    const pill = x.status==='Done' ? '<span class="tag t-done">Done</span>' : x.status==='Approved' ? '<span class="tag t-work">Approved – building</span>' : (x.polish==='Ready' ? '<span class="tag t-ready">✨ Polished</span>' : '<span class="tag t-new">'+(x.status==='Working'?'Polishing…':'New')+'</span>');
+    if (ed === 'raw') return `<div class="card" id="rq_${e(x.id)}"><div class="rh"><div class="who">✏️ Edit request · ${e(x.contractor)}</div>${pill}</div>
+      ${['client','address','email','price'].map(k=>`<label class="fl">${({client:'Client',address:'Address',email:'Client email',price:'Price'})[k]}</label><input class="tx" data-f="${k}" value="${e(x[k]||'')}">`).join('')}
+      <label class="fl">Job</label><textarea class="tx" rows="3" data-f="job">${e(x.job||'')}</textarea>
+      <label class="fl">Voice note (written out)</label><textarea class="tx" rows="4" data-f="voice_text">${e(x.voice_text||'')}</textarea>
+      <label class="chk"><input type="checkbox" id="rp_${e(x.id)}" checked> Polish it again after saving</label>
+      ${x.original?`<details class="orig"><summary>What the contractor originally sent</summary>${e([x.original.client,x.original.address,x.original.email,x.original.job,x.original.price,x.original.voice_text].filter(Boolean).join(' · '))}</details>`:''}
+      <div class="acts"><button class="btn pri" data-act="saveraw" data-v="${e(x.id)}">Save</button><button class="btn sec" data-act="cancel" data-v="${e(x.id)}">Cancel</button></div></div>`;
+    if (ed === 'quote' && pj) { const c = pj.client||{}, its = pj.items||[], sc = pj.scope||null;
+      return `<div class="card" id="rq_${e(x.id)}" style="--c:${th.p}"><div class="rh"><div class="who">✏️ Edit quote · ${e(x.contractor)}</div>${pill}</div>
+      <div class="g2"><div><label class="fl">Client name</label><input class="tx" data-q="client.name" value="${e(c.name||'')}"></div><div><label class="fl">Client email</label><input class="tx" data-q="client.email" value="${e(c.email||'')}"></div>
+      <div><label class="fl">Street</label><input class="tx" data-q="client.address" value="${e(c.address||'')}"></div><div><label class="fl">City</label><input class="tx" data-q="client.city" value="${e(c.city||'')}"></div></div>
+      <label class="fl">Project</label><input class="tx" data-q="project" value="${e(pj.project||'')}">
+      ${sc?`<label class="fl">Scope of work</label><div id="sc_${e(x.id)}">${sc.map(l=>`<div class="ln"><input class="tx lead" placeholder="Heading" value="${e(l.lead||'')}"><textarea class="tx" rows="2" placeholder="Details">${e(l.text||'')}</textarea><button class="x" data-act="rmline">×</button></div>`).join('')}</div><button class="btn sec sm" data-act="addline" data-v="sc_${e(x.id)}">+ Add scope line</button>`:''}
+      <label class="fl">Line items</label><div id="it_${e(x.id)}">${its.map(i=>`<div class="ln it"><input class="tx lead" placeholder="Item" value="${e(i.title||'')}"><textarea class="tx" rows="2" placeholder="Description">${e(i.description||'')}</textarea><input class="tx amt" placeholder="$ (optional)" value="${e(i.amount!=null&&i.amount!==''?i.amount:'')}"><button class="x" data-act="rmline">×</button></div>`).join('')}</div><button class="btn sec sm" data-act="addline" data-v="it_${e(x.id)}">+ Add item</button>
+      <div class="g2"><div><label class="fl">Total price ($)</label><input class="tx" data-q="price" inputmode="decimal" value="${e(pj.price!=null?pj.price:'')}"></div><div><label class="fl">Deposit %</label><input class="tx" data-q="deposit_pct" inputmode="decimal" value="${e(pj.deposit_pct!=null?pj.deposit_pct:'')}"></div></div>
+      <label class="fl">Start (optional)</label><input class="tx" data-q="start" value="${e(pj.start||'')}">
+      <label class="fl">Notes (optional)</label><textarea class="tx" rows="2" data-q="notes">${e(pj.notes||'')}</textarea>
+      <div class="acts"><button class="btn pri" data-act="savequote" data-v="${e(x.id)}">Save quote</button><button class="btn sec" data-act="cancel" data-v="${e(x.id)}">Cancel</button></div></div>`; }
+    const preview = pj ? (()=>{ const c = pj.client||{}, lines = pj.scope || (pj.items||[]).map(i=>({lead:i.title, text:i.description, amount:i.amount}));
+      return `<div class="pv" style="--c:${th.p}"><div class="pvh"><span>✨ Polished · ${e(th.doc||'QUOTE')} format</span><b>${e(x.contractor)}</b></div>
+        <div class="pvb"><div class="pvc"><b>${e(c.name||'— client name missing —')}</b>${[c.address,c.city].filter(Boolean).length?' · '+e([c.address,c.city].filter(Boolean).join(', ')):''}</div>
+        <div class="pvp">${e(pj.project||'')}</div><ul>${lines.map(l=>`<li>${l.lead?`<b>${e(l.lead)}:</b> `:''}${e(l.text||'')}${l.amount!=null&&l.amount!==''?` <i>${m0(l.amount)}</i>`:''}</li>`).join('')}</ul>
+        <div class="pvt"><span>Total</span><b>${pj.price!=null&&pj.price!==''?m0(pj.price):'— price missing —'}</b></div>${pj.deposit_pct?`<div class="pvd">Deposit ${e(pj.deposit_pct)}% (${m0(Number(pj.price||0)*pj.deposit_pct/100)})</div>`:''}${pj.notes?`<div class="pvd">${e(pj.notes)}</div>`:''}</div></div>`; })() : '';
+    return `<div class="card ${x.status==='New'?'new':''}" id="rq_${e(x.id)}">
+    <div class="rh"><div><div class="who">${e(x.contractor)}</div><div class="sub">${when(x.created)} · ${ago(x.created)} · ${e(x.id)}</div></div>${pill}</div>
     <div class="kv">${x.client?`<span>Client</span><div><b>${e(x.client)}</b></div>`:''}${x.email?`<span>Email</span><div>${e(x.email)}</div>`:''}${x.job?`<span>Job</span><div>${e(x.job)}</div>`:''}${x.price!==''&&x.price!=null?`<span>Price</span><div><b>${/^[0-9]/.test(String(x.price))?'$'+e(x.price):e(x.price)}</b></div>`:''}</div>
     ${a?`<div class="addr"><span>${e(a)}</span><button class="mb" data-act="copy" data-v="${e(a)}">Copy</button><a class="mb" target="_blank" rel="noopener" href="${amap(a)}">Apple</a><a class="mb" target="_blank" rel="noopener" href="${gmap(a)}">Google</a></div>`:''}
     ${x.voice_text?`<div class="voice"><b>Voice note (written out${x.lang&&x.lang!=='en'?' · '+({es:'Spanish',it:'Italian'})[x.lang]:''})</b>${e(x.voice_text)}</div>`:''}
     <div id="media_${e(x.id)}"></div>
+    ${preview}
+    ${!pj && x.status!=='Done' ? `<div class="wait">✨ Being polished into ${e(x.contractor)}’s ${e(th.doc||'quote')} format on the next run (within 30 min) – or tell Claude “polish requests”.</div>`:''}
+    ${x.polish==='Requested' && pj ? `<div class="wait">✨ Re-polish requested – updated version on the next run.</div>`:''}
+    ${qdone?`<div class="wait ok">✅ Quote ${e(x.quote_no)} made – <a target="_blank" rel="noopener" href="${quote(qdone)}">open it</a></div>`:''}
     <div class="acts">
       ${x.audio?`<button class="btn sec" data-act="audio" data-v="${e(x.id)}">▶ Play recording</button>`:''}
       ${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
-      <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy job</button>
-      ${x.status!=='Working'&&x.status!=='Done'?`<button class="btn pri" data-act="st" data-v="${e(x.id)}" data-s="Working">Start</button>`:''}
-      ${x.status!=='Done'?`<button class="btn org" data-act="st" data-v="${e(x.id)}" data-s="Done">✓ Done</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
+      ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editraw" data-v="${e(x.id)}">✏️ Edit request</button>`:''}
+      ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editquote" data-v="${e(x.id)}">✏️ Edit quote</button><button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn org" data-act="approve" data-v="${e(x.id)}">✓ Approve – make the quote</button>`:''}
+      <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy</button>
+      ${x.status!=='Done'?`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="Done">Close</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
       <a class="btn sec" target="_blank" rel="noopener" href="${dash(x.contractor_token)}">Their dashboard ↗</a>
     </div></div>`; };
   const qRow = q => `<a class="row" style="text-decoration:none;color:inherit" target="_blank" rel="noopener" href="${quote(q)}"><div class="av">${ini(q.contractor)}</div>
@@ -167,10 +212,11 @@ function render(){
       <div class="r" style="display:flex;gap:6px"><button class="mb" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button><a class="mb" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open ↗</a></div></div>`).join(''):'<div class="empty">No contractors yet.</div>'}</div>`:''}
   ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
 }
+async function post(body, okMsg){ try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); const j = await r.json(); toast(j.ok ? okMsg : ('Not saved: '+(j.error||'try again'))); if (!j.ok) refresh(true); } catch(y) { toast('No connection – not saved'); } }
 async function getFile(id){ const j = await api({api:'admin_file', k:K, id}); if(!j.ok) throw new Error(j.error); return 'data:'+j.type+';base64,'+j.data; }
 async function refresh(manual){
   try { const j = await api({api:'admin', k:K}); if (!j.ok) return; const before = new Set((D.requests||[]).map(x=>x.id));
-    const fresh = (j.data.requests||[]).filter(x=>!before.has(x.id)); D = j.data; render();
+    const fresh = (j.data.requests||[]).filter(x=>!before.has(x.id)); D = j.data; if (!Object.keys(EDIT).length) render();
     if (fresh.length && !manual) { toast('📨 New request from ' + fresh[fresh.length-1].contractor); if (navigator.vibrate) navigator.vibrate([60,40,60]); }
     else if (manual) toast('Up to date ✓');
   } catch(x) { if (manual) toast('No connection'); }
@@ -183,6 +229,26 @@ document.addEventListener('click', async ev => {
   else if (act==='copy') copy(v, /^https?:/.test(v)?'Link copied ✓':'Address copied ✓');
   else if (act==='copyjob' && x) copy([`Job for ${x.contractor}`, x.client&&`Client: ${x.client}`, x.address&&`Address: ${x.address}`, x.email&&`Client email: ${x.email}`, x.job&&`Job: ${x.job}`, x.price&&`Price: ${x.price}`, x.voice_text&&`Voice note: ${x.voice_text}`, `(request ${x.id})`].filter(Boolean).join('\n'), 'Job copied – paste it to Claude ✓');
   else if (act==='st' && x) { const s = el.dataset.s; x.status = s; render(); try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_req',k:K,id:x.id,status:s})}); const j=await r.json(); toast(j.ok ? (s==='Done'?'Marked done ✓':s==='Working'?'Marked working ✓':'Reopened ✓') : 'Not saved'); } catch(y) { toast('No connection – not saved'); } }
+  else if (act==='editraw') { EDIT[v]='raw'; render(); }
+  else if (act==='editquote') { EDIT[v]='quote'; render(); }
+  else if (act==='cancel') { delete EDIT[v]; render(); }
+  else if (act==='rmline') el.closest('.ln').remove();
+  else if (act==='addline') { const box = document.getElementById(v); const it = v.startsWith('it_');
+    box.insertAdjacentHTML('beforeend', it ? '<div class="ln it"><input class="tx lead" placeholder="Item"><textarea class="tx" rows="2" placeholder="Description"></textarea><input class="tx amt" placeholder="$ (optional)"><button class="x" data-act="rmline">×</button></div>'
+      : '<div class="ln"><input class="tx lead" placeholder="Heading"><textarea class="tx" rows="2" placeholder="Details"></textarea><button class="x" data-act="rmline">×</button></div>'); }
+  else if (act==='saveraw' && x) { const card = document.getElementById('rq_'+v), f = {}; card.querySelectorAll('[data-f]').forEach(i=>f[i.dataset.f]=i.value.trim());
+    const rp = document.getElementById('rp_'+v).checked; Object.assign(x, f); if (rp && x.polished) x.polish='Requested'; delete EDIT[v]; render();
+    post({action:'admin_req_edit', k:K, id:v, fields:f, repolish:rp}, rp?'Saved – it will be polished again ✓':'Saved ✓'); }
+  else if (act==='savequote' && x) { const card = document.getElementById('rq_'+v), pj = JSON.parse(JSON.stringify(x.polished||{}));
+    card.querySelectorAll('[data-q]').forEach(i=>{ const path=i.dataset.q.split('.'), val=i.value.trim(); if(path.length===2){ pj[path[0]]=pj[path[0]]||{}; pj[path[0]][path[1]]=val; } else pj[path[0]]=val; });
+    pj.price = pj.price===''? '' : Number(String(pj.price).replace(/[$,\s]/g,'')); pj.deposit_pct = pj.deposit_pct===''? undefined : Number(pj.deposit_pct);
+    const sc = document.getElementById('sc_'+v); if (sc) pj.scope = [...sc.querySelectorAll('.ln')].map(l=>({lead:l.querySelector('.lead').value.trim(), text:l.querySelector('textarea').value.trim()})).filter(l=>l.lead||l.text);
+    pj.items = [...document.getElementById('it_'+v).querySelectorAll('.ln')].map(l=>{ const am=l.querySelector('.amt').value.replace(/[$,\s]/g,''); const o={title:l.querySelector('.lead').value.trim(), description:l.querySelector('textarea').value.trim()}; if(am!=='') o.amount=Number(am); else o.detail='Included'; return o; }).filter(i=>i.title||i.description);
+    if (!pj.items.length) { toast('Add at least one item'); return; }
+    x.polished = pj; x.polish='Ready'; delete EDIT[v]; render(); post({action:'admin_req_edit', k:K, id:v, polished:pj}, 'Quote saved ✓'); }
+  else if (act==='repolish' && x) { x.polish='Requested'; render(); post({action:'admin_req_edit', k:K, id:v, repolish:true}, 'Will be re-polished on the next run ✓'); }
+  else if (act==='approve' && x) { const pj = x.polished||{}; if (!(Number(pj.price)>0) || !(pj.client&&pj.client.name)) { toast('Add the client name and price first (Edit quote)'); return; }
+    x.status='Approved'; render(); post({action:'admin_req', k:K, id:v, status:'Approved'}, 'Approved – the quote gets made on the next run ✓'); }
   else if (act==='audio' && x) { const box = document.getElementById('media_'+v); el.textContent = 'Loading…'; try { const src = await getFile(x.audio); box.insertAdjacentHTML('beforeend', `<audio controls autoplay src="${src}"></audio>`); el.remove(); } catch(y) { el.textContent = 'Could not load'; } }
   else if (act==='photos' && x) { const box = document.getElementById('media_'+v); el.textContent = 'Loading…'; box.insertAdjacentHTML('beforeend', '<div class="phs"></div>'); const g = box.querySelector('.phs');
     for (const id of x.photos) { try { const src = await getFile(id); g.insertAdjacentHTML('beforeend', `<a href="${src}" target="_blank" rel="noopener" download="${e(x.id)}.jpg"><img src="${src}" alt=""></a>`); } catch(y) {} } el.remove(); }
