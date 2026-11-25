@@ -36,8 +36,19 @@ td{padding:8px 6px;border-bottom:1px solid var(--line)}
 .month .bill{font-weight:800;color:var(--g);font-size:16px}
 footer{text-align:center;font-size:12px;color:#8a968f;margin-bottom:30px}
 @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}.hide-sm{display:none}}
+</style><link rel="icon" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2064%2064%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%231F4D3A%22/%3E%3Cpath%20d%3D%22M20%2013h17l9%209v29a2%202%200%200%201-2%202H20a2%202%200%200%201-2-2V15a2%202%200%200%201%202-2z%22%20fill%3D%22%23fff%22/%3E%3Cpath%20d%3D%22M37%2013v7a2%202%200%200%200%202%202h7%22%20fill%3D%22%23d9e6df%22/%3E%3Crect%20x%3D%2223%22%20y%3D%2227%22%20width%3D%2216%22%20height%3D%222.6%22%20rx%3D%221.3%22%20fill%3D%22%23c9d6cf%22/%3E%3Crect%20x%3D%2223%22%20y%3D%2233%22%20width%3D%2212%22%20height%3D%222.6%22%20rx%3D%221.3%22%20fill%3D%22%23c9d6cf%22/%3E%3Cpath%20d%3D%22M25%2043.5l5%205%2010-11%22%20fill%3D%22none%22%20stroke%3D%22%23C8892B%22%20stroke-width%3D%224.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E"><style>
+#dq-load{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#F7F5EF 0%,#EEF3F0 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .45s ease,visibility .45s;font-family:-apple-system,Helvetica,Arial,sans-serif}
+#dq-load.hide{opacity:0;visibility:hidden}
+#dq-load .lg{width:84px;height:84px;filter:drop-shadow(0 8px 18px rgba(31,77,58,.25));animation:dqpop .6s ease both}
+#dq-load .wm{font-size:26px;font-weight:800;letter-spacing:-.3px;color:#1F4D3A;animation:dqfade .6s .1s ease both}#dq-load .wm span{color:#C8892B}
+#dq-load .tg{font-size:13.5px;color:#5b6b63;animation:dqfade .6s .2s ease both}
+#dq-load .bar{width:180px;height:5px;border-radius:5px;background:#dfe7e2;overflow:hidden;margin-top:6px}
+#dq-load .bar i{display:block;height:100%;width:40%;border-radius:5px;background:linear-gradient(90deg,#C8892B,#e0a84a);animation:dqbar 1.1s ease-in-out infinite}
+@keyframes dqbar{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
+@keyframes dqpop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes dqfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style></head>
-<body>
+<body><div id="dq-load"><div class="lg"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="64" rx="14" fill="#1F4D3A"/><path d="M20 13h17l9 9v29a2 2 0 0 1-2 2H20a2 2 0 0 1-2-2V15a2 2 0 0 1 2-2z" fill="#fff"/><path d="M37 13v7a2 2 0 0 0 2 2h7" fill="#d9e6df"/><rect x="23" y="27" width="16" height="2.6" rx="1.3" fill="#c9d6cf"/><rect x="23" y="33" width="12" height="2.6" rx="1.3" fill="#c9d6cf"/><path d="M25 43.5l5 5 10-11" fill="none" stroke="#C8892B" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="wm">DuPage <span>Quotes</span></div><div class="tg">Loading your quotes &amp; schedule…</div><div class="bar"><i></i></div></div>
 <header><div class="wrap hrow"><div><div class="brand" id="brand">MY QUOTES &amp; SCHEDULE</div><h1 id="hi"></h1><div class="sub" id="sub"></div></div><div id="logo"></div></div></header>
 <main id="main"></main>
 <footer>Updated automatically every time a quote is made or accepted · Powered by DuPage Quotes · dupagequotes@gmail.com</footer>
@@ -45,7 +56,8 @@ footer{text-align:center;font-size:12px;color:#8a968f;margin-bottom:30px}
 const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
 const P = new URLSearchParams(location.search);
 async function api(params){ const r = await fetch(API + '?' + new URLSearchParams(params), {credentials:'omit'}); return r.json(); }
-function fail(msg){ document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
+function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),500); } }
+function fail(msg){ hideLoad(); document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
 (async()=>{
 const j = await api({api:'dash', d:P.get('d')||''});
 if(!j.ok){ fail(j.error||'This dashboard link is not valid. Text David at DuPage Quotes for a new one.'); return; }
@@ -86,13 +98,13 @@ document.getElementById('main').innerHTML = `
 <div>
  <div class="card"><h2>Schedule · upcoming jobs <em>${upcoming.length}</em></h2>
  ${upcoming.length?upcoming.map(q=>`<div class="job">${dayBox(q)}<div><p class="t">${e(c(q).name)} · ${m0(q.price)}</p><p>${e(q.project)}</p>
-  <p class="m">${e([c(q).address,c(q).city].filter(Boolean).join(', '))}${q.deposit_pct?` · deposit ${m0(q.price*q.deposit_pct/100)}`:''} · <a class="v" href="${link(q)}">View quote</a></p>
+  <p class="m">${e([c(q).address,c(q).city].filter(Boolean).join(', '))}${q.deposit_paid?` · <b style="color:var(--g)">✓ deposit paid ${m0(q.deposit_paid)}</b> · balance ${m0(q.price-q.deposit_paid)} due`:(q.deposit_pct?` · deposit ${m0(q.price*q.deposit_pct/100)} due`:'')} · <a class="v" href="${link(q)}">View quote</a></p>
   <p class="m">✓ Accepted by ${e(q.accepted_name)} · ${e(q.accepted_at)}</p></div></div>`).join(''):'<div class="empty">No accepted jobs coming up yet. They appear here as soon as a client taps Accept.</div>'}
  </div>
  <div class="card"><h2>All quotes</h2>
  <table><tr><th>Date</th><th>Client</th><th class="hide-sm">Project</th><th>Price</th><th>Status</th><th></th></tr>
  ${Q.slice().sort((a,b)=>b.iso.localeCompare(a.iso)).map(q=>`<tr><td>${e(q.date)}</td><td>${e(c(q).name)}</td><td class="hide-sm">${e(q.project)}</td><td>${m0(q.price)}</td>
-  <td><span class="chip ${q.status==='Accepted'?'ok':'wait'}">${q.status==='Accepted'?'Accepted':'Waiting'}</span></td><td><a class="v" href="${link(q)}">View</a></td></tr>`).join('') || '<tr><td colspan="6" class="empty">No quotes yet.</td></tr>'}
+  <td><span class="chip ${q.status==='Accepted'?'ok':'wait'}">${q.status==='Accepted'?'Accepted':'Waiting'}</span>${q.deposit_paid?`<br><small style="color:var(--g);font-weight:700;white-space:nowrap">✓ Deposit paid</small>`:''}</td><td><a class="v" href="${link(q)}">View</a></td></tr>`).join('') || '<tr><td colspan="6" class="empty">No quotes yet.</td></tr>'}
  </table></div>
 </div>
 <div>
@@ -108,6 +120,7 @@ document.getElementById('main').innerHTML = `
  </div>
 </div></div>`;
 
+hideLoad();
 })();
 </script>
 </body></html>
