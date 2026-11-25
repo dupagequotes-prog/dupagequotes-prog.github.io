@@ -66,6 +66,8 @@ audio{width:100%;margin-top:10px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 .ln{position:relative;border:1px dashed var(--line);border-radius:12px;padding:8px 34px 8px 8px;margin-bottom:8px;display:grid;gap:6px}.ln .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:50%;background:#eef0f6;cursor:pointer;font-size:15px}
 .ln .lead{font-weight:700}.ln.it{grid-template-columns:1fr}.btn.sm{padding:7px 11px;font-size:12.5px}
+.newbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bld{border:2px solid var(--c,#222B45)}.bld .bh{display:flex;align-items:center;gap:10px;margin:-4px 0 6px}.bld .sw{width:14px;height:14px;border-radius:4px;background:var(--c)}
+.hint{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.45}.made{border:2px solid #16a34a}.made .acts{margin-top:10px}select.tx{appearance:auto}
 .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-top:10px}.orig{margin-top:10px;font-size:13px;color:var(--mute)}.orig summary{cursor:pointer;font-weight:600}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-150%);z-index:60;background:#111317;color:#fff;border-radius:99px;padding:10px 16px;font:600 13.5px Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .4s var(--spring);white-space:nowrap}
 #toast.on{transform:translate(-50%,0)}
@@ -120,7 +122,7 @@ if(!j.ok){ fail(j.error||'This link is not valid.'); return; }
 const D0 = j.data;
 
 
-let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {};
+let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {}, BUILD = {}; let MADE = [];
 const K = (typeof P !== 'undefined' && P.get('k')) || '';
 const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)||0).toLocaleString('en-US');
@@ -136,6 +138,49 @@ async function copy(t, msg){ try { await navigator.clipboard.writeText(t); } cat
 const stTag = s => s==='Done' ? '<span class="tag t-done">Done</span>' : s==='Working' ? '<span class="tag t-work">Working on it</span>' : '<span class="tag t-new">New</span>';
 
 function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); const last = qs[qs.length-1]||{}; return { p:(last.theme&&last.theme.p)||'#222B45', doc:last.doc_title||'QUOTE' }; }
+const profOf = tok => ((D.contractors||[]).find(k=>k.token===tok)||{}).profile || {};
+const lastQ = tok => { const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); return qs[qs.length-1] || {}; };
+const num = v => { const n = Number(String(v==null?'':v).replace(/[$,\s]/g,'')); return isFinite(n) && String(v).trim()!=='' ? n : ''; };
+function starter(x, tok){   // a first draft for David to fill in: the polished version if there is one, otherwise the raw request
+  if (x && x.polished) return JSON.parse(JSON.stringify(x.polished));
+  const pr = profOf(tok), lq = lastQ(tok), dep = pr.deposit_pct!=null&&pr.deposit_pct!=='' ? pr.deposit_pct : (lq.deposit_pct!=null ? lq.deposit_pct : '');
+  if (!x) return { client:{}, project:'', items:[{title:'',description:''}], price:'', deposit_pct:dep };
+  const ad = String(x.address||''), i = ad.indexOf(','), words = [x.job, x.voice_text].filter(Boolean).join('\n\n');
+  const price = num(x.price), proj = String(x.job||'').split(/[.\n]/)[0].slice(0,70);
+  return { client:{ name:x.client||'', email:x.email||'', address: i>0?ad.slice(0,i).trim():ad, city: i>0?ad.slice(i+1).trim():'' }, project: proj,
+    items:[{ title: proj || 'Work', description: words, amount: price===''?undefined:price }], price, deposit_pct: dep, language: x.lang==='es'?'Spanish':x.lang==='it'?'Italian':undefined };
+}
+function builder(key){
+  const b = BUILD[key], tok = b.tok, pj = b.job, c = pj.client||{}, th = themeOf(tok), k = (D.contractors||[]).find(z=>z.token===tok)||{}, x = (D.requests||[]).find(r=>r.id===key);
+  const lnS = l => `<div class="ln"><input class="tx lead" placeholder="Heading" value="${e(l.lead||'')}"><textarea class="tx" rows="2" placeholder="Details">${e(l.text||'')}</textarea><button class="x" data-act="rmline">×</button></div>`;
+  const lnI = i => `<div class="ln it"><input class="tx lead" placeholder="Item" value="${e(i.title||'')}"><textarea class="tx" rows="3" placeholder="Description">${e(i.description||'')}</textarea><input class="tx amt" placeholder="$ (optional)" inputmode="decimal" value="${e(i.amount!=null&&i.amount!==''?i.amount:'')}"><button class="x" data-act="rmline">×</button></div>`;
+  const lang = pj.language || profOf(tok).language || lastQ(tok).language || 'English';
+  return `<div class="card bld" id="bd_${e(key)}" style="--c:${th.p}">
+    <div class="bh"><span class="sw"></span><div class="who">🛠 ${x?'Build quote':'New quote'} · ${e(k.contractor||'pick a contractor')}</div></div>
+    ${!x?`<label class="fl">Contractor</label><select class="tx" data-act="pickk" id="bk_${e(key)}">${(D.contractors||[]).map(z=>`<option value="${e(z.token)}" ${z.token===tok?'selected':''}>${e(z.contractor)}</option>`).join('')}</select>`:''}
+    ${x?`<details class="orig" open><summary>What ${e(x.contractor)} sent</summary>${e([x.client,x.address,x.email,x.job,x.price&&('Price: '+x.price)].filter(Boolean).join(' · '))}${x.voice_text?'<br><b>Voice:</b> '+e(x.voice_text):''}</details>`:''}
+    <div class="g2"><div><label class="fl">Client name</label><input class="tx" data-q="client.name" value="${e(c.name||'')}"></div><div><label class="fl">Client email</label><input class="tx" data-q="client.email" inputmode="email" value="${e(c.email||'')}"></div>
+    <div><label class="fl">Street</label><input class="tx" data-q="client.address" value="${e(c.address||'')}"></div><div><label class="fl">City, State ZIP</label><input class="tx" data-q="client.city" value="${e(c.city||'')}"></div></div>
+    <label class="fl">Project title</label><input class="tx" data-q="project" placeholder="e.g. Kitchen cabinet repair" value="${e(pj.project||'')}">
+    <label class="fl">Scope of work (optional – headings like “Prep”, “Install”)</label><div id="bsc_${e(key)}">${(pj.scope||[]).map(lnS).join('')}</div><button class="btn sec sm" data-act="addline" data-v="bsc_${e(key)}">+ Add scope line</button>
+    <label class="fl">Line items</label><div id="bit_${e(key)}">${(pj.items&&pj.items.length?pj.items:[{}]).map(lnI).join('')}</div><button class="btn sec sm" data-act="addline" data-v="bit_${e(key)}">+ Add item</button>
+    <div class="g2"><div><label class="fl">Total price ($)</label><input class="tx" data-q="price" inputmode="decimal" value="${e(pj.price!=null?pj.price:'')}"></div><div><label class="fl">Deposit %</label><input class="tx" data-q="deposit_pct" inputmode="decimal" value="${e(pj.deposit_pct!=null?pj.deposit_pct:'')}"></div>
+    <div><label class="fl">Start (words, optional)</label><input class="tx" data-q="start" placeholder="e.g. Week of Dec 8" value="${e(pj.start||'')}"></div><div><label class="fl">Start date (optional)</label><input class="tx" type="date" data-q="start_date" value="${e(pj.start_date||'')}"></div></div>
+    <label class="fl">Notes (optional)</label><textarea class="tx" rows="2" data-q="notes">${e(pj.notes||'')}</textarea>
+    <label class="fl">Quote language</label><select class="tx" data-q="language">${['English','Spanish','Italian'].map(l=>`<option ${l===lang?'selected':''}>${l}</option>`).join('')}</select>
+    <div class="hint">Made in ${e(k.contractor||'their')}’s colors, logo and “${e(th.doc||'QUOTE')}” title. It goes online right away – no Claude needed. You get the client link and a PDF.</div>
+    <div class="acts"><button class="btn org" data-act="create" data-v="${e(key)}">✓ Create quote now</button>${x?`<button class="btn sec" data-act="bpolish" data-v="${e(key)}">✨ Save draft – Claude polishes it</button>`:''}<button class="btn sec" data-act="bcancel" data-v="${e(key)}">Cancel</button></div></div>`;
+}
+function readBuilder(key){   // reads the form back into a job; returns null (with a toast) if something is missing
+  const card = document.getElementById('bd_'+key), pj = { client:{} };
+  card.querySelectorAll('[data-q]').forEach(i=>{ const path=i.dataset.q.split('.'), val=i.value.trim(); if(path.length===2) pj.client[path[1]]=val; else pj[path[0]]=val; });
+  pj.price = num(pj.price); pj.deposit_pct = pj.deposit_pct===''? undefined : Number(pj.deposit_pct);
+  pj.scope = [...document.getElementById('bsc_'+key).querySelectorAll('.ln')].map(l=>({lead:l.querySelector('.lead').value.trim(), text:l.querySelector('textarea').value.trim()})).filter(l=>l.lead||l.text);
+  if (!pj.scope.length) delete pj.scope;
+  pj.items = [...document.getElementById('bit_'+key).querySelectorAll('.ln')].map(l=>{ const am=num(l.querySelector('.amt').value); const o={title:l.querySelector('.lead').value.trim(), description:l.querySelector('textarea').value.trim()}; if(am!=='') o.amount=am; else o.detail='Included'; return o; }).filter(i=>i.title||i.description);
+  if (pj.items.length === 1 && pj.price !== '') { pj.items[0].amount = pj.price; delete pj.items[0].detail; }
+  return pj;
+}
 function render(){
   const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', David';
   document.getElementById('upd').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
@@ -148,6 +193,7 @@ function render(){
   const reqCard = x => { const a=[x.address].filter(Boolean).join(''), th = themeOf(x.contractor_token), pj = x.polished, ed = EDIT[x.id];
     const qdone = x.quote_no && Q.find(q=>q.quote_no===x.quote_no);
     const pill = x.status==='Done' ? '<span class="tag t-done">Done</span>' : x.status==='Approved' ? '<span class="tag t-work">Approved – building</span>' : (x.polish==='Ready' ? '<span class="tag t-ready">✨ Polished</span>' : x.polish==='Requested' ? '<span class="tag t-work">Polishing…</span>' : '<span class="tag t-new">New</span>');
+    if (ed === 'build' && BUILD[x.id]) return builder(x.id);
     if (ed === 'raw') return `<div class="card" id="rq_${e(x.id)}"><div class="rh"><div class="who">✏️ Edit request · ${e(x.contractor)}</div>${pill}</div>
       ${['client','address','email','price'].map(k=>`<label class="fl">${({client:'Client',address:'Address',email:'Client email',price:'Price'})[k]}</label><input class="tx" data-f="${k}" value="${e(x[k]||'')}">`).join('')}
       <label class="fl">Job</label><textarea class="tx" rows="3" data-f="job">${e(x.job||'')}</textarea>
@@ -185,8 +231,9 @@ function render(){
       ${x.audio?`<button class="btn sec" data-act="audio" data-v="${e(x.id)}">▶ Play recording</button>`:''}
       ${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
       ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editraw" data-v="${e(x.id)}">✏️ Edit request</button>`:''}
+      ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn pri" data-act="build" data-v="${e(x.id)}">🛠 Build quote myself</button>`:''}
       ${!pj&&x.polish!=='Requested'&&x.status!=='Done'?`<button class="btn org" data-act="polish" data-v="${e(x.id)}">✨ Polish</button>`:''}
-      ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editquote" data-v="${e(x.id)}">✏️ Edit quote</button><button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn org" data-act="approve" data-v="${e(x.id)}">✓ Approve – make the quote</button>`:''}
+      ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editquote" data-v="${e(x.id)}">✏️ Edit quote</button><button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn org" data-act="approve" data-v="${e(x.id)}">✓ Approve – Claude makes it</button>`:''}
       <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy</button>
       ${x.status!=='Done'?`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="Done">Close</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
       <a class="btn sec" target="_blank" rel="noopener" href="${dash(x.contractor_token)}">Their dashboard ↗</a>
@@ -206,6 +253,10 @@ function render(){
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
   <div class="seg">${['Requests','Quotes','Contractors','Activity'].map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
+  ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}</div>
+    <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
+    <a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}">Open ↗</a><a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}&print=1">🖨 PDF / print</a><button class="btn sec" data-act="unmade" data-v="${e(m.quote_no)}">Hide</button></div></div>`).join('')}
+  ${TAB<2?`<div class="newbar"><button class="btn org" data-act="newq">+ New quote</button></div>${BUILD.new?builder('new'):''}`:''}
   ${TAB===0?`<div class="filter">${[['open','Open ('+open.length+')'],['new','New ('+newR.length+')'],['done','Finished ('+done.length+')'],['all','All']].map(([k,n])=>`<button class="${RF===k?'on':''}" data-act="rf" data-v="${k}">${n}</button>`).join('')}</div>
     ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
   ${TAB===1?`<div class="card">${Q.length?Q.map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
@@ -230,6 +281,27 @@ document.addEventListener('click', async ev => {
   else if (act==='copy') copy(v, /^https?:/.test(v)?'Link copied ✓':'Address copied ✓');
   else if (act==='copyjob' && x) copy([`Job for ${x.contractor}`, x.client&&`Client: ${x.client}`, x.address&&`Address: ${x.address}`, x.email&&`Client email: ${x.email}`, x.job&&`Job: ${x.job}`, x.price&&`Price: ${x.price}`, x.voice_text&&`Voice note: ${x.voice_text}`, `(request ${x.id})`].filter(Boolean).join('\n'), 'Job copied – paste it to Claude ✓');
   else if (act==='st' && x) { const s = el.dataset.s; x.status = s; render(); try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_req',k:K,id:x.id,status:s})}); const j=await r.json(); toast(j.ok ? (s==='Done'?'Marked done ✓':s==='Working'?'Marked working ✓':'Reopened ✓') : 'Not saved'); } catch(y) { toast('No connection – not saved'); } }
+  else if (act==='build' && x) { BUILD[v] = { tok:x.contractor_token, job:starter(x, x.contractor_token) }; EDIT[v]='build'; render(); }
+  else if (act==='newq') { const tok = ((D.contractors||[])[0]||{}).token; if (!tok) { toast('No contractors yet'); return; } BUILD.new = { tok, job:starter(null, tok) }; EDIT.new='build'; render(); document.getElementById('bd_new').scrollIntoView({behavior:'smooth'}); }
+  else if (act==='bcancel') { delete BUILD[v]; delete EDIT[v]; render(); }
+  else if (act==='unmade') { MADE = MADE.filter(m=>m.quote_no!==v); render(); }
+  else if ((act==='create' || act==='bpolish') && BUILD[v]) { const pj = readBuilder(v), tok = BUILD[v].tok, k = (D.contractors||[]).find(z=>z.token===tok)||{};
+    if (act==='bpolish') { BUILD[v].job = pj; const r = (D.requests||[]).find(z=>z.id===v); if (r) { r.polished = pj; r.polish = 'Requested'; } delete BUILD[v]; delete EDIT[v]; render();
+      post({action:'admin_req_edit', k:K, id:v, polished:pj, repolish:true}, '✨ Draft saved – Claude polishes it on the next run ✓'); return; }
+    if (!pj.client.name) { toast('Add the client name'); return; }
+    if (!(pj.price > 0)) { toast('Add the total price'); return; }
+    if (!pj.items.length) { toast('Add at least one item'); return; }
+    const withAmt = pj.items.filter(i=>i.amount!=null), sumA = withAmt.reduce((t,i)=>t+Number(i.amount||0),0);
+    if (withAmt.length === pj.items.length && Math.abs(sumA - pj.price) > 0.5) { toast(`Lines add up to ${m0(sumA)}, total is ${m0(pj.price)} – fix one`); return; }
+    if (!confirm(`Create ${k.contractor}'s quote for ${pj.client.name} – ${m0(pj.price)}? It goes online right away.`)) return;
+    el.disabled = true; el.textContent = 'Creating…';
+    try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_create_quote', k:K, contractor_token:tok, request_id: v==='new'?'':v, job:pj})}); const j = await r.json();
+      if (!j.ok) { toast('Not made: '+(j.error||'try again')); el.disabled=false; el.textContent='✓ Create quote now'; return; }
+      const link = site()+'q.html?q='+encodeURIComponent(j.quote_no)+'&t='+encodeURIComponent(j.token);
+      MADE.unshift({ quote_no:j.quote_no, contractor:k.contractor, client:pj.client.name, price:pj.price, link, view: link+'&src=k',
+        msg:`Hi${k.contact?' '+String(k.contact).split(' ')[0]:''}! Your quote ${j.quote_no} for ${pj.client.name} (${m0(pj.price)}) is ready. Send this link to your client – they can read it and sign online:\n${link}` });
+      delete BUILD[v]; delete EDIT[v]; toast('✅ Quote '+j.quote_no+' is online'); refresh(true); render(); scrollTo({top:0,behavior:'smooth'});
+    } catch(y) { toast('No connection – not made'); el.disabled=false; el.textContent='✓ Create quote now'; } }
   else if (act==='editraw') { EDIT[v]='raw'; render(); }
   else if (act==='editquote') { EDIT[v]='quote'; render(); }
   else if (act==='cancel') { delete EDIT[v]; render(); }
@@ -258,6 +330,7 @@ document.addEventListener('click', async ev => {
   else if (act==='photos' && x) { const box = document.getElementById('media_'+v); el.textContent = 'Loading…'; box.insertAdjacentHTML('beforeend', '<div class="phs"></div>'); const g = box.querySelector('.phs');
     for (const id of x.photos) { try { const src = await getFile(id); g.insertAdjacentHTML('beforeend', `<a href="${src}" target="_blank" rel="noopener" download="${e(x.id)}.jpg"><img src="${src}" alt=""></a>`); } catch(y) {} } el.remove(); }
 });
+document.addEventListener('change', ev => { const el = ev.target; if (el.dataset.act==='pickk' && BUILD.new) { BUILD.new.job = Object.assign(readBuilder('new'), {deposit_pct: starter(null, el.value).deposit_pct, language: undefined}); BUILD.new.tok = el.value; render(); } });
 document.getElementById('rf').onclick = ev => { ev.currentTarget.classList.add('spin'); setTimeout(()=>ev.currentTarget.classList.remove('spin'), 800); refresh(true); };
 render();
 setInterval(() => { if (!document.hidden) refresh(false); }, 30000);
