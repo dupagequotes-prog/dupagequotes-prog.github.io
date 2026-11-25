@@ -66,8 +66,14 @@ audio{width:100%;margin-top:10px}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 .ln{position:relative;border:1px dashed var(--line);border-radius:12px;padding:8px 34px 8px 8px;margin-bottom:8px;display:grid;gap:6px}.ln .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:50%;background:#eef0f6;cursor:pointer;font-size:15px}
 .ln .lead{font-weight:700}.ln.it{grid-template-columns:1fr}.btn.sm{padding:7px 11px;font-size:12.5px}
-.newbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bld{border:2px solid var(--c,#222B45)}.bld .bh{display:flex;align-items:center;gap:10px;margin:-4px 0 6px}.bld .sw{width:14px;height:14px;border-radius:4px;background:var(--c)}
-.hint{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.45}.made{border:2px solid #16a34a}.made .acts{margin-top:10px}select.tx{appearance:auto}
+.kav{width:42px;height:42px;border-radius:13px;flex:none;display:grid;place-items:center;background:#fff;border:2px solid var(--kc,#222B45);overflow:hidden;font-weight:800;font-size:14px;color:var(--kc,#222B45)}.kav img{width:100%;height:100%;object-fit:contain;padding:3px}.kav.sm{width:30px;height:30px;border-radius:9px;font-size:11px}
+.kq{border-left:4px solid var(--kc);padding-left:10px;margin-left:-6px}.kname{display:inline-flex;align-items:center;gap:5px;font-weight:700;color:var(--kc)}.kname i{width:8px;height:8px;border-radius:50%;background:var(--kc)}
+.card.kc{border-top:4px solid var(--kc)}.qrow{display:flex;align-items:center;gap:12px;padding:12px 0 12px 10px;border-top:1px solid var(--line);border-left:4px solid var(--kc);margin-left:-16px;padding-left:12px}.qrow:first-child{border-top:0}
+.qacts{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px 54px}.kcard{display:flex;gap:12px;align-items:center}.kcard .mid .n{font-size:16px;color:var(--kc)}
+.filter button i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--kc);margin-right:6px}.filter button.on i{box-shadow:0 0 0 2px #fff}
+.lk{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:var(--ks,#f4f6fa);border:1px solid var(--line);margin:10px 0}.lk .t{font-weight:800;font-size:17px;color:var(--kc)}.lk .d{margin-left:auto;font-weight:800;letter-spacing:2px;color:var(--kc)}
+input[type=color].tx{height:44px;padding:4px}.newbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bld{border:2px solid var(--c,#222B45)}.bld .bh{display:flex;align-items:center;gap:10px;margin:-4px 0 6px}.bld .sw{width:14px;height:14px;border-radius:4px;background:var(--c)}
+.btn.del{color:#b42318;margin-left:auto}.sendbox{margin-top:10px;background:#f6f7fb;border-radius:12px;padding:2px 12px 10px}.hint{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.45}.made{border:2px solid #16a34a}.made .acts{margin-top:10px}select.tx{appearance:auto}
 .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-top:10px}.orig{margin-top:10px;font-size:13px;color:var(--mute)}.orig summary{cursor:pointer;font-weight:600}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-150%);z-index:60;background:#111317;color:#fff;border-radius:99px;padding:10px 16px;font:600 13.5px Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .4s var(--spring);white-space:nowrap}
 #toast.on{transform:translate(-50%,0)}
@@ -122,7 +128,7 @@ if(!j.ok){ fail(j.error||'This link is not valid.'); return; }
 const D0 = j.data;
 
 
-let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {}, BUILD = {}; let MADE = [];
+let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {}, BUILD = {}; let MADE = [], QF = '';
 const K = (typeof P !== 'undefined' && P.get('k')) || '';
 const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)||0).toLocaleString('en-US');
@@ -137,7 +143,31 @@ const quote = q => site() + 'q.html?q=' + encodeURIComponent(q.quote_no) + '&t='
 async function copy(t, msg){ try { await navigator.clipboard.writeText(t); } catch(x){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); } toast(msg||'Copied ✓'); }
 const stTag = s => s==='Done' ? '<span class="tag t-done">Done</span>' : s==='Working' ? '<span class="tag t-work">Working on it</span>' : '<span class="tag t-new">New</span>';
 
-function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); const last = qs[qs.length-1]||{}; return { p:(last.theme&&last.theme.p)||'#222B45', doc:last.doc_title||'QUOTE' }; }
+const kOf = tok => (D.contractors||[]).find(k=>k.token===tok) || {};
+function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); const last = qs[qs.length-1]||{}, lk = kOf(tok).look||{};
+  const th = lk.theme || last.theme || {}; return { p: th.p||'#222B45', a: th.a||th.p||'#222B45', s: th.s||'#F4F6FA', doc: lk.doc_title||last.doc_title||'QUOTE' }; }
+const kav = (tok, sm) => { const k = kOf(tok), th = themeOf(tok); return `<div class="kav${sm?' sm':''}" style="--kc:${th.p}">${k.logo?`<img src="${k.logo}" alt="">`:ini(k.contractor)}</div>`; };
+const kname = tok => `<span class="kname" style="--kc:${themeOf(tok).p}"><i></i>${e(kOf(tok).contractor||'')}</span>`;
+const soft = hx => { const n = parseInt(hx.slice(1),16), m = c => Math.round(c + (255-c)*.93); return '#'+[n>>16&255,n>>8&255,n&255].map(m).map(v=>v.toString(16).padStart(2,'0')).join(''); };
+function lookForm(tok){   // David's editor for a contractor's colors, logo, title and quote defaults
+  const k = kOf(tok), lk = k.look||{}, th = themeOf(tok), f = BUILD['k_'+tok] || {};
+  const v = (x, d) => e(f[x]!=null ? f[x] : (lk[x]!=null ? lk[x] : (d||'')));
+  return `<div class="card kc" id="lk_${e(tok)}" style="--kc:${th.p}"><div class="rh"><div class="who">🎨 ${e(k.contractor)} – look & info</div></div>
+    <div class="lk" id="lkpv" style="--kc:${e(f.p||th.p)};--ks:${soft(f.p||th.p)}">${kav(tok)}<div class="t">${e(k.contractor)}</div><div class="d">${v('doc_title', th.doc)}</div></div>
+    <div class="g2"><div><label class="fl">Main color</label><input class="tx" type="color" data-l="p" value="${e(f.p||th.p)}"></div><div><label class="fl">Accent color</label><input class="tx" type="color" data-l="a" value="${e(f.a||th.a)}"></div></div>
+    <label class="fl">Logo (picture from your phone or computer)</label><input class="tx" type="file" accept="image/*" data-logo="${e(tok)}">${f.logo?'<div class="hint">New logo ready – tap Save.</div>':''}
+    <div class="g2"><div><label class="fl">Title on their quotes</label><input class="tx" data-l="doc_title" placeholder="QUOTE / ESTIMATE / PROPOSAL" value="${v('doc_title', th.doc)}"></div><div><label class="fl">Quote language</label><select class="tx" data-l="language">${['English','Spanish','Italian'].map(l=>`<option ${l===(f.language||lk.language||'English')?'selected':''}>${l}</option>`).join('')}</select></div>
+    <div><label class="fl">Contact name (signs the quote)</label><input class="tx" data-l="contact" value="${v('contact', k.contact)}"></div><div><label class="fl">Phone</label><input class="tx" data-l="phone" inputmode="tel" value="${v('phone')}"></div>
+    <div><label class="fl">Email on quotes</label><input class="tx" data-l="email" inputmode="email" value="${v('email', k.email)}"></div><div><label class="fl">Default deposit %</label><input class="tx" data-l="deposit_pct" inputmode="decimal" value="${v('deposit_pct')}"></div></div>
+    <label class="fl">How their clients pay (optional)</label><input class="tx" data-l="payment" placeholder="e.g. Check or Zelle" value="${v('payment')}">
+    <div class="hint">Changes show right away on their dashboard, every quote page and every new quote you make. The Mac picks them up on its next run too.</div>
+    <div class="acts"><button class="btn pri" data-act="savelook" data-v="${e(tok)}">Save</button><button class="btn sec" data-act="lkcancel" data-v="${e(tok)}">Cancel</button></div></div>`;
+}
+function readLook(tok){ const c = document.getElementById('lk_'+tok), o = {}; c.querySelectorAll('[data-l]').forEach(i=>o[i.dataset.l]=i.value.trim()); return o; }
+function shrinkLogo(file){ return new Promise((ok, bad) => { const img = new Image(); img.onload = () => { let w = 320, q = .85, out = '';
+  for (let i=0;i<8;i++){ const sc = Math.min(1, w/Math.max(img.width,img.height)), cv = document.createElement('canvas'); cv.width = Math.round(img.width*sc); cv.height = Math.round(img.height*sc);
+    const cx = cv.getContext('2d'); cx.fillStyle='#fff'; cx.fillRect(0,0,cv.width,cv.height); cx.drawImage(img,0,0,cv.width,cv.height); out = cv.toDataURL('image/jpeg', q); if (out.length < 45000) return ok(out); w = Math.round(w*.8); q = Math.max(.5, q-.08); }
+  bad(new Error('too big')); }; img.onerror = bad; img.src = URL.createObjectURL(file); }); }
 const profOf = tok => ((D.contractors||[]).find(k=>k.token===tok)||{}).profile || {};
 const lastQ = tok => { const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); return qs[qs.length-1] || {}; };
 const num = v => { const n = Number(String(v==null?'':v).replace(/[$,\s]/g,'')); return isFinite(n) && String(v).trim()!=='' ? n : ''; };
@@ -151,13 +181,14 @@ function starter(x, tok){   // a first draft for David to fill in: the polished 
     items:[{ title: proj || 'Work', description: words, amount: price===''?undefined:price }], price, deposit_pct: dep, language: x.lang==='es'?'Spanish':x.lang==='it'?'Italian':undefined };
 }
 function builder(key){
-  const b = BUILD[key], tok = b.tok, pj = b.job, c = pj.client||{}, th = themeOf(tok), k = (D.contractors||[]).find(z=>z.token===tok)||{}, x = (D.requests||[]).find(r=>r.id===key);
+  const b = BUILD[key], tok = b.tok, pj = b.job, c = pj.client||{}, th = themeOf(tok), k = (D.contractors||[]).find(z=>z.token===tok)||{}, x = (D.requests||[]).find(r=>r.id===key), qe = b.qno ? (D.quotes||[]).find(q=>q.quote_no===b.qno) : null;
   const lnS = l => `<div class="ln"><input class="tx lead" placeholder="Heading" value="${e(l.lead||'')}"><textarea class="tx" rows="2" placeholder="Details">${e(l.text||'')}</textarea><button class="x" data-act="rmline">×</button></div>`;
   const lnI = i => `<div class="ln it"><input class="tx lead" placeholder="Item" value="${e(i.title||'')}"><textarea class="tx" rows="3" placeholder="Description">${e(i.description||'')}</textarea><input class="tx amt" placeholder="$ (optional)" inputmode="decimal" value="${e(i.amount!=null&&i.amount!==''?i.amount:'')}"><button class="x" data-act="rmline">×</button></div>`;
   const lang = pj.language || profOf(tok).language || lastQ(tok).language || 'English';
   return `<div class="card bld" id="bd_${e(key)}" style="--c:${th.p}">
-    <div class="bh"><span class="sw"></span><div class="who">🛠 ${x?'Build quote':'New quote'} · ${e(k.contractor||'pick a contractor')}</div></div>
-    ${!x?`<label class="fl">Contractor</label><select class="tx" data-act="pickk" id="bk_${e(key)}">${(D.contractors||[]).map(z=>`<option value="${e(z.token)}" ${z.token===tok?'selected':''}>${e(z.contractor)}</option>`).join('')}</select>`:''}
+    <div class="bh">${kav(tok,1)}<div class="who">${qe?'✏️ Edit '+e(b.qno):x?'🛠 Build quote':'🛠 New quote'} · ${e(k.contractor||'pick a contractor')}</div></div>
+    ${qe&&qe.status==='Accepted'?`<div class="wait">⚠️ ${e((qe.client||{}).name)} already signed this. Your changes show on their page – let them know.</div>`:''}
+    ${!x&&!qe?`<label class="fl">Contractor</label><select class="tx" data-pick="1" id="bk_${e(key)}">${(D.contractors||[]).map(z=>`<option value="${e(z.token)}" ${z.token===tok?'selected':''}>${e(z.contractor)}</option>`).join('')}</select>`:''}
     ${x?`<details class="orig" open><summary>What ${e(x.contractor)} sent</summary>${e([x.client,x.address,x.email,x.job,x.price&&('Price: '+x.price)].filter(Boolean).join(' · '))}${x.voice_text?'<br><b>Voice:</b> '+e(x.voice_text):''}</details>`:''}
     <div class="g2"><div><label class="fl">Client name</label><input class="tx" data-q="client.name" value="${e(c.name||'')}"></div><div><label class="fl">Client email</label><input class="tx" data-q="client.email" inputmode="email" value="${e(c.email||'')}"></div>
     <div><label class="fl">Street</label><input class="tx" data-q="client.address" value="${e(c.address||'')}"></div><div><label class="fl">City, State ZIP</label><input class="tx" data-q="client.city" value="${e(c.city||'')}"></div></div>
@@ -168,8 +199,11 @@ function builder(key){
     <div><label class="fl">Start (words, optional)</label><input class="tx" data-q="start" placeholder="e.g. Week of Dec 8" value="${e(pj.start||'')}"></div><div><label class="fl">Start date (optional)</label><input class="tx" type="date" data-q="start_date" value="${e(pj.start_date||'')}"></div></div>
     <label class="fl">Notes (optional)</label><textarea class="tx" rows="2" data-q="notes">${e(pj.notes||'')}</textarea>
     <label class="fl">Quote language</label><select class="tx" data-q="language">${['English','Spanish','Italian'].map(l=>`<option ${l===lang?'selected':''}>${l}</option>`).join('')}</select>
-    <div class="hint">Made in ${e(k.contractor||'their')}’s colors, logo and “${e(th.doc||'QUOTE')}” title. It goes online right away – no Claude needed. You get the client link and a PDF.</div>
-    <div class="acts"><button class="btn org" data-act="create" data-v="${e(key)}">✓ Create quote now</button>${x?`<button class="btn sec" data-act="bpolish" data-v="${e(key)}">✨ Save draft – Claude polishes it</button>`:''}<button class="btn sec" data-act="bcancel" data-v="${e(key)}">Cancel</button></div></div>`;
+    <div class="hint">Made in ${e(k.contractor||'their')}’s colors, logo and “${e(th.doc||'QUOTE')}” title.<br><b>💾 Save draft</b> keeps it for later · <b>✨ Claude polishes</b> only cleans up your wording on the next run · <b>🚀 Generate pro online quote</b> is the final one – it goes online and gets emailed out.</div>
+    ${!qe?`<div class="sendbox"><label class="chk"><input type="checkbox" id="sc_cl_${e(key)}" checked> Email it to the client (uses the client email above)</label>
+    <label class="chk"><input type="checkbox" id="sc_k_${e(key)}" ${((k.look||{}).email||k.email)?'checked':'disabled'}> Email it to ${e(k.contractor||'the contractor')}${((k.look||{}).email||k.email)?' ('+e((k.look||{}).email||k.email)+')':' – no email on file'}</label></div>`:''}
+    ${qe?`<div class="hint">Start date, progress, crew and deposit paid are on <a target="_blank" rel="noopener" href="${dash(tok)}">their dashboard ↗</a> – you can change them there too.</div>`:''}
+    <div class="acts">${qe?`<button class="btn org" data-act="saveedit" data-v="${e(key)}">💾 Save changes</button>`:`<button class="btn org" data-act="create" data-v="${e(key)}">🚀 Generate pro online quote</button><button class="btn sec" data-act="bpolish" data-v="${e(key)}">✨ Save – Claude polishes it</button><button class="btn sec" data-act="bdraft" data-v="${e(key)}">💾 Save draft</button>`}<button class="btn sec" data-act="bcancel" data-v="${e(key)}">Cancel</button></div></div>`;
 }
 function readBuilder(key){   // reads the form back into a job; returns null (with a toast) if something is missing
   const card = document.getElementById('bd_'+key), pj = { client:{} };
@@ -217,8 +251,8 @@ function render(){
         <div class="pvb"><div class="pvc"><b>${e(c.name||'— client name missing —')}</b>${[c.address,c.city].filter(Boolean).length?' · '+e([c.address,c.city].filter(Boolean).join(', ')):''}</div>
         <div class="pvp">${e(pj.project||'')}</div><ul>${lines.map(l=>`<li>${l.lead?`<b>${e(l.lead)}:</b> `:''}${e(l.text||'')}${l.amount!=null&&l.amount!==''?` <i>${m0(l.amount)}</i>`:''}</li>`).join('')}</ul>
         <div class="pvt"><span>Total</span><b>${pj.price!=null&&pj.price!==''?m0(pj.price):'— price missing —'}</b></div>${pj.deposit_pct?`<div class="pvd">Deposit ${e(pj.deposit_pct)}% (${m0(Number(pj.price||0)*pj.deposit_pct/100)})</div>`:''}${pj.notes?`<div class="pvd">${e(pj.notes)}</div>`:''}</div></div>`; })() : '';
-    return `<div class="card ${x.status==='New'?'new':''}" id="rq_${e(x.id)}">
-    <div class="rh"><div><div class="who">${e(x.contractor)}</div><div class="sub">${when(x.created)} · ${ago(x.created)} · ${e(x.id)}</div></div>${pill}</div>
+    return `<div class="card kc ${x.status==='New'?'new':''}" id="rq_${e(x.id)}" style="--kc:${th.p}">
+    <div class="rh"><div style="display:flex;gap:10px;align-items:center">${kav(x.contractor_token)}<div><div class="who">${kname(x.contractor_token)}</div><div class="sub">${when(x.created)} · ${ago(x.created)} · ${e(x.id)}</div></div></div>${pill}</div>
     <div class="kv">${x.client?`<span>Client</span><div><b>${e(x.client)}</b></div>`:''}${x.email?`<span>Email</span><div>${e(x.email)}</div>`:''}${x.job?`<span>Job</span><div>${e(x.job)}</div>`:''}${x.price!==''&&x.price!=null?`<span>Price</span><div><b>${/^[0-9]/.test(String(x.price))?'$'+e(x.price):e(x.price)}</b></div>`:''}</div>
     ${a?`<div class="addr"><span>${e(a)}</span><button class="mb" data-act="copy" data-v="${e(a)}">Copy</button><a class="mb" target="_blank" rel="noopener" href="${amap(a)}">Apple</a><a class="mb" target="_blank" rel="noopener" href="${gmap(a)}">Google</a></div>`:''}
     ${x.voice_text?`<div class="voice"><b>Voice note (written out${x.lang&&x.lang!=='en'?' · '+({es:'Spanish',it:'Italian'})[x.lang]:''})</b>${e(x.voice_text)}</div>`:''}
@@ -231,16 +265,20 @@ function render(){
       ${x.audio?`<button class="btn sec" data-act="audio" data-v="${e(x.id)}">▶ Play recording</button>`:''}
       ${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
       ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editraw" data-v="${e(x.id)}">✏️ Edit request</button>`:''}
-      ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn pri" data-act="build" data-v="${e(x.id)}">🛠 Build quote myself</button>`:''}
+      ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn ${pj?'org':'pri'}" data-act="build" data-v="${e(x.id)}">${pj?'🚀 Review & generate pro quote':'🛠 Make the quote myself'}</button>`:''}
       ${!pj&&x.polish!=='Requested'&&x.status!=='Done'?`<button class="btn org" data-act="polish" data-v="${e(x.id)}">✨ Polish</button>`:''}
-      ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editquote" data-v="${e(x.id)}">✏️ Edit quote</button><button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn org" data-act="approve" data-v="${e(x.id)}">✓ Approve – Claude makes it</button>`:''}
+      ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn sec" data-act="approve" data-v="${e(x.id)}">Mac PDF instead (Claude)</button>`:''}
       <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy</button>
       ${x.status!=='Done'?`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="Done">Close</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
       <a class="btn sec" target="_blank" rel="noopener" href="${dash(x.contractor_token)}">Their dashboard ↗</a>
+      <button class="btn sec del" data-act="rqdel" data-v="${e(x.id)}">🗑 Delete</button>
     </div></div>`; };
-  const qRow = q => `<a class="row" style="text-decoration:none;color:inherit" target="_blank" rel="noopener" href="${quote(q)}"><div class="av">${ini(q.contractor)}</div>
-    <div class="mid"><div class="n">${e((q.client||{}).name)} <span style="color:var(--mute);font-weight:500">· ${e(q.contractor)}</span></div><div class="s">${e(q.quote_no)} · ${e(q.date)} · ${e(q.project)}</div></div>
-    <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?'<span class="tag t-done">Accepted</span>':q.viewed_at?`<span class="tag t-view">Opened ${ago(q.last_viewed_at||q.viewed_at)}</span>`:'<span class="tag t-wait">Waiting</span>'}</div></a>`;
+  const qRow = q => { const key = 'q_'+q.quote_no; if (EDIT[key]==='build' && BUILD[key]) return builder(key);
+    const cl = site()+'q.html?q='+encodeURIComponent(q.quote_no)+'&t='+encodeURIComponent(q.token);
+    return `<div class="qrow" style="--kc:${themeOf(q.contractor_token).p}">${kav(q.contractor_token)}
+    <div class="mid"><div class="n">${e((q.client||{}).name)}</div><div class="s">${kname(q.contractor_token)} · ${e(q.quote_no)} · ${e(q.date)} · ${e(q.project)}</div></div>
+    <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?'<span class="tag t-done">Accepted</span>':q.viewed_at?`<span class="tag t-view">Opened ${ago(q.last_viewed_at||q.viewed_at)}</span>`:'<span class="tag t-wait">Waiting</span>'}</div></div>
+    <div class="qacts"><a class="mb" target="_blank" rel="noopener" href="${quote(q)}">Open ↗</a><button class="mb" data-act="editq" data-v="${e(q.quote_no)}">✏️ Edit</button><button class="mb" data-act="sendq" data-v="${e(q.quote_no)}">📧 ${q.emailed?'Email again':'Email it'}</button><a class="mb" target="_blank" rel="noopener" href="${quote(q)}&print=1">🖨 PDF</a><button class="mb" data-act="copy" data-v="${e(cl)}">Copy client link</button><a class="mb" target="_blank" rel="noopener" href="${dash(q.contractor_token)}">Their dashboard ↗</a></div>`; };
   const ks = (D.contractors||[]).map(k => { const kq = Q.filter(q=>q.contractor_token===k.token); return {k, n:kq.length, won:kq.filter(q=>q.status==='Accepted').reduce((s,q)=>s+Number(q.price||0),0), open:R.filter(x=>x.contractor_token===k.token && x.status!=='Done').length}; });
   const events = []; R.forEach(x=>events.push({t:x.created, h:`📨 New request · <b>${e(x.contractor)}</b>${x.client?' – '+e(x.client):''}`}));
   Q.forEach(q=>{ if(q.viewed_at) events.push({t:q.last_viewed_at||q.viewed_at, h:`👀 <b>${e((q.client||{}).name)}</b> opened ${e(q.quote_no)} (${e(q.contractor)})`}); if(q.status==='Accepted'){ const d=new Date(q.accepted_at); events.push({t:isNaN(d)?(q.date_iso||''):d.toISOString(), h:`✅ <b>${e((q.client||{}).name)}</b> accepted ${m0(q.price)} (${e(q.contractor)})`}); } if(q.created_iso) events.push({t:q.created_iso, h:`📄 Quote ${e(q.quote_no)} made for <b>${e(q.contractor)}</b>`}); });
@@ -253,15 +291,16 @@ function render(){
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
   <div class="seg">${['Requests','Quotes','Contractors','Activity'].map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
-  ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}</div>
+  ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}${m.sent&&m.sent.length?' · 📧 emailed to '+e(m.sent.join(' and ')):' · not emailed'}${m.mailErr?' · ⚠️ email failed: '+e(m.mailErr):''}</div>
     <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
     <a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}">Open ↗</a><a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}&print=1">🖨 PDF / print</a><button class="btn sec" data-act="unmade" data-v="${e(m.quote_no)}">Hide</button></div></div>`).join('')}
   ${TAB<2?`<div class="newbar"><button class="btn org" data-act="newq">+ New quote</button></div>${BUILD.new?builder('new'):''}`:''}
   ${TAB===0?`<div class="filter">${[['open','Open ('+open.length+')'],['new','New ('+newR.length+')'],['done','Finished ('+done.length+')'],['all','All']].map(([k,n])=>`<button class="${RF===k?'on':''}" data-act="rf" data-v="${k}">${n}</button>`).join('')}</div>
     ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
-  ${TAB===1?`<div class="card">${Q.length?Q.map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
-  ${TAB===2?`<div class="card">${ks.length?ks.map(o=>`<div class="row"><div class="av">${ini(o.k.contractor)}</div><div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div>
-      <div class="r" style="display:flex;gap:6px"><button class="mb" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button><a class="mb" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open ↗</a></div></div>`).join(''):'<div class="empty">No contractors yet.</div>'}</div>`:''}
+  ${TAB===1?`<div class="filter"><button class="${!QF?'on':''}" data-act="qf" data-v="">All (${Q.length})</button>${(D.contractors||[]).map(k=>`<button class="${QF===k.token?'on':''}" data-act="qf" data-v="${e(k.token)}" style="--kc:${themeOf(k.token).p}"><i></i>${e(k.contractor)} (${Q.filter(q=>q.contractor_token===k.token).length})</button>`).join('')}</div>
+    <div class="card">${Q.filter(q=>!QF||q.contractor_token===QF).length?Q.filter(q=>!QF||q.contractor_token===QF).map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
+  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
+      <div class="acts"><button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button><button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button><a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button></div></div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
   ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
 }
 async function post(body, okMsg){ try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); const j = await r.json(); toast(j.ok ? okMsg : ('Not saved: '+(j.error||'try again'))); if (!j.ok) refresh(true); } catch(y) { toast('No connection – not saved'); } }
@@ -273,6 +312,9 @@ async function refresh(manual){
     else if (manual) toast('Up to date ✓');
   } catch(x) { if (manual) toast('No connection'); }
 }
+document.addEventListener('input', ev => { const el = ev.target; if (!el.dataset || !el.dataset.l) return; const c = el.closest('[id^=lk_]'), pv = c && c.querySelector('.lk'); if (!pv) return;
+  if (el.dataset.l==='p') { pv.style.setProperty('--kc', el.value); pv.style.setProperty('--ks', soft(el.value)); pv.querySelector('.kav').style.setProperty('--kc', el.value); c.style.setProperty('--kc', el.value); }
+  if (el.dataset.l==='doc_title') pv.querySelector('.d').textContent = el.value.toUpperCase(); });
 document.addEventListener('click', async ev => {
   const el = ev.target.closest('[data-act]'); if (!el) return; const act = el.dataset.act, v = el.dataset.v; ev.preventDefault();
   const x = (D.requests||[]).find(r=>r.id===v);
@@ -283,25 +325,63 @@ document.addEventListener('click', async ev => {
   else if (act==='st' && x) { const s = el.dataset.s; x.status = s; render(); try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_req',k:K,id:x.id,status:s})}); const j=await r.json(); toast(j.ok ? (s==='Done'?'Marked done ✓':s==='Working'?'Marked working ✓':'Reopened ✓') : 'Not saved'); } catch(y) { toast('No connection – not saved'); } }
   else if (act==='build' && x) { BUILD[v] = { tok:x.contractor_token, job:starter(x, x.contractor_token) }; EDIT[v]='build'; render(); }
   else if (act==='newq') { const tok = ((D.contractors||[])[0]||{}).token; if (!tok) { toast('No contractors yet'); return; } BUILD.new = { tok, job:starter(null, tok) }; EDIT.new='build'; render(); document.getElementById('bd_new').scrollIntoView({behavior:'smooth'}); }
+  else if (act==='qf') { QF = v; render(); }
+  else if (act==='rqdel' && x) { if (!confirm(`Delete this request from ${x.contractor}${x.client?' ('+x.client+')':''}?\n\nIt disappears from HQ and from their dashboard. Photos/recording go to Drive trash. Quotes already made from it stay.`)) return;
+    D.requests = D.requests.filter(r=>r.id!==v); delete EDIT[v]; delete BUILD[v]; render(); post({action:'admin_req_delete', k:K, id:v}, '🗑 Request deleted ✓'); }
+  else if (act==='sendq') { const q = (D.quotes||[]).find(z=>z.quote_no===v); if (!q) return; const k = kOf(q.contractor_token), kE = (k.look||{}).email || k.email || '', cE = (q.client||{}).email || '';
+    const okE = x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(x||'').trim()); const send = { client: okE(cE), contractor: okE(kE) };
+    if (!send.client && !send.contractor) { toast('No client or contractor email on this quote – tap ✏️ Edit to add one'); return; }
+    if (!confirm(`Email ${v} (${m0(q.price)}) to:\n• ${[send.client&&(q.client.name+' ('+cE+')'), send.contractor&&(k.contractor+' ('+kE+')')].filter(Boolean).join('\n• ')}?`)) return;
+    el.textContent = 'Sending…'; try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_send_quote', k:K, quote_no:v, send})}); const j = await r.json();
+      toast(j.ok ? '📧 Emailed to '+Object.values(j.sent||{}).join(' and ') : 'Not sent: '+(j.error||'try again')); refresh(true); } catch(y) { toast('No connection – not sent'); } }
+  else if (act==='kquotes') { QF = v; TAB = 1; render(); scrollTo({top:0,behavior:'smooth'}); }
+  else if (act==='editq') { const q = (D.quotes||[]).find(z=>z.quote_no===v); if (!q) return; const key = 'q_'+v;
+    BUILD[key] = { tok:q.contractor_token, qno:v, job:{ client:Object.assign({}, q.client||{}), project:q.project||'', scope:q.scope, items:JSON.parse(JSON.stringify(q.items||[])), price:q.price, deposit_pct:q.deposit_pct, start:q.start||'', start_date:q.start_date||'', notes:q.notes||'', language:q.language } };
+    EDIT[key]='build'; render(); }
+  else if (act==='saveedit' && BUILD[v]) { const pj = readBuilder(v), qno = BUILD[v].qno, q = (D.quotes||[]).find(z=>z.quote_no===qno)||{};
+    if (!pj.client.name) { toast('Add the client name'); return; } if (!(pj.price > 0)) { toast('Add the total price'); return; } if (!pj.items.length) { toast('Add at least one item'); return; }
+    const wa = pj.items.filter(i=>i.amount!=null), sa = wa.reduce((t,i)=>t+Number(i.amount||0),0);
+    if (wa.length === pj.items.length && Math.abs(sa - pj.price) > 0.5) { toast(`Lines add up to ${m0(sa)}, total is ${m0(pj.price)} – fix one`); return; }
+    if (q.status==='Accepted' && !confirm(`${(q.client||{}).name} already signed ${qno}. Save the changes anyway?`)) return;
+    el.disabled = true; el.textContent = 'Saving…';
+    try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_update_quote', k:K, quote_no:qno, job:pj})}); const j = await r.json();
+      if (!j.ok) { toast('Not saved: '+(j.error||'try again')); el.disabled=false; el.textContent='💾 Save changes'; return; }
+      delete BUILD[v]; delete EDIT[v]; toast('✅ '+qno+' updated – the client sees it now'); refresh(true); }
+    catch(y) { toast('No connection – not saved'); el.disabled=false; el.textContent='💾 Save changes'; } }
+  else if (act==='look') { EDIT['k_'+v]='look'; BUILD['k_'+v] = {}; render(); document.getElementById('lk_'+v).scrollIntoView({behavior:'smooth'}); }
+  else if (act==='lkcancel') { delete EDIT['k_'+v]; delete BUILD['k_'+v]; render(); }
+  else if (act==='savelook') { const f = readLook(v), k = kOf(v), mac = k.profile||{}, mt = mac.theme||{}, look = {}, lg = (BUILD['k_'+v]||{}).logo;
+    if (f.p !== (mt.p||'').toLowerCase() || f.a !== (mt.a||'').toLowerCase()) look.theme = { p:f.p, a:f.a, s:soft(f.p), f:(mt.f||'Helvetica, Arial, sans-serif') };
+    ['doc_title','contact','phone','email','payment','language'].forEach(x=>{ if (f[x] && f[x] !== String(mac[x]==null?'':mac[x])) look[x] = f[x]; });
+    if (f.deposit_pct !== '' && String(f.deposit_pct) !== String(mac.deposit_pct==null?'':mac.deposit_pct)) look.deposit_pct = Number(f.deposit_pct);
+    el.disabled = true; el.textContent = 'Saving…';
+    try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_look', k:K, token:v, look, logo:lg||''})}); const j = await r.json();
+      if (!j.ok) { toast('Not saved: '+(j.error||'try again')); el.disabled=false; el.textContent='Save'; return; }
+      delete EDIT['k_'+v]; delete BUILD['k_'+v]; toast('🎨 '+k.contractor+' updated everywhere ✓'); refresh(true); }
+    catch(y) { toast('No connection – not saved'); el.disabled=false; el.textContent='Save'; } }
   else if (act==='bcancel') { delete BUILD[v]; delete EDIT[v]; render(); }
   else if (act==='unmade') { MADE = MADE.filter(m=>m.quote_no!==v); render(); }
-  else if ((act==='create' || act==='bpolish') && BUILD[v]) { const pj = readBuilder(v), tok = BUILD[v].tok, k = (D.contractors||[]).find(z=>z.token===tok)||{};
-    if (act==='bpolish') { BUILD[v].job = pj; const r = (D.requests||[]).find(z=>z.id===v); if (r) { r.polished = pj; r.polish = 'Requested'; } delete BUILD[v]; delete EDIT[v]; render();
-      post({action:'admin_req_edit', k:K, id:v, polished:pj, repolish:true}, '✨ Draft saved – Claude polishes it on the next run ✓'); return; }
+  else if ((act==='create' || act==='bpolish' || act==='bdraft') && BUILD[v]) { const pj = readBuilder(v), tok = BUILD[v].tok, k = (D.contractors||[]).find(z=>z.token===tok)||{};
+    if (act==='bpolish' || act==='bdraft') { const pol = act==='bpolish', r = (D.requests||[]).find(z=>z.id===v); if (r) { r.polished = pj; r.polish = pol?'Requested':'Ready'; } delete BUILD[v]; delete EDIT[v]; render();
+      post(Object.assign({action:'admin_draft', k:K, job:pj, polish:pol}, r ? {request_id:v} : {contractor_token:tok}), pol ? '✨ Saved – Claude cleans up the wording on the next run ✓' : '💾 Draft saved – it’s in Requests ✓'); if (!r) setTimeout(()=>refresh(true), 1500); return; }
     if (!pj.client.name) { toast('Add the client name'); return; }
     if (!(pj.price > 0)) { toast('Add the total price'); return; }
     if (!pj.items.length) { toast('Add at least one item'); return; }
     const withAmt = pj.items.filter(i=>i.amount!=null), sumA = withAmt.reduce((t,i)=>t+Number(i.amount||0),0);
     if (withAmt.length === pj.items.length && Math.abs(sumA - pj.price) > 0.5) { toast(`Lines add up to ${m0(sumA)}, total is ${m0(pj.price)} – fix one`); return; }
-    if (!confirm(`Create ${k.contractor}'s quote for ${pj.client.name} – ${m0(pj.price)}? It goes online right away.`)) return;
-    el.disabled = true; el.textContent = 'Creating…';
-    try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_create_quote', k:K, contractor_token:tok, request_id: v==='new'?'':v, job:pj})}); const j = await r.json();
-      if (!j.ok) { toast('Not made: '+(j.error||'try again')); el.disabled=false; el.textContent='✓ Create quote now'; return; }
+    const okE = x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(x||'').trim()), kE = (k.look||{}).email || k.email || '';
+    const sc = document.getElementById('sc_cl_'+v), sk = document.getElementById('sc_k_'+v), send = { client: !!(sc&&sc.checked&&okE(pj.client.email)), contractor: !!(sk&&sk.checked&&okE(kE)) };
+    if (sc && sc.checked && !okE(pj.client.email)) { toast('Add the client email, or untick “Email it to the client”'); return; }
+    const who = [send.client&&`${pj.client.name} (${pj.client.email})`, send.contractor&&`${k.contractor} (${kE})`].filter(Boolean);
+    if (!confirm(`Generate the final ${k.contractor} quote for ${pj.client.name} – ${m0(pj.price)}?\n\nIt goes online now${who.length?' and gets emailed to:\n• '+who.join('\n• '):' (no emails – you share the link yourself)'}.`)) return;
+    el.disabled = true; el.textContent = 'Generating…';
+    try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_create_quote', k:K, contractor_token:tok, request_id: v==='new'?'':v, job:pj, send})}); const j = await r.json();
+      if (!j.ok) { toast('Not made: '+(j.error||'try again')); el.disabled=false; el.textContent='🚀 Generate pro online quote'; return; }
       const link = site()+'q.html?q='+encodeURIComponent(j.quote_no)+'&t='+encodeURIComponent(j.token);
-      MADE.unshift({ quote_no:j.quote_no, contractor:k.contractor, client:pj.client.name, price:pj.price, link, view: link+'&src=k',
+      MADE.unshift({ quote_no:j.quote_no, contractor:k.contractor, client:pj.client.name, price:pj.price, link, view: link+'&src=k', sent: Object.values(j.sent||{}), mailErr: j.mail_error||'',
         msg:`Hi${k.contact?' '+String(k.contact).split(' ')[0]:''}! Your quote ${j.quote_no} for ${pj.client.name} (${m0(pj.price)}) is ready. Send this link to your client – they can read it and sign online:\n${link}` });
-      delete BUILD[v]; delete EDIT[v]; toast('✅ Quote '+j.quote_no+' is online'); refresh(true); render(); scrollTo({top:0,behavior:'smooth'});
-    } catch(y) { toast('No connection – not made'); el.disabled=false; el.textContent='✓ Create quote now'; } }
+      delete BUILD[v]; delete EDIT[v]; toast('✅ '+j.quote_no+' is online'+(j.sent&&Object.keys(j.sent).length?' and emailed':'')); refresh(true); render(); scrollTo({top:0,behavior:'smooth'});
+    } catch(y) { toast('No connection – not made'); el.disabled=false; el.textContent='🚀 Generate pro online quote'; } }
   else if (act==='editraw') { EDIT[v]='raw'; render(); }
   else if (act==='editquote') { EDIT[v]='quote'; render(); }
   else if (act==='cancel') { delete EDIT[v]; render(); }
@@ -330,7 +410,9 @@ document.addEventListener('click', async ev => {
   else if (act==='photos' && x) { const box = document.getElementById('media_'+v); el.textContent = 'Loading…'; box.insertAdjacentHTML('beforeend', '<div class="phs"></div>'); const g = box.querySelector('.phs');
     for (const id of x.photos) { try { const src = await getFile(id); g.insertAdjacentHTML('beforeend', `<a href="${src}" target="_blank" rel="noopener" download="${e(x.id)}.jpg"><img src="${src}" alt=""></a>`); } catch(y) {} } el.remove(); }
 });
-document.addEventListener('change', ev => { const el = ev.target; if (el.dataset.act==='pickk' && BUILD.new) { BUILD.new.job = Object.assign(readBuilder('new'), {deposit_pct: starter(null, el.value).deposit_pct, language: undefined}); BUILD.new.tok = el.value; render(); } });
+document.addEventListener('change', async ev => { const el = ev.target;
+  if (el.dataset.logo && el.files && el.files[0]) { const tok = el.dataset.logo; try { const d = await shrinkLogo(el.files[0]); const f = readLook(tok); BUILD['k_'+tok] = Object.assign(f, {logo:d});
+      render(); const pv = document.querySelector('#lk_'+CSS.escape(tok)+' .kav'); if (pv) pv.innerHTML = `<img src="${d}" alt="">`; toast('Logo ready – tap Save'); } catch(x) { toast('Could not use that picture'); } return; } if (el.dataset.pick && BUILD.new) { BUILD.new.job = Object.assign(readBuilder('new'), {deposit_pct: starter(null, el.value).deposit_pct, language: undefined}); BUILD.new.tok = el.value; render(); } });
 document.getElementById('rf').onclick = ev => { ev.currentTarget.classList.add('spin'); setTimeout(()=>ev.currentTarget.classList.remove('spin'), 800); refresh(true); };
 render();
 setInterval(() => { if (!document.hidden) refresh(false); }, 30000);
