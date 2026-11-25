@@ -73,7 +73,8 @@ audio{width:100%;margin-top:10px}
 .filter button i{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--kc);margin-right:6px}.filter button.on i{box-shadow:0 0 0 2px #fff}
 .lk{display:flex;gap:12px;align-items:center;padding:12px;border-radius:14px;background:var(--ks,#f4f6fa);border:1px solid var(--line);margin:10px 0}.lk .t{font-weight:800;font-size:17px;color:var(--kc)}.lk .d{margin-left:auto;font-weight:800;letter-spacing:2px;color:var(--kc)}
 input[type=color].tx{height:44px;padding:4px}.newbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.bld{border:2px solid var(--c,#222B45)}.bld .bh{display:flex;align-items:center;gap:10px;margin:-4px 0 6px}.bld .sw{width:14px;height:14px;border-radius:4px;background:var(--c)}
-.btn.del{color:#b42318;margin-left:auto}.sendbox{margin-top:10px;background:#f6f7fb;border-radius:12px;padding:2px 12px 10px}.hint{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.45}.made{border:2px solid #16a34a}.made .acts{margin-top:10px}select.tx{appearance:auto}
+.btn.del{color:#b42318;margin-left:auto}.askw{position:fixed;inset:0;z-index:80;background:rgba(18,23,38,.45);display:grid;place-items:center;padding:20px}.askb{background:#fff;border-radius:20px;padding:18px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}.askm{white-space:pre-wrap;font-size:15px;line-height:1.45}.askb .acts{justify-content:flex-end}
+.sendbox{margin-top:10px;background:#f6f7fb;border-radius:12px;padding:2px 12px 10px}.hint{font-size:12.5px;color:var(--mute);margin-top:8px;line-height:1.45}.made{border:2px solid #16a34a}.made .acts{margin-top:10px}select.tx{appearance:auto}
 .chk{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-top:10px}.orig{margin-top:10px;font-size:13px;color:var(--mute)}.orig summary{cursor:pointer;font-weight:600}
 #toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-150%);z-index:60;background:#111317;color:#fff;border-radius:99px;padding:10px 16px;font:600 13.5px Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .4s var(--spring);white-space:nowrap}
 #toast.on{transform:translate(-50%,0)}
@@ -144,6 +145,14 @@ async function copy(t, msg){ try { await navigator.clipboard.writeText(t); } cat
 const stTag = s => s==='Done' ? '<span class="tag t-done">Done</span>' : s==='Working' ? '<span class="tag t-work">Working on it</span>' : '<span class="tag t-new">New</span>';
 
 const kOf = tok => (D.contractors||[]).find(k=>k.token===tok) || {};
+function ask(msg, yes){   // HQ's own confirm box (browser pop-ups get blocked in some apps)
+  return new Promise(done => { const w = document.createElement('div'); w.className = 'askw';
+    w.innerHTML = `<div class="askb"><div class="askm"></div><div class="acts"><button class="btn sec" data-no>Cancel</button><button class="btn org" data-yes>${e(yes||'Yes')}</button></div></div>`;
+    w.querySelector('.askm').textContent = msg; document.body.appendChild(w);
+    const end = v => { w.remove(); done(v); };
+    w.querySelector('[data-yes]').onclick = ev => { ev.stopPropagation(); end(true); };
+    w.querySelector('[data-no]').onclick = ev => { ev.stopPropagation(); end(false); };
+    w.onclick = ev => { if (ev.target === w) end(false); }; }); }
 function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===tok); const last = qs[qs.length-1]||{}, lk = kOf(tok).look||{};
   const th = lk.theme || last.theme || {}; return { p: th.p||'#222B45', a: th.a||th.p||'#222B45', s: th.s||'#F4F6FA', doc: lk.doc_title||last.doc_title||'QUOTE' }; }
 const kav = (tok, sm) => { const k = kOf(tok), th = themeOf(tok); return `<div class="kav${sm?' sm':''}" style="--kc:${th.p}">${k.logo?`<img src="${k.logo}" alt="">`:ini(k.contractor)}</div>`; };
@@ -326,12 +335,12 @@ document.addEventListener('click', async ev => {
   else if (act==='build' && x) { BUILD[v] = { tok:x.contractor_token, job:starter(x, x.contractor_token) }; EDIT[v]='build'; render(); }
   else if (act==='newq') { const tok = ((D.contractors||[])[0]||{}).token; if (!tok) { toast('No contractors yet'); return; } BUILD.new = { tok, job:starter(null, tok) }; EDIT.new='build'; render(); document.getElementById('bd_new').scrollIntoView({behavior:'smooth'}); }
   else if (act==='qf') { QF = v; render(); }
-  else if (act==='rqdel' && x) { if (!confirm(`Delete this request from ${x.contractor}${x.client?' ('+x.client+')':''}?\n\nIt disappears from HQ and from their dashboard. Photos/recording go to Drive trash. Quotes already made from it stay.`)) return;
+  else if (act==='rqdel' && x) { if (!await ask(`Delete this request from ${x.contractor}${x.client?' ('+x.client+')':''}?\n\nIt disappears from HQ and from their dashboard. Photos/recording go to Drive trash. Quotes already made from it stay.`, '🗑 Delete')) return;
     D.requests = D.requests.filter(r=>r.id!==v); delete EDIT[v]; delete BUILD[v]; render(); post({action:'admin_req_delete', k:K, id:v}, '🗑 Request deleted ✓'); }
   else if (act==='sendq') { const q = (D.quotes||[]).find(z=>z.quote_no===v); if (!q) return; const k = kOf(q.contractor_token), kE = (k.look||{}).email || k.email || '', cE = (q.client||{}).email || '';
     const okE = x => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(String(x||'').trim()); const send = { client: okE(cE), contractor: okE(kE) };
     if (!send.client && !send.contractor) { toast('No client or contractor email on this quote – tap ✏️ Edit to add one'); return; }
-    if (!confirm(`Email ${v} (${m0(q.price)}) to:\n• ${[send.client&&(q.client.name+' ('+cE+')'), send.contractor&&(k.contractor+' ('+kE+')')].filter(Boolean).join('\n• ')}?`)) return;
+    if (!await ask(`Email ${v} (${m0(q.price)}) to:\n• ${[send.client&&(q.client.name+' ('+cE+')'), send.contractor&&(k.contractor+' ('+kE+')')].filter(Boolean).join('\n• ')}?`, '📧 Send')) return;
     el.textContent = 'Sending…'; try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_send_quote', k:K, quote_no:v, send})}); const j = await r.json();
       toast(j.ok ? '📧 Emailed to '+Object.values(j.sent||{}).join(' and ') : 'Not sent: '+(j.error||'try again')); refresh(true); } catch(y) { toast('No connection – not sent'); } }
   else if (act==='kquotes') { QF = v; TAB = 1; render(); scrollTo({top:0,behavior:'smooth'}); }
@@ -342,7 +351,7 @@ document.addEventListener('click', async ev => {
     if (!pj.client.name) { toast('Add the client name'); return; } if (!(pj.price > 0)) { toast('Add the total price'); return; } if (!pj.items.length) { toast('Add at least one item'); return; }
     const wa = pj.items.filter(i=>i.amount!=null), sa = wa.reduce((t,i)=>t+Number(i.amount||0),0);
     if (wa.length === pj.items.length && Math.abs(sa - pj.price) > 0.5) { toast(`Lines add up to ${m0(sa)}, total is ${m0(pj.price)} – fix one`); return; }
-    if (q.status==='Accepted' && !confirm(`${(q.client||{}).name} already signed ${qno}. Save the changes anyway?`)) return;
+    if (q.status==='Accepted' && !await ask(`${(q.client||{}).name} already signed ${qno}. Save the changes anyway?`)) return;
     el.disabled = true; el.textContent = 'Saving…';
     try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_update_quote', k:K, quote_no:qno, job:pj})}); const j = await r.json();
       if (!j.ok) { toast('Not saved: '+(j.error||'try again')); el.disabled=false; el.textContent='💾 Save changes'; return; }
@@ -373,7 +382,7 @@ document.addEventListener('click', async ev => {
     const sc = document.getElementById('sc_cl_'+v), sk = document.getElementById('sc_k_'+v), send = { client: !!(sc&&sc.checked&&okE(pj.client.email)), contractor: !!(sk&&sk.checked&&okE(kE)) };
     if (sc && sc.checked && !okE(pj.client.email)) { toast('Add the client email, or untick “Email it to the client”'); return; }
     const who = [send.client&&`${pj.client.name} (${pj.client.email})`, send.contractor&&`${k.contractor} (${kE})`].filter(Boolean);
-    if (!confirm(`Generate the final ${k.contractor} quote for ${pj.client.name} – ${m0(pj.price)}?\n\nIt goes online now${who.length?' and gets emailed to:\n• '+who.join('\n• '):' (no emails – you share the link yourself)'}.`)) return;
+    if (!await ask(`Generate the final ${k.contractor} quote for ${pj.client.name} – ${m0(pj.price)}?\n\nIt goes online now${who.length?' and gets emailed to:\n• '+who.join('\n• '):' (no emails – you share the link yourself)'}.`, '🚀 Generate')) return;
     el.disabled = true; el.textContent = 'Generating…';
     try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_create_quote', k:K, contractor_token:tok, request_id: v==='new'?'':v, job:pj, send})}); const j = await r.json();
       if (!j.ok) { toast('Not made: '+(j.error||'try again')); el.disabled=false; el.textContent='🚀 Generate pro online quote'; return; }
@@ -400,7 +409,7 @@ document.addEventListener('click', async ev => {
     if (!pj.items.length) { toast('Add at least one item'); return; }
     if (pj.items.length === 1 && pj.items[0].amount != null && pj.price !== '') pj.items[0].amount = pj.price;   // one line: keep it equal to the total
     const withAmt = pj.items.filter(i=>i.amount!=null), sumA = withAmt.reduce((t,i)=>t+Number(i.amount||0),0);
-    if (withAmt.length === pj.items.length && pj.items.length > 1 && pj.price !== '' && Math.abs(sumA - pj.price) > 0.5 && !confirm(`The line amounts add up to ${m0(sumA)} but the total is ${m0(pj.price)}. Save anyway? (It won't be built until they match.)`)) return;
+    if (withAmt.length === pj.items.length && pj.items.length > 1 && pj.price !== '' && Math.abs(sumA - pj.price) > 0.5 && !await ask(`The line amounts add up to ${m0(sumA)} but the total is ${m0(pj.price)}. Save anyway? (It won't be built until they match.)`)) return;
     x.polished = pj; x.polish='Ready'; delete EDIT[v]; render(); post({action:'admin_req_edit', k:K, id:v, polished:pj}, 'Quote saved ✓'); }
   else if (act==='polish' && x) { x.polish='Requested'; render(); post({action:'admin_req_edit', k:K, id:v, repolish:true}, '✨ Polishing – ready on the next run ✓'); }
   else if (act==='repolish' && x) { x.polish='Requested'; render(); post({action:'admin_req_edit', k:K, id:v, repolish:true}, 'Will be re-polished on the next run ✓'); }
