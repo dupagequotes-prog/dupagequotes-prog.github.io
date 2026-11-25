@@ -128,6 +128,15 @@ body:not(.ready) .rise,body:not(.ready) .panel.on{animation-play-state:paused}
 .vhint{font-size:12.5px;color:var(--mute);margin:8px 2px 0}.vstat{font-size:12.5px;font-weight:700;color:#dc2626;margin:6px 2px 0;min-height:16px}
 .vbox{background:#fff;border:1px dashed var(--g);border-radius:14px;padding:10px 12px;margin-top:8px}
 .vbox label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g)}
+.phs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}.phs div{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#ddd}
+.phs img{width:100%;height:100%;object-fit:cover}.phs button{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:14px;line-height:1;cursor:pointer}
+.addph{width:100%;margin-top:12px;border:1.5px dashed var(--g);background:#fff;color:var(--g);border-radius:16px;padding:13px;font:700 15px Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.recok{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;font-weight:600;color:var(--g)}.recok audio{height:32px;flex:1;min-width:0}.recok button{border:0;background:none;color:#b42318;font:600 12.5px Inter,sans-serif;cursor:pointer}
+.okbox{text-align:center;padding:26px 10px 10px}.okbox .big{width:74px;height:74px;border-radius:50%;background:#16a34a;color:#fff;display:grid;place-items:center;margin:0 auto 14px;font-size:38px;animation:pop .5s var(--spring) both}
+@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}.okbox h3{margin:0 0 6px;font-size:20px}.okbox p{margin:0 0 18px;color:var(--mute);font-size:14px}
+.sferr{color:#b42318;font-size:13px;font-weight:600;margin-top:8px;min-height:16px}
+.rq{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}.ch+.rq{border-top:0}
+.rq .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--tint);font-size:17px;flex:none}
 .vbox textarea{width:100%;border:0;outline:none;resize:vertical;font:500 15px Inter,-apple-system,sans-serif;min-height:70px;margin-top:4px;background:transparent}
 .bdot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 0 2px var(--g)}
 .iconbtn{position:relative}
@@ -337,10 +346,10 @@ const TX = {
   sdSaved:'Start date saved ✓', dlSaved:'Deadline saved ✓', depMarked:'Deposit marked paid ✓', depUnmarked:'Deposit marked unpaid', notesSaved:'Notes saved ✓',
   evSent:'Quote sent to <b>{0}</b>', evOpened:'<b>{0}</b> opened the quote', views:'{0} views · ', evAcc:'<b>{0}</b> accepted', evDep:'Deposit marked paid · <b>{0}</b>',
   activity:'Activity', nothingYet:'Nothing yet.', search:'Search', searchPh:'Client, address, job or quote #', noMatch:'No matches.',
-  reqTitle:'Request a new estimate', reqFree:'Free (one of your first 2)', reqIntro:'Fill in what you know. It opens a ready-to-send email to DuPage Quotes, and your branded quote comes back in about 5 minutes.',
-  rName:'Client name', rNamePh:'e.g. Maria Lopez', rAddr:'Job address', rAddrPh:'Street, city', rEmail:'Client email (optional)', rJob:'The job – what you’ll do', rJobPh:'e.g. Replace 2 rotted deck boards, re-stain…', rPrice:'Your price', rSend:'Open email to DuPage Quotes',
+  reqTitle:'Request a new estimate', reqFree:'Free (one of your first 2)', reqIntro:'Talk or type what you know, add photos if you like, and tap Send. Your branded quote comes back in about 5 minutes.',
+  rName:'Client name', rNamePh:'e.g. Maria Lopez', rAddr:'Job address', rAddrPh:'Street, city', rEmail:'Client email (optional)', rJob:'The job – what you’ll do', rJobPh:'e.g. Replace 2 rotted deck boards, re-stain…', rPrice:'Your price', rSend:'Send request',
   msgCopied:'Message copied – paste it in a text ✓', crewUpd:'Crew updated ✓', crewName:'Crew member name', added:'Added {0} ✓',
-  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', langName:'English', langTitle:'Language', voiceBtn:'Tap and talk about the job', voiceStop:'Stop – I’m done talking', voiceHint:'Say the client’s name, the address, what you’ll do and your price. It writes it all down for you.', voiceLbl:'Your voice note (written out)', voicePh:'Your words show up here…', voiceOn:'Listening… talk now', micKb:'Tap the 🎤 on your keyboard and talk – it types for you.', micDenied:'Allow the microphone to use voice (phone Settings → Safari → Microphone).', micErr:'Voice stopped – tap the button to keep going.', orType:'Or type it:'},
+  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', langName:'English', langTitle:'Language', addPhotos:'Add photos of the job', photosN:'{0} photo(s) added', removeP:'Remove', recSaved:'Voice recording saved ({0})', recDel:'Delete recording', sending:'Sending…', sentT:'Request sent!', sentS:'David has it. Your quote comes back in about 5 minutes – you’ll see it here.', done:'Done', sendFail:'Couldn’t send: {0}', emailInstead:'Send by email instead', reqs:'Your quote requests', stNew:'Received', stWorking:'Being made', stDone:'Done', needSomething:'Talk, type or add a photo first.', photoBig:'Photo skipped (could not read it)', voiceBtn:'Tap and talk about the job', voiceStop:'Stop – I’m done talking', voiceHint:'Say the client’s name, the address, what you’ll do and your price. It writes it all down for you.', voiceLbl:'Your voice note (written out)', voicePh:'Your words show up here…', voiceOn:'Listening… talk now', micKb:'Tap the 🎤 on your keyboard and talk – it types for you.', micDenied:'Allow the microphone to use voice (phone Settings → Safari → Microphone).', micErr:'Voice stopped – tap the button to keep going.', orType:'Or type it:'},
  es:{live:'En vivo · se actualiza solo', morning:'Buenos días', afternoon:'Buenas tardes', evening:'Buenas noches', reveal:'Cotizaciones y agenda',
   foot:'Se actualiza solo cuando se hace o se acepta una cotización', fab:'Pedir nueva cotización', free:'gratis', all:'Todos',
   setDate:'PONER<br>FECHA', today:'Hoy', tomorrow:'Mañana', started:'Empezado', inDays:'En {0} días', depPaid:'✓ Depósito {0} pagado', depDue:'Depósito {0} pendiente', due:'Entrega {0}',
@@ -363,10 +372,10 @@ const TX = {
   sdSaved:'Fecha de inicio guardada ✓', dlSaved:'Fecha de entrega guardada ✓', depMarked:'Depósito marcado pagado ✓', depUnmarked:'Depósito marcado sin pagar', notesSaved:'Notas guardadas ✓',
   evSent:'Cotización enviada a <b>{0}</b>', evOpened:'<b>{0}</b> abrió la cotización', views:'{0} vistas · ', evAcc:'<b>{0}</b> aceptó', evDep:'Depósito marcado pagado · <b>{0}</b>',
   activity:'Actividad', nothingYet:'Nada todavía.', search:'Buscar', searchPh:'Cliente, dirección, trabajo o número', noMatch:'Sin resultados.',
-  reqTitle:'Pedir una nueva cotización', reqFree:'Gratis (una de sus primeras 2)', reqIntro:'Llene lo que sepa. Se abre un correo listo para mandar a DuPage Quotes y su cotización con su marca llega en unos 5 minutos.',
-  rName:'Nombre del cliente', rNamePh:'ej. María López', rAddr:'Dirección del trabajo', rAddrPh:'Calle, ciudad', rEmail:'Correo del cliente (opcional)', rJob:'El trabajo – qué va a hacer', rJobPh:'ej. Cambiar 2 tablas podridas de la terraza, volver a teñir…', rPrice:'Su precio', rSend:'Abrir correo a DuPage Quotes',
+  reqTitle:'Pedir una nueva cotización', reqFree:'Gratis (una de sus primeras 2)', reqIntro:'Hable o escriba lo que sepa, agregue fotos si quiere y toque Enviar. Su cotización con su marca llega en unos 5 minutos.',
+  rName:'Nombre del cliente', rNamePh:'ej. María López', rAddr:'Dirección del trabajo', rAddrPh:'Calle, ciudad', rEmail:'Correo del cliente (opcional)', rJob:'El trabajo – qué va a hacer', rJobPh:'ej. Cambiar 2 tablas podridas de la terraza, volver a teñir…', rPrice:'Su precio', rSend:'Enviar pedido',
   msgCopied:'Mensaje copiado – péguelo en un texto ✓', crewUpd:'Equipo actualizado ✓', crewName:'Nombre del trabajador', added:'{0} agregado ✓',
-  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', langName:'Español', langTitle:'Idioma', voiceBtn:'Toque y hable del trabajo', voiceStop:'Parar – ya terminé', voiceHint:'Diga el nombre del cliente, la dirección, qué va a hacer y su precio. Todo se escribe solo.', voiceLbl:'Su mensaje de voz (escrito)', voicePh:'Sus palabras salen aquí…', voiceOn:'Escuchando… hable ahora', micKb:'Toque el 🎤 del teclado y hable – escribe por usted.', micDenied:'Permita el micrófono para usar la voz (Ajustes → Safari → Micrófono).', micErr:'La voz se detuvo – toque el botón para seguir.', orType:'O escríbalo:'},
+  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', langName:'Español', langTitle:'Idioma', addPhotos:'Agregar fotos del trabajo', photosN:'{0} foto(s) agregada(s)', removeP:'Quitar', recSaved:'Grabación de voz guardada ({0})', recDel:'Borrar grabación', sending:'Enviando…', sentT:'¡Pedido enviado!', sentS:'David ya lo tiene. Su cotización llega en unos 5 minutos – la verá aquí.', done:'Listo', sendFail:'No se pudo enviar: {0}', emailInstead:'Mandar por correo', reqs:'Sus pedidos de cotización', stNew:'Recibido', stWorking:'En proceso', stDone:'Listo', needSomething:'Primero hable, escriba o agregue una foto.', photoBig:'Foto omitida (no se pudo leer)', voiceBtn:'Toque y hable del trabajo', voiceStop:'Parar – ya terminé', voiceHint:'Diga el nombre del cliente, la dirección, qué va a hacer y su precio. Todo se escribe solo.', voiceLbl:'Su mensaje de voz (escrito)', voicePh:'Sus palabras salen aquí…', voiceOn:'Escuchando… hable ahora', micKb:'Toque el 🎤 del teclado y hable – escribe por usted.', micDenied:'Permita el micrófono para usar la voz (Ajustes → Safari → Micrófono).', micErr:'La voz se detuvo – toque el botón para seguir.', orType:'O escríbalo:'},
  it:{live:'In diretta · si aggiorna da solo', morning:'Buongiorno', afternoon:'Buon pomeriggio', evening:'Buonasera', reveal:'Preventivi e agenda',
   foot:'Si aggiorna da solo quando un preventivo viene fatto o accettato', fab:'Chiedi un nuovo preventivo', free:'gratis', all:'Tutti',
   setDate:'METTI<br>DATA', today:'Oggi', tomorrow:'Domani', started:'Iniziato', inDays:'Tra {0} giorni', depPaid:'✓ Acconto {0} pagato', depDue:'Acconto {0} da pagare', due:'Consegna {0}',
@@ -389,10 +398,10 @@ const TX = {
   sdSaved:'Data di inizio salvata ✓', dlSaved:'Scadenza salvata ✓', depMarked:'Acconto segnato pagato ✓', depUnmarked:'Acconto segnato non pagato', notesSaved:'Note salvate ✓',
   evSent:'Preventivo inviato a <b>{0}</b>', evOpened:'<b>{0}</b> ha aperto il preventivo', views:'{0} visite · ', evAcc:'<b>{0}</b> ha accettato', evDep:'Acconto segnato pagato · <b>{0}</b>',
   activity:'Attività', nothingYet:'Ancora niente.', search:'Cerca', searchPh:'Cliente, indirizzo, lavoro o numero', noMatch:'Nessun risultato.',
-  reqTitle:'Chiedi un nuovo preventivo', reqFree:'Gratis (uno dei tuoi primi 2)', reqIntro:'Scrivi o di’ a voce quello che sai. Si apre un’email pronta per DuPage Quotes e il tuo preventivo col tuo marchio arriva in circa 5 minuti.',
-  rName:'Nome del cliente', rNamePh:'es. Maria Rossi', rAddr:'Indirizzo del lavoro', rAddrPh:'Via, città', rEmail:'Email del cliente (facoltativa)', rJob:'Il lavoro – cosa farai', rJobPh:'es. Cambiare 2 tavole marce del deck, riverniciare…', rPrice:'Il tuo prezzo', rSend:'Apri email a DuPage Quotes',
+  reqTitle:'Chiedi un nuovo preventivo', reqFree:'Gratis (uno dei tuoi primi 2)', reqIntro:'Parla o scrivi quello che sai, aggiungi foto se vuoi e tocca Invia. Il tuo preventivo col tuo marchio arriva in circa 5 minuti.',
+  rName:'Nome del cliente', rNamePh:'es. Maria Rossi', rAddr:'Indirizzo del lavoro', rAddrPh:'Via, città', rEmail:'Email del cliente (facoltativa)', rJob:'Il lavoro – cosa farai', rJobPh:'es. Cambiare 2 tavole marce del deck, riverniciare…', rPrice:'Il tuo prezzo', rSend:'Invia richiesta',
   msgCopied:'Messaggio copiato – incollalo in un SMS ✓', crewUpd:'Squadra aggiornata ✓', crewName:'Nome del lavoratore', added:'{0} aggiunto ✓',
-  justNow:'proprio ora', mAgo:'{0} min fa', hAgo:'{0} h fa', dAgo:'{0} g fa', langName:'Italiano', langTitle:'Lingua',
+  justNow:'proprio ora', mAgo:'{0} min fa', hAgo:'{0} h fa', dAgo:'{0} g fa', langName:'Italiano', langTitle:'Lingua', addPhotos:'Aggiungi foto del lavoro', photosN:'{0} foto aggiunte', removeP:'Togli', recSaved:'Registrazione vocale salvata ({0})', recDel:'Elimina registrazione', sending:'Invio…', sentT:'Richiesta inviata!', sentS:'David l’ha ricevuta. Il tuo preventivo arriva in circa 5 minuti – lo vedrai qui.', done:'Fatto', sendFail:'Invio non riuscito: {0}', emailInstead:'Invia per email', reqs:'Le tue richieste di preventivo', stNew:'Ricevuta', stWorking:'In lavorazione', stDone:'Fatta', needSomething:'Prima parla, scrivi o aggiungi una foto.', photoBig:'Foto saltata (non leggibile)',
   voiceBtn:'Tocca e parla del lavoro', voiceStop:'Stop – ho finito', voiceHint:'Di’ il nome del cliente, l’indirizzo, cosa farai e il tuo prezzo. Scrive tutto da solo.', voiceLbl:'Il tuo messaggio vocale (scritto)', voicePh:'Le tue parole appaiono qui…', voiceOn:'Ti ascolto… parla ora', micKb:'Tocca il 🎤 sulla tastiera e parla – scrive per te.', micDenied:'Consenti il microfono per usare la voce (Impostazioni → Safari → Microfono).', micErr:'La voce si è fermata – tocca il pulsante per continuare.', orType:'Oppure scrivilo:'} };
 const lastLang = ((D.quotes||[]).slice(-1)[0]||{}).language;
 let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : /ital/i.test(lastLang||D.language||'') ? 'it' : 'en');
@@ -569,6 +578,8 @@ function render(){
    <div class="panel ${S.tab===1?'on':''}" id="p-wait"><div class="card"><div class="ch"><h2>${t('waiting')}</h2><span>${m0(sum(waiting,q=>q.price))}</span></div>
     ${waiting.length?waiting.sort((a,b)=>a.iso.localeCompare(b.iso)).map(wCard).join(''):`<div class="empty"><b>👍</b>${t('nothingWait')}</div>`}
    </div></div>
+   ${(D.requests||[]).length?`<div class="card rise" style="--i:6;--d0:120ms;margin-top:14px"><div class="ch"><h2>${t('reqs')}</h2><span>${(D.requests||[]).length}</span></div>
+    ${(D.requests||[]).slice().reverse().slice(0,5).map(x=>`<div class="rq"><div class="ic">${x.status==='Done'?'✅':x.status==='Working'?'🛠️':'📨'}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e(x.client||x.job||'—')}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${fd(new Date(x.created),{month:'short',day:'numeric'})} · ${ago(x.created)}</div></div><span class="tag ${x.status==='Done'?'ok':x.status==='Working'?'br':'wait'}">${t(x.status==='Done'?'stDone':x.status==='Working'?'stWorking':'stNew')}</span></div>`).join('')}</div>`:''}
    ${deadl.length?`<div class="card rise" style="--i:6;--d0:120ms;margin-top:14px"><div class="ch"><h2>${t('deadlines')}</h2><span>${t('nextN',deadl.length)}</span></div>
     ${deadl.map(x=>`<div class="dl" data-act="job" data-q="${e(x.q.quote_no)}"><div class="ic">${x.k==='dl'?I.flag:I.cal}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600">${e(c(x.q).name)}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${x.k==='dl'?t('deadline'):t('start')} · ${fd(dnum(x.d),{weekday:'short',month:'short',day:'numeric'})}</div></div><span class="tag br">${dTo(x.d)===0?t('today'):t('inD',dTo(x.d))}</span></div>`).join('')}</div>`:''}
    <div class="card rise" style="--i:7;--d0:120ms;margin-top:14px"><div class="ch"><h2>${(m=>m.charAt(0).toUpperCase()+m.slice(1))(t('soFar',fd(new Date(today+'T12:00:00'),{month:'long'})))}</h2><span>${t('last6')}</span></div>
@@ -658,18 +669,20 @@ function searchSheet(){
 }
 const MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>';
 let REC = null;
-function stopVoice(){ if (REC) { try { REC.stop(); } catch(x){} } }
+function stopVoice(){ if (REC) { try { REC.stop(); } catch(x){} } if (typeof stopRecording === 'function') stopRecording(); }
 function toggleVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const box = document.getElementById('r6'), btn = document.getElementById('micb'), lab = document.getElementById('micl'), st = document.getElementById('vstat');
-  if (!SR) { box.focus(); toast(t('micKb')); st.textContent = t('micKb'); return; }
+  if (!SR) { if (MREC) { stopRecording(); btn.classList.remove('rec'); lab.textContent = t('voiceBtn'); st.textContent=''; return; }
+    startRecording(); btn.classList.add('rec'); lab.textContent = t('voiceStop'); box.focus(); st.textContent = t('micKb'); return; }
   if (REC) { stopVoice(); return; }
+  startRecording();
   const rec = new SR(); REC = rec;
   rec.lang = ({en:'en-US', es:'es-US', it:'it-IT'})[LANG] || 'en-US'; rec.continuous = true; rec.interimResults = true;
   const base = box.value.trim() ? box.value.trim() + ' ' : '';
   rec.onresult = ev => { let fin = '', mid = ''; for (const res of ev.results) { if (res.isFinal) fin += res[0].transcript.trim() + ' '; else mid += res[0].transcript; } box.value = base + fin + mid; };
   rec.onerror = ev => { st.textContent = (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') ? t('micDenied') : (ev.error === 'no-speech' ? '' : t('micErr')); };
-  rec.onend = () => { REC = null; btn.classList.remove('rec'); lab.textContent = t('voiceBtn'); if (st.textContent === t('voiceOn')) st.textContent = ''; };
+  rec.onend = () => { REC = null; stopRecording(); btn.classList.remove('rec'); lab.textContent = t('voiceBtn'); if (st.textContent === t('voiceOn')) st.textContent = ''; };
   try { rec.start(); } catch(x) { REC = null; box.focus(); st.textContent = t('micKb'); return; }
   btn.classList.add('rec'); lab.textContent = t('voiceStop'); st.textContent = t('voiceOn'); haptic();
 }
@@ -684,13 +697,62 @@ function reqSheet(){
    <div class="vstat" id="vstat"></div>
    <div class="vhint">${t('voiceHint')}</div>
    <div class="vbox"><label for="r6">${t('voiceLbl')}</label><textarea id="r6" rows="3" placeholder="${t('voicePh')}"></textarea></div>
+   <div id="recbox"></div>
+   <button class="addph" data-act="addph">📷 <span>${t('addPhotos')}</span></button>
+   <input type="file" id="phin" accept="image/*" multiple hidden>
+   <div class="phs" id="phs"></div>
    <div class="fl" style="margin-top:16px;font-size:13px">${t('orType')}</div>
    <label class="fl">${t('rName')}</label><input class="tx" id="r1" placeholder="${t('rNamePh')}">
    <label class="fl">${t('rAddr')}</label><input class="tx" id="r2" placeholder="${t('rAddrPh')}">
    <label class="fl">${t('rEmail')}</label><input class="tx" id="r3" placeholder="client@email.com" inputmode="email">
    <label class="fl">${t('rJob')}</label><textarea class="nt" id="r4" rows="3" placeholder="${t('rJobPh')}"></textarea>
    <label class="fl">${t('rPrice')}</label><input class="tx" id="r5" placeholder="$" inputmode="decimal">
-   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" data-act="reqsend">${t('rSend')}</button></div>`);
+   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" id="sendb" data-act="reqsend">${t('rSend')}</button></div>
+   <div class="sferr" id="sferr"></div>`);
+  PH = []; AUD = null; renderPhotos(); renderRec();
+  document.getElementById('phin').onchange = async ev => { for (const f of [...ev.target.files].slice(0, 8 - PH.length)) { try { PH.push(await shrink(f)); } catch(x) { toast(t('photoBig')); } } ev.target.value = ''; renderPhotos(); };
+}
+/* ---- photos (shrunk on the phone before sending) + the real voice recording ---- */
+let PH = [], AUD = null, MREC = null, MCH = [], MT0 = 0;
+function shrink(file){ return new Promise((ok, bad) => { const img = new Image(), u = URL.createObjectURL(file);
+  img.onload = () => { const mx = 1600, k = Math.min(1, mx / Math.max(img.width, img.height)); const c = document.createElement('canvas'); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); const d = c.toDataURL('image/jpeg', .8); ok({ type:'image/jpeg', data: d.split(',')[1], url: d }); };
+  img.onerror = () => { URL.revokeObjectURL(u); bad(); }; img.src = u; }); }
+function renderPhotos(){ const el = document.getElementById('phs'); if (!el) return; el.innerHTML = PH.map((p,i)=>`<div><img src="${p.url}" alt=""><button data-act="rmph" data-v="${i}" aria-label="${t('removeP')}">×</button></div>`).join(''); }
+function renderRec(){ const el = document.getElementById('recbox'); if (!el) return; if (!AUD) { el.innerHTML = ''; return; }
+  const sec = Math.round(AUD.secs||0), dur = Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');
+  el.innerHTML = `<div class="recok">🎙️ <span>${t('recSaved', dur)}</span></div><div class="recok"><audio controls src="${AUD.url}"></audio><button data-act="rmrec">${t('recDel')}</button></div>`; }
+async function startRecording(){
+  if (!navigator.mediaDevices || !window.MediaRecorder) return;
+  try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const type = ['audio/mp4','audio/webm;codecs=opus','audio/webm'].find(x => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(x)) || '';
+    MREC = new MediaRecorder(stream, type ? { mimeType: type } : undefined); MCH = []; MT0 = Date.now();
+    MREC.ondataavailable = ev => { if (ev.data && ev.data.size) MCH.push(ev.data); };
+    MREC.onstop = () => { stream.getTracks().forEach(tr => tr.stop()); const blob = new Blob(MCH, { type: MREC.mimeType || 'audio/webm' });
+      if (blob.size > 2000) { const fr = new FileReader(); fr.onload = () => { AUD = { type: blob.type, data: String(fr.result).split(',')[1], url: URL.createObjectURL(blob), secs: (Date.now()-MT0)/1000 }; renderRec(); }; fr.readAsDataURL(blob); }
+      MREC = null; };
+    MREC.start(1000);
+  } catch(x) { MREC = null; }
+}
+function stopRecording(){ if (MREC && MREC.state !== 'inactive') { try { MREC.stop(); } catch(x){} } }
+async function sendRequest(){
+  stopVoice(); stopRecording(); await new Promise(res => setTimeout(res, 400));
+  const v = id => document.getElementById(id).value.trim(), er = document.getElementById('sferr'), b = document.getElementById('sendb');
+  const fields = { client: v('r1'), address: v('r2'), email: v('r3'), job: v('r4'), price: v('r5'), voice_text: v('r6'), lang: LANG };
+  if (!Object.values(fields).some(x => x && x !== LANG) && !PH.length && !AUD) { er.textContent = t('needSomething'); return; }
+  if (typeof API === 'undefined') { er.textContent = t('preview'); return; }
+  b.disabled = true; b.textContent = t('sending'); er.textContent = '';
+  try {
+    const r = await fetch(API, { method:'POST', credentials:'omit', headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({ action:'request', d:TOK, fields, photos: PH.map(p => ({ type:p.type, data:p.data })), audio: AUD ? { type:AUD.type, data:AUD.data } : null }) });
+    const j = await r.json(); if (!j.ok) throw new Error(j.error || 'try again');
+    (D.requests = D.requests || []).push({ id: j.id, created: new Date().toISOString(), client: fields.client, job: (fields.job || fields.voice_text).slice(0,160), status:'New' });
+    haptic(); PH = []; AUD = null; render();
+    document.querySelector('#sheet').innerHTML = `<div class="grab"></div><div class="okbox"><div class="big">✓</div><h3>${t('sentT')}</h3><p>${t('sentS')}</p><button class="btn pri" style="width:100%" data-act="close">${t('done')}</button></div>`;
+  } catch(x) {
+    b.disabled = false; b.textContent = t('rSend');
+    er.innerHTML = e(t('sendFail', x.message || t('noConn'))) + ` · <a href="#" data-act="reqmail" style="color:var(--g)">${t('emailInstead')}</a>`;
+  }
 }
 
 /* ---------- actions ---------- */
@@ -734,7 +796,11 @@ document.addEventListener('click', ev => {
   else if (act==='bell') bellSheet();
   else if (act==='search') searchSheet();
   else if (act==='req') reqSheet();
-  else if (act==='reqsend') { stopVoice(); const v = id => document.getElementById(id).value.trim();
+  else if (act==='reqsend') sendRequest();
+  else if (act==='addph') document.getElementById('phin').click();
+  else if (act==='rmph') { PH.splice(+el.dataset.v, 1); renderPhotos(); }
+  else if (act==='rmrec') { AUD = null; renderRec(); }
+  else if (act==='reqmail') { stopVoice(); const v = id => document.getElementById(id).value.trim();
     const body = `New job for DuPage Quotes\n\nContractor: ${D.contractor}\nClient: ${v('r1')}\nAddress: ${v('r2')}\nClient email: ${v('r3')}\nJob: ${v('r4')}\nPrice: ${v('r5')}\n`
       + (v('r6') ? `\nVoice note (written out by the dashboard, ${({en:'English',es:'Spanish',it:'Italian'})[LANG]}):\n${v('r6')}\n` : '');
     location.href = `mailto:dupagequotes@gmail.com?subject=${encodeURIComponent('New quote – '+D.contractor+(v('r1')?' – '+v('r1'):''))}&body=${encodeURIComponent(body)}`; }
