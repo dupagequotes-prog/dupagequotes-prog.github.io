@@ -296,7 +296,7 @@ textarea.nt:focus,input.tx:focus{border-color:var(--g);box-shadow:0 0 0 4px colo
 </div></section>
 <main id="main"></main>
 <footer><span id="foott">Updated automatically when a quote is made or accepted</span><br>Powered by <b>DuPage Quotes</b> · dupagequotes@gmail.com</footer>
-<button id="fab" data-act="req"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="fabt">Request new estimate</span> <small id="fabp"></small></button>
+<button id="fab" data-act="req"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="fabt">Request new estimate</span></button>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
 <div id="toast"></div>
@@ -585,7 +585,7 @@ function render(){
     r.onchange = () => { const q=Q.find(x=>x.quote_no===r.dataset.q); haptic(); save(q,{progress:+r.value}, r.value==100?t('done100'):t('progSaved')); }; });
   if (document.body.classList.contains('ready')) requestAnimationFrame(()=>{ const b=document.getElementById('bars'); if(b) b.classList.add('go'); });
   renderWeek();
-  const fee = Q.length < 2 ? t('free') : '$7.99'; document.getElementById('fabp').textContent = '· ' + fee;
+  
   const seen = localStorage.getItem('seen_'+TOK) || ''; document.getElementById('bdot').hidden = !events().some(ev=>ev.t>seen);
 }
 
@@ -678,9 +678,8 @@ function langSheet(){
   openSheet(t('langTitle'), L.map(([k,f,n]) => `<button class="lopt${LANG===k?' on':''}" data-act="setlang" data-v="${k}"><span class="fl2">${f}</span>${n}${LANG===k?'<span class="ck">✓</span>':''}</button>`).join(''));
 }
 function reqSheet(){
-  const fee = Q.length < 2 ? t('reqFree') : '$7.99';
   openSheet(t('reqTitle'), `
-   <div style="font-size:13.5px;color:var(--mute);margin:-4px 2px 4px">${t('reqIntro')} <b style="color:var(--ink)">${fee}</b></div>
+   <div style="font-size:13.5px;color:var(--mute);margin:-4px 2px 4px">${t('reqIntro')}</div>
    <button class="mic" id="micb" data-act="mic">${MIC}<span id="micl">${t('voiceBtn')}</span></button>
    <div class="vstat" id="vstat"></div>
    <div class="vhint">${t('voiceHint')}</div>
