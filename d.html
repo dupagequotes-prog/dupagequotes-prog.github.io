@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+*{box-sizing:border-box}
+:root{--g:#1F4D3A;--a:#C8892B;--mute:#5d6862;--line:#e2e7e4}
+body{margin:0;background:#F1F4F2;font-family:-apple-system,Helvetica,Arial,sans-serif;color:#1f2723;font-size:15px;line-height:1.4}
+header{background:var(--g);color:#fff;padding:18px 18px 54px}
+.wrap{max-width:980px;margin:0 auto}
+.brand{font-size:13px;font-weight:700;letter-spacing:.05em;opacity:.85}.brand span{color:var(--a)}
+h1{margin:6px 0 2px;font-size:24px}.sub{opacity:.8;font-size:14px}
+main{max-width:980px;margin:-38px auto 40px;padding:0 14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:#fff;border-radius:12px;padding:12px 14px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.kpi span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);font-weight:700}
+.kpi b{display:block;font-size:24px;color:var(--g);margin-top:2px}.kpi small{color:var(--mute);font-size:12px}
+.cols{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;margin-top:14px}
+.card{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:16px;color:var(--g);display:flex;justify-content:space-between;align-items:center}
+.card h2 em{font-style:normal;font-size:12px;background:var(--a);color:#fff;border-radius:10px;padding:1px 8px}
+.job{display:grid;grid-template-columns:58px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.job:first-of-type{border-top:0}
+.day{background:#EAF2EE;border-radius:10px;text-align:center;padding:6px 0;color:var(--g)}
+.day small{display:block;font-size:11px;font-weight:700;text-transform:uppercase}.day b{font-size:22px;line-height:1}
+.day.nd{background:#F4F4F4;color:#888;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.job p{margin:0}.job .t{font-weight:700}.job .m{font-size:13px;color:var(--mute)}
+.row{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px;align-items:center}
+.row:first-of-type{border-top:0}
+a.v{color:var(--g);font-weight:700;text-decoration:none;font-size:13px;white-space:nowrap}
+.chip{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
+.ok{background:#D8F0DF;color:#1e6b33}.wait{background:#FFF1D6;color:#8a5a00}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);padding:6px 6px;border-bottom:2px solid var(--line)}
+td{padding:8px 6px;border-bottom:1px solid var(--line)}
+.empty{color:var(--mute);font-size:14px;padding:6px 0}
+.month div{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--line);font-size:14px}.month div:first-child{border-top:0}
+.month .bill{font-weight:800;color:var(--g);font-size:16px}
+footer{text-align:center;font-size:12px;color:#8a968f;margin-bottom:30px}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}.hide-sm{display:none}}
+</style></head>
+<body>
+<header><div class="wrap"><div class="brand">DUPAGE <span>QUOTES</span></div><h1 id="hi"></h1><div class="sub" id="sub"></div></div></header>
+<main id="main"></main>
+<footer>Updated automatically every time a quote is made or accepted · Questions? dupagequotes@gmail.com</footer>
+<script>
+const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
+const P = new URLSearchParams(location.search);
+async function api(params){ const r = await fetch(API + '?' + new URLSearchParams(params), {credentials:'omit'}); return r.json(); }
+function fail(msg){ document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
+(async()=>{
+const j = await api({api:'dash', d:P.get('d')||''});
+if(!j.ok){ fail(j.error||'This dashboard link is not valid. Text David at DuPage Quotes for a new one.'); return; }
+const D = j.data; D.base = 'q.html'; document.title = D.contractor + ' – My DuPage Quotes';
+
+
+const e = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const m0 = x => '$'+Math.round(Number(x)).toLocaleString('en-US');
+const m2 = x => '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const today = D.today, month = today.slice(0,7);
+const Q = D.quotes.map(q=>Object.assign({},q,{iso:q.date_iso||'', sd:(q.start_date||'').slice(0,10)}));
+const link = q => `${D.base||''}?q=${encodeURIComponent(q.quote_no)}&t=${encodeURIComponent(q.token)}`;
+const first = (D.contact && !/owner/i.test(D.contact)) ? D.contact.split(' ')[0] : '';
+document.getElementById('hi').textContent = (first?`Hi ${first} – `:'') + D.contractor;
+document.getElementById('sub').textContent = 'Your quotes and schedule · ' + new Date(today+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+const acc = Q.filter(q=>q.status==='Accepted'), waiting = Q.filter(q=>q.status!=='Accepted');
+const upcoming = acc.filter(q=>!q.sd || q.sd>=today).sort((a,b)=>(a.sd||'9999').localeCompare(b.sd||'9999'));
+const thisM = Q.filter(q=>q.iso.slice(0,7)===month);
+const accM = thisM.filter(q=>q.status==='Accepted');
+const sum = (a,f)=>a.reduce((s,q)=>s+Number(f(q)||0),0);
+const bill = sum(thisM,q=>q.fee==='Paid'?7.99:0);
+const days = q => q.iso ? Math.max(0,Math.round((new Date(today)-new Date(q.iso))/864e5)) : '';
+const dayBox = q => { if(!q.sd) return '<div class="day nd">DATE<br>TBD</div>'; const d=new Date(q.sd+'T12:00:00');
+  return `<div class="day"><small>${d.toLocaleDateString('en-US',{weekday:'short'})}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-US',{month:'short'})}</small></div>`; };
+const c = q => q.client||{};
+document.getElementById('main').innerHTML = `
+<div class="kpis">
+ <div class="kpi"><span>Upcoming jobs</span><b>${upcoming.length}</b><small>accepted, not started</small></div>
+ <div class="kpi"><span>Waiting on clients</span><b>${waiting.length}</b><small>${m0(sum(waiting,q=>q.price))} not signed yet</small></div>
+ <div class="kpi"><span>Accepted this month</span><b>${m0(sum(accM,q=>q.price))}</b><small>${accM.length} of ${thisM.length} quotes</small></div>
+ <div class="kpi"><span>Your bill this month</span><b>${m2(bill)}</b><small>${thisM.filter(q=>q.fee==='Free').length} free · ${thisM.filter(q=>q.fee==='Paid').length} × $7.99</small></div>
+</div>
+<div class="cols">
+<div>
+ <div class="card"><h2>Schedule · upcoming jobs <em>${upcoming.length}</em></h2>
+ ${upcoming.length?upcoming.map(q=>`<div class="job">${dayBox(q)}<div><p class="t">${e(c(q).name)} · ${m0(q.price)}</p><p>${e(q.project)}</p>
+  <p class="m">${e([c(q).address,c(q).city].filter(Boolean).join(', '))}${q.deposit_pct?` · deposit ${m0(q.price*q.deposit_pct/100)}`:''} · <a class="v" href="${link(q)}">View quote</a></p>
+  <p class="m">✓ Accepted by ${e(q.accepted_name)} · ${e(q.accepted_at)}</p></div></div>`).join(''):'<div class="empty">No accepted jobs coming up yet. They appear here as soon as a client taps Accept.</div>'}
+ </div>
+ <div class="card"><h2>All quotes</h2>
+ <table><tr><th>Date</th><th>Client</th><th class="hide-sm">Project</th><th>Price</th><th>Status</th><th></th></tr>
+ ${Q.slice().sort((a,b)=>b.iso.localeCompare(a.iso)).map(q=>`<tr><td>${e(q.date)}</td><td>${e(c(q).name)}</td><td class="hide-sm">${e(q.project)}</td><td>${m0(q.price)}</td>
+  <td><span class="chip ${q.status==='Accepted'?'ok':'wait'}">${q.status==='Accepted'?'Accepted':'Waiting'}</span></td><td><a class="v" href="${link(q)}">View</a></td></tr>`).join('') || '<tr><td colspan="6" class="empty">No quotes yet.</td></tr>'}
+ </table></div>
+</div>
+<div>
+ <div class="card"><h2>Waiting on clients <em>${waiting.length}</em></h2>
+ ${waiting.length?waiting.sort((a,b)=>a.iso.localeCompare(b.iso)).map(q=>`<div class="row"><span><b>${e(c(q).name)}</b> · ${m0(q.price)}<br><span style="font-size:12.5px;color:var(--mute)">${e(q.project)} · sent ${days(q)} day${days(q)===1?'':'s'} ago${days(q)>=5?' – <b style="color:#9a4a12">give them a call</b>':''}</span></span><a class="v" href="${link(q)}">View</a></div>`).join(''):'<div class="empty">Nothing waiting. 👍</div>'}
+ </div>
+ <div class="card month"><h2>${new Date(today+'T12:00:00').toLocaleDateString('en-US',{month:'long'})} so far</h2>
+  <div><span>Quotes sent</span><span>${thisM.length}</span></div>
+  <div><span>Value quoted</span><span>${m0(sum(thisM,q=>q.price))}</span></div>
+  <div><span>Accepted by clients</span><span>${m0(sum(accM,q=>q.price))}</span></div>
+  <div><span>Free quotes used</span><span>${thisM.filter(q=>q.fee==='Free').length}</span></div>
+  <div class="bill"><span>DuPage Quotes bill</span><span>${m2(bill)}</span></div>
+ </div>
+</div></div>`;
+
+})();
+</script>
+</body></html>
