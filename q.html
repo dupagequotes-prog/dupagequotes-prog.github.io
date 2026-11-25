@@ -53,19 +53,35 @@ td{padding:12px 13px;border-top:1px solid var(--line);vertical-align:top}tr:nth-
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media print{body{background:#fff}.bar,.foot,.sigbox .agree,.accept,.err,#cta{display:none}.paper{box-shadow:none;border:0;margin:0;max-width:none;padding:.5in;animation:none}}
 </style><link rel="icon" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20120%20120%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20rx%3D%2226%22%20fill%3D%22%23222B45%22/%3E%3Cpath%20d%3D%22M33%2031a27%2023%200%200%201%2054%200z%22%20fill%3D%22%23E8913F%22/%3E%3Crect%20x%3D%2257.5%22%20y%3D%2210%22%20width%3D%225%22%20height%3D%2220%22%20rx%3D%222.5%22%20fill%3D%22%23C46F28%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2228%22%20width%3D%2276%22%20height%3D%2210%22%20rx%3D%225%22%20fill%3D%22%23E8913F%22/%3E%3Crect%20x%3D%2232%22%20y%3D%2238%22%20width%3D%2256%22%20height%3D%2274%22%20rx%3D%227%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%2238.5%22%20y%3D%2244%22%20width%3D%2243%22%20height%3D%2262%22%20rx%3D%224%22%20fill%3D%22%23EEF1F8%22/%3E%3Cpath%20d%3D%22M47%2069l9%209%2018-20%22%20fill%3D%22none%22%20stroke%3D%22%23E8913F%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%2245%22%20y%3D%2286%22%20width%3D%2230%22%20height%3D%223.4%22%20rx%3D%221.7%22%20fill%3D%22%23B3B8CC%22/%3E%3Crect%20x%3D%2245%22%20y%3D%2294%22%20width%3D%2221%22%20height%3D%223.4%22%20rx%3D%221.7%22%20fill%3D%22%23B3B8CC%22/%3E%3C/svg%3E"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet"><style>
-#dq-load{position:fixed;inset:0;z-index:9999;background:#222B45;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:opacity .45s ease,visibility .45s;font-family:Poppins,-apple-system,Helvetica,Arial,sans-serif}
-#dq-load.hide{opacity:0;visibility:hidden}
-#dq-load .lg{width:118px;height:118px;animation:dqpop .6s ease both}
-#dq-load .wm{font-size:40px;font-weight:700;line-height:1;color:#fff;letter-spacing:-.5px;margin-top:6px;animation:dqfade .6s .1s ease both}
-#dq-load .wq{font-size:17px;font-weight:600;color:#E8913F;letter-spacing:.42em;margin-left:.42em;animation:dqfade .6s .15s ease both}
-#dq-load .tg{font-size:13px;color:#aeb5cc;margin-top:14px;font-family:-apple-system,Helvetica,Arial,sans-serif;animation:dqfade .6s .25s ease both}
-#dq-load .lbar{width:170px;height:5px;border-radius:5px;background:rgba(255,255,255,.12);overflow:hidden;margin-top:10px}
-#dq-load .lbar i{display:block;height:100%;width:40%;border-radius:5px;background:#E8913F;animation:dqbar 1.1s ease-in-out infinite}
-@keyframes dqbar{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
-@keyframes dqpop{from{transform:translateY(-8px) scale(.9);opacity:0}to{transform:none;opacity:1}}
-@keyframes dqfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* DuPage Quotes loading screen v2 – navy #222B45 + orange #E8913F */
+#dq-load{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;overflow:hidden;
+  background:radial-gradient(60% 45% at 50% 38%,rgba(232,145,63,.22) 0%,rgba(232,145,63,0) 70%),radial-gradient(120% 80% at 50% 120%,#141a2e 0%,transparent 60%),#222B45;
+  font-family:Poppins,-apple-system,Helvetica,Arial,sans-serif;transition:opacity .6s cubic-bezier(.23,1,.32,1),visibility .6s,transform .6s cubic-bezier(.23,1,.32,1),filter .6s}
+#dq-load:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;
+  mask-image:radial-gradient(circle at 50% 42%,black 0%,transparent 65%);-webkit-mask-image:radial-gradient(circle at 50% 42%,black 0%,transparent 65%)}
+#dq-load.hide{opacity:0;visibility:hidden;transform:scale(1.06);filter:blur(6px)}
+#dq-load .tile{position:relative;width:124px;height:124px;border-radius:34px;display:grid;place-items:center;
+  background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 24px 60px -18px rgba(0,0,0,.6),0 0 80px -10px rgba(232,145,63,.35);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:dqpop .8s cubic-bezier(.34,1.4,.64,1) both}
+#dq-load .tile:after{content:"";position:absolute;inset:-2px;border-radius:36px;padding:2px;background:conic-gradient(from var(--dqa,0deg),transparent 0 70%,#E8913F 85%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:dqspin 1.6s linear infinite}
+@property --dqa{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes dqspin{to{--dqa:360deg}}
+#dq-load .lg{width:92px;height:92px;animation:dqfloat 3s ease-in-out .8s infinite}
+#dq-load .wm{font-size:38px;font-weight:700;line-height:1;color:#fff;letter-spacing:-1px;margin-top:26px;animation:dqfade .7s .15s cubic-bezier(.23,1,.32,1) both}
+#dq-load .wq{font-size:14px;font-weight:600;color:#E8913F;letter-spacing:.5em;margin:8px 0 0 .5em;animation:dqfade .7s .22s cubic-bezier(.23,1,.32,1) both}
+#dq-load .tg{font-size:13px;margin-top:26px;font-family:-apple-system,Helvetica,Arial,sans-serif;font-weight:500;letter-spacing:.01em;
+  background:linear-gradient(90deg,#8d95b3 0%,#fff 50%,#8d95b3 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:dqfade .7s .3s cubic-bezier(.23,1,.32,1) both,dqshine 2.2s linear infinite}
+#dq-load .lbar{display:none}
+@keyframes dqshine{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes dqpop{from{transform:scale(.6) translateY(10px);opacity:0;filter:blur(8px)}to{transform:none;opacity:1;filter:none}}
+@keyframes dqfloat{50%{transform:translateY(-4px)}}
+@keyframes dqfade{from{opacity:0;transform:translateY(8px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@media(prefers-reduced-motion:reduce){#dq-load *{animation:none!important}}
 </style></head>
-<body><div id="dq-load"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading your quote…</div><div class="lbar"><i></i></div></div>
+<body><div id="dq-load"><div class="tile"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading your quote…</div></div>
 <div class="bar"><span id="barTxt"></span><button onclick="window.print()" id="printBtn"></button></div>
 <div class="paper" id="paper"></div>
 <div class="foot">Quote prepared by DuPage Quotes for the contractor above · dupagequotes@gmail.com</div>
@@ -73,7 +89,7 @@ td{padding:12px 13px;border-top:1px solid var(--line);vertical-align:top}tr:nth-
 const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
 const P = new URLSearchParams(location.search);
 async function api(params){ const r = await fetch(API + '?' + new URLSearchParams(params), {credentials:'omit'}); return r.json(); }
-function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),500); } }
+function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),650); } }
 function fail(msg){ hideLoad(); document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
 (async()=>{
 const j = await api({api:'quote', q:P.get('q')||'', t:P.get('t')||''});
