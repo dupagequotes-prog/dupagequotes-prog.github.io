@@ -119,6 +119,16 @@ body:not(.ready) .rise,body:not(.ready) .panel.on{animation-play-state:paused}
 /* ---------- v3 interactive additions ---------- */
 .top .acts{display:flex;gap:8px}
 .iconbtn.lang{width:auto;padding:0 11px;font:700 12.5px Inter,-apple-system,sans-serif;gap:5px;display:flex;align-items:center}.iconbtn.lang svg{width:15px;height:15px}
+.lopt{display:flex;align-items:center;gap:12px;width:100%;border:1px solid var(--line);background:#fff;border-radius:16px;padding:14px 16px;margin-top:10px;font:600 16px Inter,-apple-system,sans-serif;color:var(--ink);cursor:pointer;text-align:left}
+.lopt .fl2{font-size:24px}.lopt.on{border:2px solid var(--g);background:var(--tint)}.lopt .ck{margin-left:auto;color:var(--g);font-weight:800}
+.mic{width:100%;border:0;border-radius:18px;padding:16px 14px;margin-top:6px;background:var(--g);color:#fff;font:700 16px Inter,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:transform .14s var(--ease)}
+.mic:active{transform:scale(.97)}.mic svg{width:22px;height:22px}
+.mic.rec{background:#dc2626;animation:micp 1.4s ease-in-out infinite}
+@keyframes micp{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.45)}50%{box-shadow:0 0 0 12px rgba(220,38,38,0)}}
+.vhint{font-size:12.5px;color:var(--mute);margin:8px 2px 0}.vstat{font-size:12.5px;font-weight:700;color:#dc2626;margin:6px 2px 0;min-height:16px}
+.vbox{background:#fff;border:1px dashed var(--g);border-radius:14px;padding:10px 12px;margin-top:8px}
+.vbox label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--g)}
+.vbox textarea{width:100%;border:0;outline:none;resize:vertical;font:500 15px Inter,-apple-system,sans-serif;min-height:70px;margin-top:4px;background:transparent}
 .bdot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 0 2px var(--g)}
 .iconbtn{position:relative}
 .week{display:flex;gap:8px;overflow-x:auto;margin:20px -20px 0;padding:2px 20px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -330,7 +340,7 @@ const TX = {
   reqTitle:'Request a new estimate', reqFree:'Free (one of your first 2)', reqIntro:'Fill in what you know. It opens a ready-to-send email to DuPage Quotes, and your branded quote comes back in about 5 minutes.',
   rName:'Client name', rNamePh:'e.g. Maria Lopez', rAddr:'Job address', rAddrPh:'Street, city', rEmail:'Client email (optional)', rJob:'The job – what you’ll do', rJobPh:'e.g. Replace 2 rotted deck boards, re-stain…', rPrice:'Your price', rSend:'Open email to DuPage Quotes',
   msgCopied:'Message copied – paste it in a text ✓', crewUpd:'Crew updated ✓', crewName:'Crew member name', added:'Added {0} ✓',
-  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', langName:'English'},
+  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', langName:'English', langTitle:'Language', voiceBtn:'Tap and talk about the job', voiceStop:'Stop – I’m done talking', voiceHint:'Say the client’s name, the address, what you’ll do and your price. It writes it all down for you.', voiceLbl:'Your voice note (written out)', voicePh:'Your words show up here…', voiceOn:'Listening… talk now', micKb:'Tap the 🎤 on your keyboard and talk – it types for you.', micDenied:'Allow the microphone to use voice (phone Settings → Safari → Microphone).', micErr:'Voice stopped – tap the button to keep going.', orType:'Or type it:'},
  es:{live:'En vivo · se actualiza solo', morning:'Buenos días', afternoon:'Buenas tardes', evening:'Buenas noches', reveal:'Cotizaciones y agenda',
   foot:'Se actualiza solo cuando se hace o se acepta una cotización', fab:'Pedir nueva cotización', free:'gratis', all:'Todos',
   setDate:'PONER<br>FECHA', today:'Hoy', tomorrow:'Mañana', started:'Empezado', inDays:'En {0} días', depPaid:'✓ Depósito {0} pagado', depDue:'Depósito {0} pendiente', due:'Entrega {0}',
@@ -356,11 +366,38 @@ const TX = {
   reqTitle:'Pedir una nueva cotización', reqFree:'Gratis (una de sus primeras 2)', reqIntro:'Llene lo que sepa. Se abre un correo listo para mandar a DuPage Quotes y su cotización con su marca llega en unos 5 minutos.',
   rName:'Nombre del cliente', rNamePh:'ej. María López', rAddr:'Dirección del trabajo', rAddrPh:'Calle, ciudad', rEmail:'Correo del cliente (opcional)', rJob:'El trabajo – qué va a hacer', rJobPh:'ej. Cambiar 2 tablas podridas de la terraza, volver a teñir…', rPrice:'Su precio', rSend:'Abrir correo a DuPage Quotes',
   msgCopied:'Mensaje copiado – péguelo en un texto ✓', crewUpd:'Equipo actualizado ✓', crewName:'Nombre del trabajador', added:'{0} agregado ✓',
-  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', langName:'Español'} };
+  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', langName:'Español', langTitle:'Idioma', voiceBtn:'Toque y hable del trabajo', voiceStop:'Parar – ya terminé', voiceHint:'Diga el nombre del cliente, la dirección, qué va a hacer y su precio. Todo se escribe solo.', voiceLbl:'Su mensaje de voz (escrito)', voicePh:'Sus palabras salen aquí…', voiceOn:'Escuchando… hable ahora', micKb:'Toque el 🎤 del teclado y hable – escribe por usted.', micDenied:'Permita el micrófono para usar la voz (Ajustes → Safari → Micrófono).', micErr:'La voz se detuvo – toque el botón para seguir.', orType:'O escríbalo:'},
+ it:{live:'In diretta · si aggiorna da solo', morning:'Buongiorno', afternoon:'Buon pomeriggio', evening:'Buonasera', reveal:'Preventivi e agenda',
+  foot:'Si aggiorna da solo quando un preventivo viene fatto o accettato', fab:'Chiedi un nuovo preventivo', free:'gratis', all:'Tutti',
+  setDate:'METTI<br>DATA', today:'Oggi', tomorrow:'Domani', started:'Iniziato', inDays:'Tra {0} giorni', depPaid:'✓ Acconto {0} pagato', depDue:'Acconto {0} da pagare', due:'Consegna {0}',
+  jobProgress:'Avanzamento lavoro', changeDate:'Cambia data', schedDate:'Metti data', jobDetails:'Dettagli', viewQuote:'Vedi preventivo',
+  sent:'Inviato', viewed:'Visto', notOpened:'Non ancora aperto', signed:'Firmato', pending:'in attesa di firma',
+  sentWhen:'Inviato {0}', sentToday:'oggi', sentYest:'ieri', daysAgo:'{0} giorni fa', to:' a {0}', callThem:'chiamalo',
+  nudge:'Ricorda al cliente', nudgeShort:'Ricorda', adjust:'Modifica preventivo',
+  upcoming:'Prossimi lavori', upSub:'accettati e in agenda', waiting:'In attesa dei clienti', notSigned:'{0} non firmati', won:'Vinto questo mese', ofQuotes:'{0} di {1} preventivi',
+  bill:'Il tuo conto', freeN:'{0} gratis', schedule:'Agenda', waitTab:'In attesa', allQuotes:'Tutti', jobsN:'{0} lavori', job1:'1 lavoro',
+  filtered:'Filtrato', showAll:'Mostra tutto', nothingHere:'Niente in agenda qui.', noBooked:'Ancora nessun lavoro in agenda.<br>Appaiono qui appena un cliente accetta.',
+  total:'{0} in totale', tagDep:'Acconto pagato', tagAcc:'Accettato', tagViewed:'Visto', tagWait:'In attesa', noQuotes:'Ancora nessun preventivo.', nothingWait:'Niente in attesa.',
+  deadlines:'Scadenze lavori', nextN:'prossimi {0}', deadline:'Scadenza', start:'Inizio', inD:'Tra {0}g', soFar:'{0} finora', last6:'ultimi 6 mesi',
+  wonL:'Vinto', quotedL:'Preventivato, non firmato', qSent:'Preventivi inviati', qValue:'Valore preventivato', qAcc:'Accettato dai clienti', dqBill:'Conto DuPage Quotes',
+  done100:'Lavoro finito al 100% 🎉', progSaved:'Avanzamento salvato ✓', saved:'Salvato ✓', notSaved:'Non salvato: {0}', tryAgain:'riprova', noConn:'Niente connessione – non salvato', preview:'Solo anteprima – non salvato',
+  copied:'Copiato ✓', linkCopied:'Link copiato ✓', addrCopied:'Indirizzo copiato ✓', copy:'Copia', appleMaps:'Apple Maps', googleMaps:'Google Maps',
+  completion:'Stato del lavoro', progress:'Avanzamento', complete:'{0}% completato', dates:'Date', startDate:'Data di inizio', crew:'Squadra assegnata', add:'Aggiungi', tapName:'Tocca un nome per metterlo su questo lavoro.',
+  status:'Stato', waitFor:'In attesa che {0} firmi.', opened:'L’ha aperto {0}', times:' ({0} volte)', notYet:'Non l’ha ancora aperto.',
+  payDep:'Pagamento e acconto', depPaidT:'Acconto pagato ({0})', noDep:'Nessun acconto su questo preventivo.', totalL:'Totale', paidL:'Pagato', balance:'Saldo da pagare', ownRecord:'È solo un tuo promemoria. Nessun pagamento passa da DuPage Quotes.',
+  notes:'Note del lavoro', notesPh:'Codice del cancello, materiali, cose da ricordare…', copyLink:'Copia link del cliente',
+  sdSaved:'Data di inizio salvata ✓', dlSaved:'Scadenza salvata ✓', depMarked:'Acconto segnato pagato ✓', depUnmarked:'Acconto segnato non pagato', notesSaved:'Note salvate ✓',
+  evSent:'Preventivo inviato a <b>{0}</b>', evOpened:'<b>{0}</b> ha aperto il preventivo', views:'{0} visite · ', evAcc:'<b>{0}</b> ha accettato', evDep:'Acconto segnato pagato · <b>{0}</b>',
+  activity:'Attività', nothingYet:'Ancora niente.', search:'Cerca', searchPh:'Cliente, indirizzo, lavoro o numero', noMatch:'Nessun risultato.',
+  reqTitle:'Chiedi un nuovo preventivo', reqFree:'Gratis (uno dei tuoi primi 2)', reqIntro:'Scrivi o di’ a voce quello che sai. Si apre un’email pronta per DuPage Quotes e il tuo preventivo col tuo marchio arriva in circa 5 minuti.',
+  rName:'Nome del cliente', rNamePh:'es. Maria Rossi', rAddr:'Indirizzo del lavoro', rAddrPh:'Via, città', rEmail:'Email del cliente (facoltativa)', rJob:'Il lavoro – cosa farai', rJobPh:'es. Cambiare 2 tavole marce del deck, riverniciare…', rPrice:'Il tuo prezzo', rSend:'Apri email a DuPage Quotes',
+  msgCopied:'Messaggio copiato – incollalo in un SMS ✓', crewUpd:'Squadra aggiornata ✓', crewName:'Nome del lavoratore', added:'{0} aggiunto ✓',
+  justNow:'proprio ora', mAgo:'{0} min fa', hAgo:'{0} h fa', dAgo:'{0} g fa', langName:'Italiano', langTitle:'Lingua',
+  voiceBtn:'Tocca e parla del lavoro', voiceStop:'Stop – ho finito', voiceHint:'Di’ il nome del cliente, l’indirizzo, cosa farai e il tuo prezzo. Scrive tutto da solo.', voiceLbl:'Il tuo messaggio vocale (scritto)', voicePh:'Le tue parole appaiono qui…', voiceOn:'Ti ascolto… parla ora', micKb:'Tocca il 🎤 sulla tastiera e parla – scrive per te.', micDenied:'Consenti il microfono per usare la voce (Impostazioni → Safari → Microfono).', micErr:'La voce si è fermata – tocca il pulsante per continuare.', orType:'Oppure scrivilo:'} };
 const lastLang = ((D.quotes||[]).slice(-1)[0]||{}).language;
-let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : 'en');
+let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : /ital/i.test(lastLang||D.language||'') ? 'it' : 'en');
 const t = (k, ...a) => String((TX[LANG]||TX.en)[k] ?? TX.en[k] ?? k).replace(/\{(\d)\}/g, (_, i) => a[i]);
-const LOC = () => LANG === 'es' ? 'es-US' : 'en-US';
+const LOC = () => ({es:'es-US', it:'it-IT'})[LANG] || 'en-US';
 const fd = (d, o) => d.toLocaleDateString(LOC(), o);
 const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)).toLocaleString('en-US');
@@ -399,7 +436,7 @@ function renderHeader(){
   g('nm').textContent = D.contractor;
   const sd = fd(new Date(today+'T12:00:00'),{weekday:'long',month:'long',day:'numeric'}); g('sub').textContent = sd.charAt(0).toUpperCase()+sd.slice(1);
   g('livet').textContent = t('live'); g('foott').textContent = t('foot'); g('fabt').textContent = t('fab');
-  g('langt').textContent = LANG === 'es' ? 'ES' : 'EN'; document.documentElement.lang = LANG;
+  g('langt').textContent = LANG.toUpperCase(); document.documentElement.lang = LANG;
 }
 renderHeader();
 const sum = (a,f)=>a.reduce((s,q)=>s+Number(f(q)||0),0);
@@ -555,7 +592,7 @@ function render(){
 /* ---------- sheets ---------- */
 const sheet = document.getElementById('sheet'), scrim = document.getElementById('scrim');
 function openSheet(title, html){ sheet.innerHTML = `<div class="grab"></div><div class="sh-h"><h3>${title}</h3><button class="x" data-act="close" aria-label="Close">×</button></div>${html}`; sheet.scrollTop=0; scrim.classList.add('on'); sheet.classList.add('on'); }
-function closeSheet(){ scrim.classList.remove('on'); sheet.classList.remove('on'); }
+function closeSheet(){ if (typeof stopVoice === 'function') stopVoice(); scrim.classList.remove('on'); sheet.classList.remove('on'); }
 scrim.onclick = closeSheet;
 { let y0=null; sheet.addEventListener('touchstart',ev=>{ if(sheet.scrollTop<=0) y0=ev.touches[0].clientY; },{passive:true});
   sheet.addEventListener('touchend',ev=>{ if(y0!=null && ev.changedTouches[0].clientY-y0>90) closeSheet(); y0=null; },{passive:true}); }
@@ -619,10 +656,36 @@ function searchSheet(){
     document.getElementById('sr').innerHTML = res.length ? res.map(q=>`<a class="row" data-act="job" data-q="${e(q.quote_no)}" href="#"><div class="av">${ini(c(q).name)}</div><div class="mid"><div class="n">${e(c(q).name)}</div><div class="s">${e(addrOf(q)||q.project)}</div></div><div class="r"><div class="num">${m0(q.price)}</div></div>${chev}</a>`).join('') : `<div class="empty">${t('noMatch')}</div>`; };
   document.getElementById('sq').oninput = run; run(); setTimeout(()=>document.getElementById('sq').focus(), 350);
 }
+const MIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/></svg>';
+let REC = null;
+function stopVoice(){ if (REC) { try { REC.stop(); } catch(x){} } }
+function toggleVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const box = document.getElementById('r6'), btn = document.getElementById('micb'), lab = document.getElementById('micl'), st = document.getElementById('vstat');
+  if (!SR) { box.focus(); toast(t('micKb')); st.textContent = t('micKb'); return; }
+  if (REC) { stopVoice(); return; }
+  const rec = new SR(); REC = rec;
+  rec.lang = ({en:'en-US', es:'es-US', it:'it-IT'})[LANG] || 'en-US'; rec.continuous = true; rec.interimResults = true;
+  const base = box.value.trim() ? box.value.trim() + ' ' : '';
+  rec.onresult = ev => { let fin = '', mid = ''; for (const res of ev.results) { if (res.isFinal) fin += res[0].transcript.trim() + ' '; else mid += res[0].transcript; } box.value = base + fin + mid; };
+  rec.onerror = ev => { st.textContent = (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') ? t('micDenied') : (ev.error === 'no-speech' ? '' : t('micErr')); };
+  rec.onend = () => { REC = null; btn.classList.remove('rec'); lab.textContent = t('voiceBtn'); if (st.textContent === t('voiceOn')) st.textContent = ''; };
+  try { rec.start(); } catch(x) { REC = null; box.focus(); st.textContent = t('micKb'); return; }
+  btn.classList.add('rec'); lab.textContent = t('voiceStop'); st.textContent = t('voiceOn'); haptic();
+}
+function langSheet(){
+  const L = [['en','🇺🇸','English'],['es','🇲🇽','Español'],['it','🇮🇹','Italiano']];
+  openSheet(t('langTitle'), L.map(([k,f,n]) => `<button class="lopt${LANG===k?' on':''}" data-act="setlang" data-v="${k}"><span class="fl2">${f}</span>${n}${LANG===k?'<span class="ck">✓</span>':''}</button>`).join(''));
+}
 function reqSheet(){
   const fee = Q.length < 2 ? t('reqFree') : '$7.99';
   openSheet(t('reqTitle'), `
    <div style="font-size:13.5px;color:var(--mute);margin:-4px 2px 4px">${t('reqIntro')} <b style="color:var(--ink)">${fee}</b></div>
+   <button class="mic" id="micb" data-act="mic">${MIC}<span id="micl">${t('voiceBtn')}</span></button>
+   <div class="vstat" id="vstat"></div>
+   <div class="vhint">${t('voiceHint')}</div>
+   <div class="vbox"><label for="r6">${t('voiceLbl')}</label><textarea id="r6" rows="3" placeholder="${t('voicePh')}"></textarea></div>
+   <div class="fl" style="margin-top:16px;font-size:13px">${t('orType')}</div>
    <label class="fl">${t('rName')}</label><input class="tx" id="r1" placeholder="${t('rNamePh')}">
    <label class="fl">${t('rAddr')}</label><input class="tx" id="r2" placeholder="${t('rAddrPh')}">
    <label class="fl">${t('rEmail')}</label><input class="tx" id="r3" placeholder="client@email.com" inputmode="email">
@@ -634,7 +697,9 @@ function reqSheet(){
 /* ---------- actions ---------- */
 function nudge(q){
   const n = (c(q).name||'').split(/[ &]/)[0] || 'there';
-  const msg = /span/i.test(q.language||'')
+  const msg = /ital/i.test(q.language||'')
+    ? `Buongiorno ${n}, le scrivo per il preventivo di ${q.project}. Può vederlo e accettarlo qui: ${pubLink(q)} – ${first||D.contractor}`
+    : /span/i.test(q.language||'')
     ? `Hola ${n}, le escribo para dar seguimiento a la cotización de ${q.project}. Puede revisarla y aceptarla aquí: ${pubLink(q)} – ${first||D.contractor}`
     : `Hi ${n}, just checking in on the ${D.doc_title?D.doc_title.toLowerCase():'quote'} for ${q.project}. You can review and accept it here: ${pubLink(q)} – ${first||D.contractor}`;
   if (navigator.share) navigator.share({ text: msg }).catch(()=>{});
@@ -662,14 +727,17 @@ document.addEventListener('click', ev => {
   else if (act==='nudge' && q) nudge(q);
   else if (act==='adjust' && q) adjust(q);
   else if (act==='close') closeSheet();
-  else if (act==='lang') { LANG = LANG==='es' ? 'en' : 'es'; localStorage.setItem('lang_'+TOK, LANG); haptic(); renderHeader(); render();
-    if (sheet.classList.contains('on')) closeSheet(); toast(LANG==='es' ? 'Español ✓' : 'English ✓');
+  else if (act==='lang') langSheet();
+  else if (act==='mic') toggleVoice();
+  else if (act==='setlang') { LANG = el.dataset.v; localStorage.setItem('lang_'+TOK, LANG); haptic(); renderHeader(); render();
+    closeSheet(); toast(t('langName') + ' ✓');
     document.querySelectorAll('[data-to]').forEach(x=>{ x.textContent = x.dataset.fmt==='$' ? m0(+x.dataset.to) : x.dataset.to; }); const b=document.getElementById('bars'); if(b) b.classList.add('go'); }
   else if (act==='bell') bellSheet();
   else if (act==='search') searchSheet();
   else if (act==='req') reqSheet();
-  else if (act==='reqsend') { const v = id => document.getElementById(id).value.trim();
-    const body = `New job for DuPage Quotes\n\nContractor: ${D.contractor}\nClient: ${v('r1')}\nAddress: ${v('r2')}\nClient email: ${v('r3')}\nJob: ${v('r4')}\nPrice: ${v('r5')}\n`;
+  else if (act==='reqsend') { stopVoice(); const v = id => document.getElementById(id).value.trim();
+    const body = `New job for DuPage Quotes\n\nContractor: ${D.contractor}\nClient: ${v('r1')}\nAddress: ${v('r2')}\nClient email: ${v('r3')}\nJob: ${v('r4')}\nPrice: ${v('r5')}\n`
+      + (v('r6') ? `\nVoice note (written out by the dashboard, ${({en:'English',es:'Spanish',it:'Italian'})[LANG]}):\n${v('r6')}\n` : '');
     location.href = `mailto:dupagequotes@gmail.com?subject=${encodeURIComponent('New quote – '+D.contractor+(v('r1')?' – '+v('r1'):''))}&body=${encodeURIComponent(body)}`; }
   else if (act==='crewt') { const jq = Q.find(x=>x.quote_no===sheet.dataset.q); if(!jq) return; const n = el.dataset.v; const cur = new Set(jq.crew||[]);
     cur.has(n) ? cur.delete(n) : cur.add(n); el.classList.toggle('on'); haptic(); save(jq,{crew:[...cur]},t('crewUpd')); render(); }
