@@ -118,6 +118,7 @@ body:not(.ready) .rise,body:not(.ready) .panel.on{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}}
 /* ---------- v3 interactive additions ---------- */
 .top .acts{display:flex;gap:8px}
+.iconbtn.lang{width:auto;padding:0 11px;font:700 12.5px Inter,-apple-system,sans-serif;gap:5px;display:flex;align-items:center}.iconbtn.lang svg{width:15px;height:15px}
 .bdot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 0 2px var(--g)}
 .iconbtn{position:relative}
 .week{display:flex;gap:8px;overflow-x:auto;margin:20px -20px 0;padding:2px 20px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -271,8 +272,9 @@ textarea.nt:focus,input.tx:focus{border-color:var(--g);box-shadow:0 0 0 4px colo
 <body><div id="dq-load"><div class="tile"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading your quotes &amp; schedule…</div></div>
 <div id="k-rev"></div>
 <section class="hero v3"><div class="wrap">
-  <div class="top"><span class="pill"><i></i>Live · updates on its own</span>
+  <div class="top"><span class="pill"><i></i><span id="livet">Live · updates on its own</span></span>
     <div class="acts">
+      <button class="iconbtn lang" data-act="lang" id="langb" aria-label="Language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><span id="langt">EN</span></button>
       <button class="iconbtn" data-act="search" aria-label="Search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
       <button class="iconbtn" data-act="bell" aria-label="Activity"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="bdot" id="bdot" hidden></span></button>
       <button class="iconbtn" id="rf" aria-label="Refresh"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button>
@@ -283,8 +285,8 @@ textarea.nt:focus,input.tx:focus{border-color:var(--g);box-shadow:0 0 0 4px colo
   <div class="chips rise" style="--i:3" id="chips"></div>
 </div></section>
 <main id="main"></main>
-<footer>Updated automatically when a quote is made or accepted<br>Powered by <b>DuPage Quotes</b> · dupagequotes@gmail.com</footer>
-<button id="fab" data-act="req"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>Request new estimate</span> <small id="fabp"></small></button>
+<footer><span id="foott">Updated automatically when a quote is made or accepted</span><br>Powered by <b>DuPage Quotes</b> · dupagequotes@gmail.com</footer>
+<button id="fab" data-act="req"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="fabt">Request new estimate</span> <small id="fabp"></small></button>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
 <div id="toast"></div>
@@ -300,6 +302,66 @@ if(!j.ok){ fail(j.error||'This dashboard link is not valid. Text David at DuPage
 const D = j.data; D.base = 'q.html'; document.title = D.contractor + ' – My DuPage Quotes';
 
 
+
+/* ---------- language (English / Español) ---------- */
+const TX = {
+ en:{live:'Live · updates on its own', morning:'Good morning', afternoon:'Good afternoon', evening:'Good evening', reveal:'Quotes &amp; schedule',
+  foot:'Updated automatically when a quote is made or accepted', fab:'Request new estimate', free:'free', all:'All',
+  setDate:'SET<br>DATE', today:'Today', tomorrow:'Tomorrow', started:'Started', inDays:'In {0} days', depPaid:'✓ Deposit {0} paid', depDue:'Deposit {0} due', due:'Due {0}',
+  jobProgress:'Job progress', changeDate:'Change date', schedDate:'Schedule date', jobDetails:'Job details', viewQuote:'View quote',
+  sent:'Sent', viewed:'Viewed', notOpened:'Not opened yet', signed:'Signed', pending:'pending signature',
+  sentWhen:'Sent {0}', sentToday:'today', sentYest:'yesterday', daysAgo:'{0} days ago', to:' to {0}', callThem:'give them a call',
+  nudge:'1-tap nudge client', nudgeShort:'Nudge client', adjust:'Adjust quote',
+  upcoming:'Upcoming jobs', upSub:'accepted &amp; booked', waiting:'Waiting on clients', notSigned:'{0} not signed yet', won:'Won this month', ofQuotes:'{0} of {1} quotes',
+  bill:'Your bill', freeN:'{0} free', schedule:'Schedule', waitTab:'Waiting', allQuotes:'All quotes', jobsN:'{0} jobs', job1:'1 job',
+  filtered:'Filtered', showAll:'Show all', nothingHere:'Nothing scheduled here.', noBooked:'No booked jobs yet.<br>They show up here the moment a client taps Accept.',
+  total:'{0} total', tagDep:'Deposit paid', tagAcc:'Accepted', tagViewed:'Viewed', tagWait:'Waiting', noQuotes:'No quotes yet.', nothingWait:'Nothing waiting.',
+  deadlines:'Project deadlines', nextN:'next {0}', deadline:'Deadline', start:'Start', inD:'In {0}d', soFar:'{0} so far', last6:'last 6 months',
+  wonL:'Won', quotedL:'Quoted, not signed', qSent:'Quotes sent', qValue:'Value quoted', qAcc:'Accepted by clients', dqBill:'DuPage Quotes bill',
+  done100:'Job marked 100% done 🎉', progSaved:'Progress saved ✓', saved:'Saved ✓', notSaved:'Not saved: {0}', tryAgain:'try again', noConn:'No connection – not saved', preview:'Preview only – not saved',
+  copied:'Copied ✓', linkCopied:'Link copied ✓', addrCopied:'Address copied ✓', copy:'Copy', appleMaps:'Apple Maps', googleMaps:'Google Maps',
+  completion:'Completion status', progress:'Progress', complete:'{0}% complete', dates:'Dates', startDate:'Start date', crew:'Crew assignment', add:'Add', tapName:'Tap a name to put them on this job.',
+  status:'Status', waitFor:'Waiting for {0} to sign.', opened:'They opened it {0}', times:' ({0} times)', notYet:'They haven’t opened it yet.',
+  payDep:'Payment &amp; deposit', depPaidT:'Deposit paid ({0})', noDep:'No deposit on this quote.', totalL:'Total', paidL:'Paid', balance:'Balance due', ownRecord:'This is your own record. No money moves through DuPage Quotes.',
+  notes:'Job notes', notesPh:'Gate code, materials, anything to remember…', copyLink:'Copy client link',
+  sdSaved:'Start date saved ✓', dlSaved:'Deadline saved ✓', depMarked:'Deposit marked paid ✓', depUnmarked:'Deposit marked unpaid', notesSaved:'Notes saved ✓',
+  evSent:'Quote sent to <b>{0}</b>', evOpened:'<b>{0}</b> opened the quote', views:'{0} views · ', evAcc:'<b>{0}</b> accepted', evDep:'Deposit marked paid · <b>{0}</b>',
+  activity:'Activity', nothingYet:'Nothing yet.', search:'Search', searchPh:'Client, address, job or quote #', noMatch:'No matches.',
+  reqTitle:'Request a new estimate', reqFree:'Free (one of your first 2)', reqIntro:'Fill in what you know. It opens a ready-to-send email to DuPage Quotes, and your branded quote comes back in about 5 minutes.',
+  rName:'Client name', rNamePh:'e.g. Maria Lopez', rAddr:'Job address', rAddrPh:'Street, city', rEmail:'Client email (optional)', rJob:'The job – what you’ll do', rJobPh:'e.g. Replace 2 rotted deck boards, re-stain…', rPrice:'Your price', rSend:'Open email to DuPage Quotes',
+  msgCopied:'Message copied – paste it in a text ✓', crewUpd:'Crew updated ✓', crewName:'Crew member name', added:'Added {0} ✓',
+  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', langName:'English'},
+ es:{live:'En vivo · se actualiza solo', morning:'Buenos días', afternoon:'Buenas tardes', evening:'Buenas noches', reveal:'Cotizaciones y agenda',
+  foot:'Se actualiza solo cuando se hace o se acepta una cotización', fab:'Pedir nueva cotización', free:'gratis', all:'Todos',
+  setDate:'PONER<br>FECHA', today:'Hoy', tomorrow:'Mañana', started:'Empezado', inDays:'En {0} días', depPaid:'✓ Depósito {0} pagado', depDue:'Depósito {0} pendiente', due:'Entrega {0}',
+  jobProgress:'Avance del trabajo', changeDate:'Cambiar fecha', schedDate:'Poner fecha', jobDetails:'Detalles', viewQuote:'Ver cotización',
+  sent:'Enviada', viewed:'Vista', notOpened:'Aún no la abre', signed:'Firmada', pending:'pendiente de firma',
+  sentWhen:'Enviada {0}', sentToday:'hoy', sentYest:'ayer', daysAgo:'hace {0} días', to:' a {0}', callThem:'llámele',
+  nudge:'Recordar al cliente', nudgeShort:'Recordar', adjust:'Cambiar cotización',
+  upcoming:'Próximos trabajos', upSub:'aceptados y agendados', waiting:'Esperando clientes', notSigned:'{0} sin firmar', won:'Ganado este mes', ofQuotes:'{0} de {1} cotizaciones',
+  bill:'Su cuenta', freeN:'{0} gratis', schedule:'Agenda', waitTab:'Esperando', allQuotes:'Todas', jobsN:'{0} trabajos', job1:'1 trabajo',
+  filtered:'Filtrado', showAll:'Ver todo', nothingHere:'Nada agendado aquí.', noBooked:'Todavía no hay trabajos agendados.<br>Aparecen aquí en cuanto un cliente acepta.',
+  total:'{0} en total', tagDep:'Depósito pagado', tagAcc:'Aceptada', tagViewed:'Vista', tagWait:'Esperando', noQuotes:'Todavía no hay cotizaciones.', nothingWait:'Nada pendiente.',
+  deadlines:'Fechas de entrega', nextN:'próximos {0}', deadline:'Entrega', start:'Inicio', inD:'En {0}d', soFar:'{0} hasta hoy', last6:'últimos 6 meses',
+  wonL:'Ganado', quotedL:'Cotizado, sin firmar', qSent:'Cotizaciones enviadas', qValue:'Valor cotizado', qAcc:'Aceptado por clientes', dqBill:'Cuenta DuPage Quotes',
+  done100:'Trabajo 100% terminado 🎉', progSaved:'Avance guardado ✓', saved:'Guardado ✓', notSaved:'No se guardó: {0}', tryAgain:'intente otra vez', noConn:'Sin conexión – no se guardó', preview:'Solo vista previa – no se guardó',
+  copied:'Copiado ✓', linkCopied:'Enlace copiado ✓', addrCopied:'Dirección copiada ✓', copy:'Copiar', appleMaps:'Apple Maps', googleMaps:'Google Maps',
+  completion:'Estado del trabajo', progress:'Avance', complete:'{0}% terminado', dates:'Fechas', startDate:'Fecha de inicio', crew:'Equipo asignado', add:'Agregar', tapName:'Toque un nombre para ponerlo en este trabajo.',
+  status:'Estado', waitFor:'Esperando que {0} firme.', opened:'La abrió {0}', times:' ({0} veces)', notYet:'Todavía no la ha abierto.',
+  payDep:'Pago y depósito', depPaidT:'Depósito pagado ({0})', noDep:'Esta cotización no tiene depósito.', totalL:'Total', paidL:'Pagado', balance:'Saldo pendiente', ownRecord:'Esto es solo su registro. Ningún dinero pasa por DuPage Quotes.',
+  notes:'Notas del trabajo', notesPh:'Código del portón, materiales, lo que tenga que recordar…', copyLink:'Copiar enlace del cliente',
+  sdSaved:'Fecha de inicio guardada ✓', dlSaved:'Fecha de entrega guardada ✓', depMarked:'Depósito marcado pagado ✓', depUnmarked:'Depósito marcado sin pagar', notesSaved:'Notas guardadas ✓',
+  evSent:'Cotización enviada a <b>{0}</b>', evOpened:'<b>{0}</b> abrió la cotización', views:'{0} vistas · ', evAcc:'<b>{0}</b> aceptó', evDep:'Depósito marcado pagado · <b>{0}</b>',
+  activity:'Actividad', nothingYet:'Nada todavía.', search:'Buscar', searchPh:'Cliente, dirección, trabajo o número', noMatch:'Sin resultados.',
+  reqTitle:'Pedir una nueva cotización', reqFree:'Gratis (una de sus primeras 2)', reqIntro:'Llene lo que sepa. Se abre un correo listo para mandar a DuPage Quotes y su cotización con su marca llega en unos 5 minutos.',
+  rName:'Nombre del cliente', rNamePh:'ej. María López', rAddr:'Dirección del trabajo', rAddrPh:'Calle, ciudad', rEmail:'Correo del cliente (opcional)', rJob:'El trabajo – qué va a hacer', rJobPh:'ej. Cambiar 2 tablas podridas de la terraza, volver a teñir…', rPrice:'Su precio', rSend:'Abrir correo a DuPage Quotes',
+  msgCopied:'Mensaje copiado – péguelo en un texto ✓', crewUpd:'Equipo actualizado ✓', crewName:'Nombre del trabajador', added:'{0} agregado ✓',
+  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', langName:'Español'} };
+const lastLang = ((D.quotes||[]).slice(-1)[0]||{}).language;
+let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : 'en');
+const t = (k, ...a) => String((TX[LANG]||TX.en)[k] ?? TX.en[k] ?? k).replace(/\{(\d)\}/g, (_, i) => a[i]);
+const LOC = () => LANG === 'es' ? 'es-US' : 'en-US';
+const fd = (d, o) => d.toLocaleDateString(LOC(), o);
 const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)).toLocaleString('en-US');
 const m2 = x => '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -311,14 +373,14 @@ document.getElementById('logo').innerHTML = D.logo ? '<img src="' + D.logo + '" 
 // Contractor logo reveal (after the DuPage Quotes loading screen), then the dashboard
 (()=>{ const r=document.getElementById('k-rev'); if(!r) return;
   r.innerHTML = '<div class="card">' + (D.logo ? '<img src="' + D.logo + '" alt="">' : '<div class="ini">' + ini(D.contractor) + '</div>') + '</div>'
-    + '<div class="nm"></div><div class="tg2">Quotes &amp; schedule</div>';
+    + '<div class="nm"></div><div class="tg2">' + t('reveal') + '</div>';
   r.querySelector('.nm').textContent = D.contractor;
   const kr = sessionStorage.getItem('kr_' + TOK);      // full reveal once per app open
   setTimeout(()=>{ r.classList.add('hide'); document.body.classList.add('ready'); (window.onReady||[]).forEach(f=>f()); setTimeout(()=>r.remove(),600); }, kr ? 900 : 2700);
   sessionStorage.setItem('kr_' + TOK, '1');
   if (D.logo) { const l=document.createElement('link'); l.rel='apple-touch-icon'; l.href=D.logo; document.head.appendChild(l); }
   const m=document.createElement('meta'); m.name='theme-color'; m.content=th.p; document.head.appendChild(m);
-  const t=document.createElement('meta'); t.name='apple-mobile-web-app-title'; t.content=D.contractor; document.head.appendChild(t);
+  const mt=document.createElement('meta'); mt.name='apple-mobile-web-app-title'; mt.content=D.contractor; document.head.appendChild(mt);
 })();
 document.getElementById('rf').onclick = ev => { ev.currentTarget.classList.add('spin'); sessionStorage.setItem('kr_' + TOK, '1'); setTimeout(()=>location.reload(), 350); };
 
@@ -331,14 +393,20 @@ const link = q => `${D.base||''}?q=${encodeURIComponent(q.quote_no)}&t=${encodeU
 const pubLink = q => { try { return new URL(link(q), location.href).href; } catch(x){ return link(q); } };
 const first = (D.contact && !/owner/i.test(D.contact)) ? D.contact.split(' ')[0] : '';
 const hr = new Date().getHours();
-document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + (first?`, ${first}`:'');
-document.getElementById('nm').textContent = D.contractor;
-document.getElementById('sub').textContent = new Date(today+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+function renderHeader(){
+  const g = id => document.getElementById(id);
+  g('hi').textContent = (hr<12?t('morning'):hr<17?t('afternoon'):t('evening')) + (first?`, ${first}`:'');
+  g('nm').textContent = D.contractor;
+  const sd = fd(new Date(today+'T12:00:00'),{weekday:'long',month:'long',day:'numeric'}); g('sub').textContent = sd.charAt(0).toUpperCase()+sd.slice(1);
+  g('livet').textContent = t('live'); g('foott').textContent = t('foot'); g('fabt').textContent = t('fab');
+  g('langt').textContent = LANG === 'es' ? 'ES' : 'EN'; document.documentElement.lang = LANG;
+}
+renderHeader();
 const sum = (a,f)=>a.reduce((s,q)=>s+Number(f(q)||0),0);
 const dnum = s => new Date(s+'T12:00:00');
 const days = q => q.iso ? Math.max(0,Math.round((dnum(today)-dnum(q.iso))/864e5)) : 0;
 const dTo = s => s ? Math.round((dnum(s)-dnum(today))/864e5) : null;
-const ago = iso => { if(!iso) return ''; const s=(Date.now()-new Date(iso))/1000; if(s<90) return 'just now'; if(s<3600) return Math.round(s/60)+'m ago'; if(s<86400) return Math.round(s/3600)+'h ago'; return Math.round(s/86400)+'d ago'; };
+const ago = iso => { if(!iso) return ''; const s=(Date.now()-new Date(iso))/1000; if(s<90) return t('justNow'); if(s<3600) return t('mAgo',Math.round(s/60)); if(s<86400) return t('hAgo',Math.round(s/3600)); return t('dAgo',Math.round(s/86400)); };
 const c = q => q.client||{};
 const addrOf = q => [c(q).address,c(q).city].filter(Boolean).join(', ');
 const depAmt = q => Math.round(Number(q.price)*Number(q.deposit_pct||0))/100;
@@ -368,10 +436,10 @@ let tt; const toast = msg => { const t=document.getElementById('toast'); t.textC
 const haptic = () => { if (navigator.vibrate) navigator.vibrate(8); };
 async function save(q, fields, okMsg){
   Object.assign(q, fields); if ('start_date' in fields) q.sd = fields.start_date;
-  if (typeof API === 'undefined') { toast('Preview only – not saved'); return; }
+  if (typeof API === 'undefined') { toast(t('preview')); return; }
   try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'dash_update',d:TOK,quote_no:q.quote_no,fields})});
-    const j = await r.json(); toast(j.ok ? (okMsg||'Saved ✓') : ('Not saved: '+(j.error||'try again'))); }
-  catch(x){ toast('No connection – not saved'); }
+    const j = await r.json(); toast(j.ok ? (okMsg||t('saved')) : t('notSaved', j.error||t('tryAgain'))); }
+  catch(x){ toast(t('noConn')); }
 }
 async function saveCrew(){
   if (typeof API === 'undefined') return;
@@ -380,12 +448,12 @@ async function saveCrew(){
 async function copyText(t, msg){
   try { await navigator.clipboard.writeText(t); }
   catch(x){ const a=document.createElement('textarea'); a.value=t; a.style.position='fixed'; a.style.opacity='0'; document.body.appendChild(a); a.select(); try{document.execCommand('copy');}catch(y){} a.remove(); }
-  haptic(); toast(msg||'Copied ✓');
+  haptic(); toast(msg||t('copied'));
 }
 const amap = a => 'https://maps.apple.com/?q=' + encodeURIComponent(a);
 const gmap = a => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a);
 const addrBlock = q => { const a = addrOf(q); if(!a) return ''; return `<div class="addr"><span class="at" data-act="copy" data-v="${e(a)}">${e(a)}</span>
-  <button class="mb" data-act="copy" data-v="${e(a)}">${I.copy}Copy</button><a class="mb" href="${amap(a)}" target="_blank" rel="noopener">${I.apple}Apple</a><a class="mb" href="${gmap(a)}" target="_blank" rel="noopener">${I.g}Google</a></div>`; };
+  <button class="mb" data-act="copy" data-v="${e(a)}">${I.copy}${t('copy')}</button><a class="mb" href="${amap(a)}" target="_blank" rel="noopener">${I.apple}Apple</a><a class="mb" href="${gmap(a)}" target="_blank" rel="noopener">${I.g}Google</a></div>`; };
 const crewMini = q => (q.crew&&q.crew.length) ? `<div class="crewmini">${q.crew.map(n=>`<span style="background:${colorOf(n)}" title="${e(n)}">${e(ini(n))}</span>`).join('')}</div>` : '';
 let pick; const pickDate = (val, cb) => { if(!pick){ pick=document.createElement('input'); pick.type='date'; pick.style.cssText='position:fixed;left:50%;top:40%;opacity:0;width:1px;height:1px'; document.body.appendChild(pick); }
   pick.value = val || today; pick.onchange = () => cb(pick.value);
@@ -394,12 +462,12 @@ let pick; const pickDate = (val, cb) => { if(!pick){ pick=document.createElement
 /* ---------- header: week strip + crew chips ---------- */
 const jobsOn = d => Q.filter(q=>q.status==='Accepted' && (q.sd===d || q.deadline===d));
 function renderWeek(){
-  const t = dnum(today), mon = new Date(t); mon.setDate(t.getDate() - ((t.getDay()+6)%7));
+  const t0 = dnum(today), mon = new Date(t0); mon.setDate(t0.getDate() - ((t0.getDay()+6)%7));
   let h=''; for (let i=0;i<14;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); const iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    h += `<button class="dy${iso===today?' today':''}${S.day===iso?' on':''}" data-act="day" data-v="${iso}">${d.toLocaleDateString('en-US',{weekday:'short'})}<b>${d.getDate()}</b>${jobsOn(iso).length?'<i></i>':''}</button>`; }
+    h += `<button class="dy${iso===today?' today':''}${S.day===iso?' on':''}" data-act="day" data-v="${iso}">${fd(d,{weekday:'short'}).replace('.','')}<b>${d.getDate()}</b>${jobsOn(iso).length?'<i></i>':''}</button>`; }
   document.getElementById('week').innerHTML = h;
   const names = [...new Set([].concat(CREW, ...Q.map(q=>q.crew||[])))];
-  document.getElementById('chips').innerHTML = names.length ? ['',...names].map(n=>`<button class="chip2${S.who===n?' on':''}" data-act="who" data-v="${e(n)}">${n?e(n):'All'}</button>`).join('') : '';
+  document.getElementById('chips').innerHTML = names.length ? ['',...names].map(n=>`<button class="chip2${S.who===n?' on':''}" data-act="who" data-v="${e(n)}">${n?e(n):t('all')}</button>`).join('') : '';
 }
 
 /* ---------- main ---------- */
@@ -410,77 +478,77 @@ function render(){
   if (S.day) upcoming = acc.filter(q=>q.sd===S.day || q.deadline===S.day).filter(q=>!S.who || (q.crew||[]).includes(S.who));
   const thisM = Q.filter(q=>q.iso.slice(0,7)===month), accM = thisM.filter(q=>q.status==='Accepted');
   const bill = sum(thisM,q=>q.fee==='Paid'?7.99:0);
-  const dayBox = q => { if(!q.sd) return `<div class="day nd" data-act="date" data-q="${e(q.quote_no)}">SET<br>DATE</div>`; const d=dnum(q.sd), n=dTo(q.sd);
-    return `<div class="day${n!=null&&n<=7&&n>=0?' soon':''}" data-act="date" data-q="${e(q.quote_no)}"><small>${d.toLocaleDateString('en-US',{month:'short'})}</small><b>${d.getDate()}</b><small>${d.toLocaleDateString('en-US',{weekday:'short'})}</small></div>`; };
-  const when = q => { const n=dTo(q.sd); if(n==null) return ''; return n===0?'<span class="tag br">Today</span>':n===1?'<span class="tag br">Tomorrow</span>':n<0?'<span class="tag br">Started</span>':`<span class="tag br">In ${n} days</span>`; };
-  const depTag = q => q.deposit_paid ? `<span class="tag ok">✓ Deposit ${m0(q.deposit_paid)} paid</span>` : (q.deposit_pct?`<span class="tag wait">Deposit ${m0(depAmt(q))} due</span>`:'');
+  const dayBox = q => { if(!q.sd) return `<div class="day nd" data-act="date" data-q="${e(q.quote_no)}">${t('setDate')}</div>`; const d=dnum(q.sd), n=dTo(q.sd);
+    return `<div class="day${n!=null&&n<=7&&n>=0?' soon':''}" data-act="date" data-q="${e(q.quote_no)}"><small>${fd(d,{month:'short'}).replace('.','')}</small><b>${d.getDate()}</b><small>${fd(d,{weekday:'short'}).replace('.','')}</small></div>`; };
+  const when = q => { const n=dTo(q.sd); if(n==null) return ''; return n===0?`<span class="tag br">${t('today')}</span>`:n===1?`<span class="tag br">${t('tomorrow')}</span>`:n<0?`<span class="tag br">${t('started')}</span>`:`<span class="tag br">${t('inDays',n)}</span>`; };
+  const depTag = q => q.deposit_paid ? `<span class="tag ok">${t('depPaid',m0(q.deposit_paid))}</span>` : (q.deposit_pct?`<span class="tag wait">${t('depDue',m0(depAmt(q)))}</span>`:'');
   const jobCard = q => { const p=Number(q.progress||0); return `<div class="job">${dayBox(q)}<div>
      <div class="t"><span>${e(c(q).name)}</span><span class="num">${m0(q.price)}</span></div>
      <div class="p">${e(q.project)}</div>
-     <div class="m">${when(q)}${depTag(q)}${q.deadline?`<span class="tag br">Due ${dnum(q.deadline).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`:''}</div>
+     <div class="m">${when(q)}${depTag(q)}${q.deadline?`<span class="tag br">${t('due',fd(dnum(q.deadline),{month:'short',day:'numeric'}))}</span>`:''}</div>
      ${addrBlock(q)}${crewMini(q)}</div></div>
-     <div class="prog"><div class="ph"><span>Job progress</span><span id="pv_${e(q.quote_no)}">${p}%</span></div>
+     <div class="prog"><div class="ph"><span>${t('jobProgress')}</span><span id="pv_${e(q.quote_no)}">${p}%</span></div>
        <input type="range" class="rg" min="0" max="100" step="5" value="${p}" style="--v:${p}%" data-act="prog" data-q="${e(q.quote_no)}"></div>
-     <div class="arow"><button data-act="date" data-q="${e(q.quote_no)}">${I.cal}${q.sd?'Change date':'Schedule date'}</button>
-       <button data-act="job" data-q="${e(q.quote_no)}">${I.info}Job details</button>
-       <a href="${link(q)}&src=k">${I.doc}View quote</a></div>`; };
+     <div class="arow"><button data-act="date" data-q="${e(q.quote_no)}">${I.cal}${q.sd?t('changeDate'):t('schedDate')}</button>
+       <button data-act="job" data-q="${e(q.quote_no)}">${I.info}${t('jobDetails')}</button>
+       <a href="${link(q)}&src=k">${I.doc}${t('viewQuote')}</a></div>`; };
   const steps = q => { const v = !!q.viewed_at, sgn = q.status==='Accepted';
     return `<div class="trk"><span class="dt done">${I.tick}</span><span class="ln ${v?'done':''}"></span><span class="dt ${sgn?'done':v?'cur':''}">${sgn?I.tick:''}</span><span class="ln ${sgn?'done':''}"></span><span class="dt ${sgn?'done':''}">${sgn?I.tick:''}</span></div>
-      <div class="trkl"><span><b>Sent</b></span><span>${v?`<b>Viewed</b> ${ago(q.last_viewed_at||q.viewed_at)}${q.views>1?` · ${q.views}×`:''}`:'Not opened yet'}</span><span>Signed</span></div>`; };
+      <div class="trkl"><span><b>${t('sent')}</b></span><span>${v?`<b>${t('viewed')}</b> ${ago(q.last_viewed_at||q.viewed_at)}${q.views>1?` · ${q.views}×`:''}`:t('notOpened')}</span><span>${t('signed')}</span></div>`; };
   const wCard = q => { const d=days(q); return `<div class="wcard">
      <div class="t"><span>${e(c(q).name)}</span><span class="num">${m0(q.price)}</span></div>
      <div class="p" style="color:#3a3e45;font-size:14px">${e(q.project)}</div>
-     <div class="pend"><span class="num">${m0(q.price)}</span> pending signature</div>
+     <div class="pend"><span class="num">${m0(q.price)}</span> ${t('pending')}</div>
      ${steps(q)}
-     <div class="wmeta">Sent ${d===0?'today':d===1?'yesterday':d+' days ago'}${c(q).email?' to '+e(c(q).email):''}${d>=5?' · <b style="color:#b42318">give them a call</b>':''}</div>
+     <div class="wmeta">${t('sentWhen', d===0?t('sentToday'):d===1?t('sentYest'):t('daysAgo',d))}${c(q).email?t('to',e(c(q).email)):''}${d>=5?` · <b style="color:#b42318">${t('callThem')}</b>`:''}</div>
      ${addrBlock(q)}
-     <div class="btns"><button class="btn pri" data-act="nudge" data-q="${e(q.quote_no)}">${I.bellr}1-tap nudge client</button><button class="btn sec" data-act="adjust" data-q="${e(q.quote_no)}">${I.edit}Adjust quote</button></div></div>`; };
+     <div class="btns"><button class="btn pri" data-act="nudge" data-q="${e(q.quote_no)}">${I.bellr}${t('nudge')}</button><button class="btn sec" data-act="adjust" data-q="${e(q.quote_no)}">${I.edit}${t('adjust')}</button></div></div>`; };
   // chart: last 6 months, quoted vs won
   const mons = []; { const t=dnum(today); for(let i=5;i>=0;i--){ const d=new Date(t.getFullYear(), t.getMonth()-i, 1); mons.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')); } }
   const mq = mons.map(mo=>sum(Q.filter(q=>q.iso.slice(0,7)===mo),q=>q.price)), mw = mons.map(mo=>sum(Q.filter(q=>q.iso.slice(0,7)===mo && q.status==='Accepted'),q=>q.price));
   const mx = Math.max(1,...mq);
-  const deadl = acc.filter(q=>(q.deadline&&q.deadline>=today)||(q.sd&&q.sd>=today)).map(q=>({q, d:q.deadline||q.sd, k:q.deadline?'Deadline':'Start'})).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,6);
+  const deadl = acc.filter(q=>(q.deadline&&q.deadline>=today)||(q.sd&&q.sd>=today)).map(q=>({q, d:q.deadline||q.sd, k:q.deadline?'dl':'st'})).sort((a,b)=>a.d.localeCompare(b.d)).slice(0,6);
   const kpi = (i,cls,ic,l,val,raw,s) => `<div class="kpi rise ${cls}" style="--i:${i};--d0:120ms"><div class="l">${I[ic]}${l}</div><b class="num" data-to="${raw}" data-fmt="${val}">${val==='n'?raw:m0(raw)}</b><small>${s}</small></div>`;
   document.getElementById('main').innerHTML = `
   <div class="kpis">
-   ${kpi(0,'hl','cal','Upcoming jobs','n',acc.filter(q=>!q.sd||q.sd>=today).length,'accepted &amp; booked')}
-   ${kpi(1,'','clock','Waiting on clients','n',waiting.length,m0(sum(waiting,q=>q.price))+' not signed yet')}
-   ${kpi(2,'','check','Won this month','$',sum(accM,q=>q.price),accM.length+' of '+thisM.length+' quotes')}
-   <div class="kpi rise" style="--i:3;--d0:120ms"><div class="l">${I.bill}Your bill</div><b class="num">${m2(bill)}</b><small>${thisM.filter(q=>q.fee==='Free').length} free · ${thisM.filter(q=>q.fee==='Paid').length} × $7.99</small></div>
+   ${kpi(0,'hl','cal',t('upcoming'),'n',acc.filter(q=>!q.sd||q.sd>=today).length,t('upSub'))}
+   ${kpi(1,'','clock',t('waiting'),'n',waiting.length,t('notSigned',m0(sum(waiting,q=>q.price))))}
+   ${kpi(2,'','check',t('won'),'$',sum(accM,q=>q.price),t('ofQuotes',accM.length,thisM.length))}
+   <div class="kpi rise" style="--i:3;--d0:120ms"><div class="l">${I.bill}${t('bill')}</div><b class="num">${m2(bill)}</b><small>${t('freeN',thisM.filter(q=>q.fee==='Free').length)} · ${thisM.filter(q=>q.fee==='Paid').length} × $7.99</small></div>
   </div>
   <div class="seg rise" style="--i:4;--d0:120ms" id="seg"><span class="thumb" id="thumb" style="transform:translateX(${S.tab*100}%)"></span>
-   <button class="${S.tab===0?'on':''}" data-act="tab" data-v="0">Schedule<em>${upcoming.length}</em></button><button class="${S.tab===1?'on':''}" data-act="tab" data-v="1">Waiting<em>${waiting.length}</em></button><button class="${S.tab===2?'on':''}" data-act="tab" data-v="2">All quotes</button></div>
+   <button class="${S.tab===0?'on':''}" data-act="tab" data-v="0">${t('schedule')}<em>${upcoming.length}</em></button><button class="${S.tab===1?'on':''}" data-act="tab" data-v="1">${t('waitTab')}<em>${waiting.length}</em></button><button class="${S.tab===2?'on':''}" data-act="tab" data-v="2">${t('allQuotes')}</button></div>
   <div class="grid"><div>
-   <div class="panel ${S.tab===0?'on':''} rise" id="p-sched" style="--i:5;--d0:120ms"><div class="card"><div class="ch"><h2>${S.day?dnum(S.day).toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}):'Upcoming jobs'}</h2><span>${upcoming.length} job${upcoming.length===1?'':'s'}</span></div>
-    ${(S.day||S.who)?`<div class="filt"><span>Filtered${S.who?' · '+e(S.who):''}</span><button data-act="clear">Show all</button></div>`:''}
-    ${upcoming.length?upcoming.map(jobCard).join('<div style="height:1px;background:var(--line);margin:6px 0"></div>'):`<div class="empty"><b>🗓️</b>${S.day||S.who?'Nothing scheduled here.':'No booked jobs yet.<br>They show up here the moment a client taps Accept.'}</div>`}
+   <div class="panel ${S.tab===0?'on':''} rise" id="p-sched" style="--i:5;--d0:120ms"><div class="card"><div class="ch"><h2>${S.day?fd(dnum(S.day),{weekday:'long',month:'short',day:'numeric'}):t('upcoming')}</h2><span>${upcoming.length===1?t('job1'):t('jobsN',upcoming.length)}</span></div>
+    ${(S.day||S.who)?`<div class="filt"><span>${t('filtered')}${S.who?' · '+e(S.who):''}</span><button data-act="clear">${t('showAll')}</button></div>`:''}
+    ${upcoming.length?upcoming.map(jobCard).join('<div style="height:1px;background:var(--line);margin:6px 0"></div>'):`<div class="empty"><b>🗓️</b>${S.day||S.who?t('nothingHere'):t('noBooked')}</div>`}
    </div></div>
-   <div class="panel ${S.tab===2?'on':''}" id="p-all"><div class="card"><div class="ch"><h2>All quotes</h2><span>${Q.length} total</span></div>
+   <div class="panel ${S.tab===2?'on':''}" id="p-all"><div class="card"><div class="ch"><h2>${t('allQuotes')}</h2><span>${t('total',Q.length)}</span></div>
     ${Q.length?Q.slice().sort((a,b)=>b.iso.localeCompare(a.iso)).map(q=>`<a class="row" data-act="job" data-q="${e(q.quote_no)}" href="#"><div class="av">${ini(c(q).name)}</div>
      <div class="mid"><div class="n">${e(c(q).name)}</div><div class="s">${e(q.date)} · ${e(q.project)}</div></div>
-     <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?(q.deposit_paid?'<span class="tag ok">Deposit paid</span>':'<span class="tag ok">Accepted</span>'):(q.viewed_at?'<span class="tag br">Viewed</span>':'<span class="tag wait">Waiting</span>')}</div>${chev}</a>`).join(''):'<div class="empty">No quotes yet.</div>'}
+     <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?(q.deposit_paid?`<span class="tag ok">${t('tagDep')}</span>`:`<span class="tag ok">${t('tagAcc')}</span>`):(q.viewed_at?`<span class="tag br">${t('tagViewed')}</span>`:`<span class="tag wait">${t('tagWait')}</span>`)}</div>${chev}</a>`).join(''):`<div class="empty">${t('noQuotes')}</div>`}
    </div></div>
   </div><div>
-   <div class="panel ${S.tab===1?'on':''}" id="p-wait"><div class="card"><div class="ch"><h2>Waiting on clients</h2><span>${m0(sum(waiting,q=>q.price))}</span></div>
-    ${waiting.length?waiting.sort((a,b)=>a.iso.localeCompare(b.iso)).map(wCard).join(''):'<div class="empty"><b>👍</b>Nothing waiting.</div>'}
+   <div class="panel ${S.tab===1?'on':''}" id="p-wait"><div class="card"><div class="ch"><h2>${t('waiting')}</h2><span>${m0(sum(waiting,q=>q.price))}</span></div>
+    ${waiting.length?waiting.sort((a,b)=>a.iso.localeCompare(b.iso)).map(wCard).join(''):`<div class="empty"><b>👍</b>${t('nothingWait')}</div>`}
    </div></div>
-   ${deadl.length?`<div class="card rise" style="--i:6;--d0:120ms;margin-top:14px"><div class="ch"><h2>Project deadlines</h2><span>next ${deadl.length}</span></div>
-    ${deadl.map(x=>`<div class="dl" data-act="job" data-q="${e(x.q.quote_no)}"><div class="ic">${x.k==='Deadline'?I.flag:I.cal}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600">${e(c(x.q).name)}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${x.k} · ${dnum(x.d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'})}</div></div><span class="tag br">${dTo(x.d)===0?'Today':'In '+dTo(x.d)+'d'}</span></div>`).join('')}</div>`:''}
-   <div class="card rise" style="--i:7;--d0:120ms;margin-top:14px"><div class="ch"><h2>${new Date(today+'T12:00:00').toLocaleDateString('en-US',{month:'long'})} so far</h2><span>last 6 months</span></div>
-    <div class="bars" id="bars">${mons.map((mo,i)=>`<div class="c"><div class="st" title="${m0(mq[i])} quoted · ${m0(mw[i])} won"><div class="q" style="height:${(mq[i]-mw[i])/mx*100}%"></div><div class="w" style="height:${mw[i]/mx*100}%"></div></div><small>${dnum(mo+'-15').toLocaleDateString('en-US',{month:'short'})}</small></div>`).join('')}</div>
-    <div class="legend"><span><i style="background:var(--g)"></i>Won</span><span><i style="background:var(--tint2)"></i>Quoted, not signed</span></div>
+   ${deadl.length?`<div class="card rise" style="--i:6;--d0:120ms;margin-top:14px"><div class="ch"><h2>${t('deadlines')}</h2><span>${t('nextN',deadl.length)}</span></div>
+    ${deadl.map(x=>`<div class="dl" data-act="job" data-q="${e(x.q.quote_no)}"><div class="ic">${x.k==='dl'?I.flag:I.cal}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600">${e(c(x.q).name)}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${x.k==='dl'?t('deadline'):t('start')} · ${fd(dnum(x.d),{weekday:'short',month:'short',day:'numeric'})}</div></div><span class="tag br">${dTo(x.d)===0?t('today'):t('inD',dTo(x.d))}</span></div>`).join('')}</div>`:''}
+   <div class="card rise" style="--i:7;--d0:120ms;margin-top:14px"><div class="ch"><h2>${(m=>m.charAt(0).toUpperCase()+m.slice(1))(t('soFar',fd(new Date(today+'T12:00:00'),{month:'long'})))}</h2><span>${t('last6')}</span></div>
+    <div class="bars" id="bars">${mons.map((mo,i)=>`<div class="c"><div class="st" title="${m0(mq[i])} quoted · ${m0(mw[i])} won"><div class="q" style="height:${(mq[i]-mw[i])/mx*100}%"></div><div class="w" style="height:${mw[i]/mx*100}%"></div></div><small>${fd(dnum(mo+'-15'),{month:'short'}).replace('.','')}</small></div>`).join('')}</div>
+    <div class="legend"><span><i style="background:var(--g)"></i>${t('wonL')}</span><span><i style="background:var(--tint2)"></i>${t('quotedL')}</span></div>
     <div class="ml">
-     <div><span>Quotes sent</span><span class="num">${thisM.length}</span></div>
-     <div><span>Value quoted</span><span class="num">${m0(sum(thisM,q=>q.price))}</span></div>
-     <div><span>Accepted by clients</span><span class="num">${m0(sum(accM,q=>q.price))}</span></div>
-     <div class="bill"><span>DuPage Quotes bill</span><span class="num">${m2(bill)}</span></div>
+     <div><span>${t('qSent')}</span><span class="num">${thisM.length}</span></div>
+     <div><span>${t('qValue')}</span><span class="num">${m0(sum(thisM,q=>q.price))}</span></div>
+     <div><span>${t('qAcc')}</span><span class="num">${m0(sum(accM,q=>q.price))}</span></div>
+     <div class="bill"><span>${t('dqBill')}</span><span class="num">${m2(bill)}</span></div>
     </div></div>
   </div></div>`;
   document.querySelectorAll('input.rg').forEach(r=>{ r.oninput = () => { r.style.setProperty('--v', r.value+'%'); const l=document.getElementById('pv_'+r.dataset.q); if(l) l.textContent=r.value+'%'; };
-    r.onchange = () => { const q=Q.find(x=>x.quote_no===r.dataset.q); haptic(); save(q,{progress:+r.value}, r.value==100?'Job marked 100% done 🎉':'Progress saved ✓'); }; });
+    r.onchange = () => { const q=Q.find(x=>x.quote_no===r.dataset.q); haptic(); save(q,{progress:+r.value}, r.value==100?t('done100'):t('progSaved')); }; });
   if (document.body.classList.contains('ready')) requestAnimationFrame(()=>{ const b=document.getElementById('bars'); if(b) b.classList.add('go'); });
   renderWeek();
-  const fee = Q.length < 2 ? 'free' : '$7.99'; document.getElementById('fabp').textContent = '· ' + fee;
+  const fee = Q.length < 2 ? t('free') : '$7.99'; document.getElementById('fabp').textContent = '· ' + fee;
   const seen = localStorage.getItem('seen_'+TOK) || ''; document.getElementById('bdot').hidden = !events().some(ev=>ev.t>seen);
 }
 
@@ -495,81 +563,83 @@ scrim.onclick = closeSheet;
 function jobSheet(q){
   const a = addrOf(q), dep = depAmt(q), paid = Number(q.deposit_paid||0), p = Number(q.progress||0);
   const roster = [...new Set([].concat(CREW, q.crew||[]))];
-  openSheet('Job details', `
+  openSheet(t('jobDetails'), `
    <div style="font-size:14px;color:var(--mute);font-weight:600">${e(c(q).name)} · ${e(q.quote_no)}</div>
    <div class="jd-t">${e(q.project)}</div>
    ${a?`<div class="addr"><span class="at" data-act="copy" data-v="${e(a)}">${I.pin.replace('<svg','<svg width="14" height="14" style="color:var(--g);vertical-align:-2px"')} ${e(a)}</span></div>
-   <div class="mapcard"><div class="pin">${I.pin}</div><div class="mbs"><button class="mb" data-act="copy" data-v="${e(a)}">${I.copy}Copy</button><a class="mb" href="${amap(a)}" target="_blank" rel="noopener">${I.apple}Apple Maps</a><a class="mb" href="${gmap(a)}" target="_blank" rel="noopener">${I.g}Google Maps</a></div></div>`:''}
+   <div class="mapcard"><div class="pin">${I.pin}</div><div class="mbs"><button class="mb" data-act="copy" data-v="${e(a)}">${I.copy}${t('copy')}</button><a class="mb" href="${amap(a)}" target="_blank" rel="noopener">${I.apple}${t('appleMaps')}</a><a class="mb" href="${gmap(a)}" target="_blank" rel="noopener">${I.g}${t('googleMaps')}</a></div></div>`:''}
    ${q.status==='Accepted'?`
-   <div class="sbox"><h4>${I.check}Completion status</h4>
-     <div class="ph" style="display:flex;justify-content:space-between;font-size:13px;font-weight:600"><span>Progress</span><span id="sp">${p}% complete</span></div>
+   <div class="sbox"><h4>${I.check}${t('completion')}</h4>
+     <div class="ph" style="display:flex;justify-content:space-between;font-size:13px;font-weight:600"><span>${t('progress')}</span><span id="sp">${t('complete',p)}</span></div>
      <input type="range" class="rg" id="srg" min="0" max="100" step="5" value="${p}" style="--v:${p}%"></div>
-   <div class="sbox"><h4>${I.cal}Dates</h4>
-     <div class="fld"><span>Start date</span><input type="date" id="fsd" value="${e(q.sd||'')}"></div>
-     <div class="fld"><span>Deadline</span><input type="date" id="fdl" value="${e(q.deadline||'')}"></div></div>
-   <div class="sbox"><h4>${I.crew}Crew assignment</h4>
+   <div class="sbox"><h4>${I.cal}${t('dates')}</h4>
+     <div class="fld"><span>${t('startDate')}</span><input type="date" id="fsd" value="${e(q.sd||'')}"></div>
+     <div class="fld"><span>${t('deadline')}</span><input type="date" id="fdl" value="${e(q.deadline||'')}"></div></div>
+   <div class="sbox"><h4>${I.crew}${t('crew')}</h4>
      <div class="crew" id="crew">${roster.map(n=>`<button class="cm${(q.crew||[]).includes(n)?' on':''}" data-act="crewt" data-v="${e(n)}"><span class="av2" style="background:${colorOf(n)}">${e(ini(n))}</span>${e(n)}</button>`).join('')}
-       <button class="cm" data-act="crewadd"><span class="add">+</span>Add</button></div>
-     <div style="font-size:12px;color:var(--mute);margin-top:8px">Tap a name to put them on this job.</div></div>`:`
-   <div class="sbox"><h4>${I.clock}Status</h4><div style="font-size:14px">Waiting for ${e(c(q).name)} to sign. ${q.viewed_at?`They opened it ${ago(q.last_viewed_at||q.viewed_at)}${q.views>1?` (${q.views} times)`:''}.`:'They haven’t opened it yet.'}</div>
-     <div class="btns"><button class="btn pri" data-act="nudge" data-q="${e(q.quote_no)}">${I.bellr}Nudge client</button><button class="btn sec" data-act="adjust" data-q="${e(q.quote_no)}">${I.edit}Adjust quote</button></div></div>`}
-   <div class="sbox"><h4>${I.money}Payment &amp; deposit</h4>
-     ${dep||paid?`<label class="tgl"><span>Deposit paid (${m0(dep||paid)})</span><span class="sw"><input type="checkbox" id="fdp" ${paid?'checked':''}><span></span></span></label>`:'<div style="font-size:13.5px;color:var(--mute)">No deposit on this quote.</div>'}
-     <div class="bl" style="margin-top:10px"><div><span>Total</span><span class="num">${m0(q.price)}</span></div><div><span>Paid</span><span class="num" id="bpaid">${m0(paid)}</span></div><div class="due"><span>Balance due</span><span class="num" id="bdue">${m0(q.price-paid)}</span></div></div>
-     <div style="font-size:11.5px;color:var(--mute);margin-top:6px">This is your own record. No money moves through DuPage Quotes.</div></div>
-   ${q.status==='Accepted'?`<div class="sbox"><h4>${I.doc}Job notes</h4><textarea class="nt" id="fnt" rows="3" placeholder="Gate code, materials, anything to remember…">${e(q.job_notes||'')}</textarea></div>`:''}
-   <div class="btns" style="grid-template-columns:1fr 1fr"><a class="btn sec" href="${link(q)}&src=k">${I.doc}View quote</a><button class="btn sec" data-act="copy" data-v="${e(pubLink(q))}">${I.copy}Copy client link</button></div>`);
+       <button class="cm" data-act="crewadd"><span class="add">+</span>${t('add')}</button></div>
+     <div style="font-size:12px;color:var(--mute);margin-top:8px">${t('tapName')}</div></div>`:`
+   <div class="sbox"><h4>${I.clock}${t('status')}</h4><div style="font-size:14px">${t('waitFor',e(c(q).name))} ${q.viewed_at?`${t('opened',ago(q.last_viewed_at||q.viewed_at))}${q.views>1?t('times',q.views):''}.`:t('notYet')}</div>
+     <div class="btns"><button class="btn pri" data-act="nudge" data-q="${e(q.quote_no)}">${I.bellr}${t('nudgeShort')}</button><button class="btn sec" data-act="adjust" data-q="${e(q.quote_no)}">${I.edit}${t('adjust')}</button></div></div>`}
+   <div class="sbox"><h4>${I.money}${t('payDep')}</h4>
+     ${dep||paid?`<label class="tgl"><span>${t('depPaidT',m0(dep||paid))}</span><span class="sw"><input type="checkbox" id="fdp" ${paid?'checked':''}><span></span></span></label>`:`<div style="font-size:13.5px;color:var(--mute)">${t('noDep')}</div>`}
+     <div class="bl" style="margin-top:10px"><div><span>${t('totalL')}</span><span class="num">${m0(q.price)}</span></div><div><span>${t('paidL')}</span><span class="num" id="bpaid">${m0(paid)}</span></div><div class="due"><span>${t('balance')}</span><span class="num" id="bdue">${m0(q.price-paid)}</span></div></div>
+     <div style="font-size:11.5px;color:var(--mute);margin-top:6px">${t('ownRecord')}</div></div>
+   ${q.status==='Accepted'?`<div class="sbox"><h4>${I.doc}${t('notes')}</h4><textarea class="nt" id="fnt" rows="3" placeholder="${t('notesPh')}">${e(q.job_notes||'')}</textarea></div>`:''}
+   <div class="btns" style="grid-template-columns:1fr 1fr"><a class="btn sec" href="${link(q)}&src=k">${I.doc}${t('viewQuote')}</a><button class="btn sec" data-act="copy" data-v="${e(pubLink(q))}">${I.copy}${t('copyLink')}</button></div>`);
   sheet.dataset.q = q.quote_no;
   const g = id => document.getElementById(id);
-  if (g('srg')) { g('srg').oninput = ev => { ev.target.style.setProperty('--v', ev.target.value+'%'); g('sp').textContent = ev.target.value+'% complete'; };
-    g('srg').onchange = ev => { haptic(); save(q,{progress:+ev.target.value}, ev.target.value==100?'Job marked 100% done 🎉':'Progress saved ✓'); render(); }; }
-  if (g('fsd')) g('fsd').onchange = ev => { save(q,{start_date:ev.target.value},'Start date saved ✓'); render(); };
-  if (g('fdl')) g('fdl').onchange = ev => { save(q,{deadline:ev.target.value},'Deadline saved ✓'); render(); };
-  if (g('fdp')) g('fdp').onchange = ev => { const v = ev.target.checked ? (dep||paid) : 0; haptic(); save(q,{deposit_paid:v}, v?'Deposit marked paid ✓':'Deposit marked unpaid');
+  if (g('srg')) { g('srg').oninput = ev => { ev.target.style.setProperty('--v', ev.target.value+'%'); g('sp').textContent = t('complete', ev.target.value); };
+    g('srg').onchange = ev => { haptic(); save(q,{progress:+ev.target.value}, ev.target.value==100?t('done100'):t('progSaved')); render(); }; }
+  if (g('fsd')) g('fsd').onchange = ev => { save(q,{start_date:ev.target.value},t('sdSaved')); render(); };
+  if (g('fdl')) g('fdl').onchange = ev => { save(q,{deadline:ev.target.value},t('dlSaved')); render(); };
+  if (g('fdp')) g('fdp').onchange = ev => { const v = ev.target.checked ? (dep||paid) : 0; haptic(); save(q,{deposit_paid:v}, v?t('depMarked'):t('depUnmarked'));
     g('bpaid').textContent=m0(v); g('bdue').textContent=m0(q.price-v); render(); };
-  if (g('fnt')) { let nt; g('fnt').oninput = ev => { clearTimeout(nt); nt=setTimeout(()=>save(q,{job_notes:ev.target.value},'Notes saved ✓'),900); }; }
+  if (g('fnt')) { let nt; g('fnt').oninput = ev => { clearTimeout(nt); nt=setTimeout(()=>save(q,{job_notes:ev.target.value},t('notesSaved')),900); }; }
 }
 
 function events(){
   const out=[]; Q.forEach(q=>{ const n=c(q).name;
-    if (q.iso) out.push({t:q.iso+'T09:00:00', ic:'📄', bg:'var(--tint)', h:`Quote sent to <b>${e(n)}</b>`, s:m0(q.price)+' · '+e(q.project), q});
-    if (q.viewed_at) out.push({t:q.last_viewed_at||q.viewed_at, ic:'👀', bg:'#eef6ff', h:`<b>${e(n)}</b> opened the quote`, s:(q.views>1?q.views+' views · ':'')+ago(q.last_viewed_at||q.viewed_at), q});
-    if (q.status==='Accepted') { const at = q.accepted_at ? new Date(q.accepted_at) : null; out.push({t:(at&&!isNaN(at))?at.toISOString():(q.iso+'T10:00:00'), ic:'✅', bg:'#eafaf0', h:`<b>${e(n)}</b> accepted`, s:m0(q.price)+(q.accepted_at?' · '+e(q.accepted_at):''), q}); }
-    if (q.deposit_paid) out.push({t:q.dash_updated||(q.iso+'T11:00:00'), ic:'💵', bg:'#fff6e5', h:`Deposit marked paid · <b>${e(n)}</b>`, s:m0(q.deposit_paid), q});
+    if (q.iso) out.push({t:q.iso+'T09:00:00', ic:'📄', bg:'var(--tint)', h:t('evSent',e(n)), s:m0(q.price)+' · '+e(q.project), q});
+    if (q.viewed_at) out.push({t:q.last_viewed_at||q.viewed_at, ic:'👀', bg:'#eef6ff', h:t('evOpened',e(n)), s:(q.views>1?t('views',q.views):'')+ago(q.last_viewed_at||q.viewed_at), q});
+    if (q.status==='Accepted') { const at = q.accepted_at ? new Date(q.accepted_at) : null; out.push({t:(at&&!isNaN(at))?at.toISOString():(q.iso+'T10:00:00'), ic:'✅', bg:'#eafaf0', h:t('evAcc',e(n)), s:m0(q.price)+(q.accepted_at?' · '+e(q.accepted_at):''), q}); }
+    if (q.deposit_paid) out.push({t:q.dash_updated||(q.iso+'T11:00:00'), ic:'💵', bg:'#fff6e5', h:t('evDep',e(n)), s:m0(q.deposit_paid), q});
   });
   return out.sort((a,b)=>String(b.t).localeCompare(String(a.t))).slice(0,25);
 }
 function bellSheet(){
   const ev = events();
-  openSheet('Activity', `<div class="sbox" style="margin-top:0">${ev.length?ev.map(x=>`<div class="ev" data-act="job" data-q="${e(x.q.quote_no)}" style="cursor:pointer"><div class="ic" style="background:${x.bg}">${x.ic}</div><div><div style="font-size:14px">${x.h}</div><div class="s">${x.s}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`);
+  openSheet(t('activity'), `<div class="sbox" style="margin-top:0">${ev.length?ev.map(x=>`<div class="ev" data-act="job" data-q="${e(x.q.quote_no)}" style="cursor:pointer"><div class="ic" style="background:${x.bg}">${x.ic}</div><div><div style="font-size:14px">${x.h}</div><div class="s">${x.s}</div></div></div>`).join(''):`<div class="empty">${t('nothingYet')}</div>`}</div>`);
   localStorage.setItem('seen_'+TOK, new Date().toISOString()); document.getElementById('bdot').hidden = true;
 }
 function searchSheet(){
-  openSheet('Search', `<input class="tx" id="sq" placeholder="Client, address, job or quote #" autocomplete="off"><div class="sbox" id="sr" style="padding-top:4px;padding-bottom:4px"></div>`);
-  const run = () => { const t = document.getElementById('sq').value.trim().toLowerCase();
-    const res = Q.filter(q=>!t || [c(q).name,addrOf(q),q.project,q.quote_no].join(' ').toLowerCase().includes(t));
-    document.getElementById('sr').innerHTML = res.length ? res.map(q=>`<a class="row" data-act="job" data-q="${e(q.quote_no)}" href="#"><div class="av">${ini(c(q).name)}</div><div class="mid"><div class="n">${e(c(q).name)}</div><div class="s">${e(addrOf(q)||q.project)}</div></div><div class="r"><div class="num">${m0(q.price)}</div></div>${chev}</a>`).join('') : '<div class="empty">No matches.</div>'; };
+  openSheet(t('search'), `<input class="tx" id="sq" placeholder="${t('searchPh')}" autocomplete="off"><div class="sbox" id="sr" style="padding-top:4px;padding-bottom:4px"></div>`);
+  const run = () => { const qs = document.getElementById('sq').value.trim().toLowerCase();
+    const res = Q.filter(q=>!qs || [c(q).name,addrOf(q),q.project,q.quote_no].join(' ').toLowerCase().includes(qs));
+    document.getElementById('sr').innerHTML = res.length ? res.map(q=>`<a class="row" data-act="job" data-q="${e(q.quote_no)}" href="#"><div class="av">${ini(c(q).name)}</div><div class="mid"><div class="n">${e(c(q).name)}</div><div class="s">${e(addrOf(q)||q.project)}</div></div><div class="r"><div class="num">${m0(q.price)}</div></div>${chev}</a>`).join('') : `<div class="empty">${t('noMatch')}</div>`; };
   document.getElementById('sq').oninput = run; run(); setTimeout(()=>document.getElementById('sq').focus(), 350);
 }
 function reqSheet(){
-  const fee = Q.length < 2 ? 'Free (one of your first 2)' : '$7.99';
-  openSheet('Request a new estimate', `
-   <div style="font-size:13.5px;color:var(--mute);margin:-4px 2px 4px">Fill in what you know. It opens a ready-to-send email to DuPage Quotes, and your branded quote comes back in about 5 minutes. <b style="color:var(--ink)">${fee}</b></div>
-   <label class="fl">Client name</label><input class="tx" id="r1" placeholder="e.g. Maria Lopez">
-   <label class="fl">Job address</label><input class="tx" id="r2" placeholder="Street, city">
-   <label class="fl">Client email (optional)</label><input class="tx" id="r3" placeholder="client@email.com" inputmode="email">
-   <label class="fl">The job – what you'll do</label><textarea class="nt" id="r4" rows="3" placeholder="e.g. Replace 2 rotted deck boards, re-stain…"></textarea>
-   <label class="fl">Your price</label><input class="tx" id="r5" placeholder="$" inputmode="decimal">
-   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" data-act="reqsend">Open email to DuPage Quotes</button></div>`);
+  const fee = Q.length < 2 ? t('reqFree') : '$7.99';
+  openSheet(t('reqTitle'), `
+   <div style="font-size:13.5px;color:var(--mute);margin:-4px 2px 4px">${t('reqIntro')} <b style="color:var(--ink)">${fee}</b></div>
+   <label class="fl">${t('rName')}</label><input class="tx" id="r1" placeholder="${t('rNamePh')}">
+   <label class="fl">${t('rAddr')}</label><input class="tx" id="r2" placeholder="${t('rAddrPh')}">
+   <label class="fl">${t('rEmail')}</label><input class="tx" id="r3" placeholder="client@email.com" inputmode="email">
+   <label class="fl">${t('rJob')}</label><textarea class="nt" id="r4" rows="3" placeholder="${t('rJobPh')}"></textarea>
+   <label class="fl">${t('rPrice')}</label><input class="tx" id="r5" placeholder="$" inputmode="decimal">
+   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" data-act="reqsend">${t('rSend')}</button></div>`);
 }
 
 /* ---------- actions ---------- */
 function nudge(q){
   const n = (c(q).name||'').split(/[ &]/)[0] || 'there';
-  const msg = `Hi ${n}, just checking in on the ${D.doc_title?D.doc_title.toLowerCase():'quote'} for ${q.project}. You can review and accept it here: ${pubLink(q)} – ${first||D.contractor}`;
+  const msg = /span/i.test(q.language||'')
+    ? `Hola ${n}, le escribo para dar seguimiento a la cotización de ${q.project}. Puede revisarla y aceptarla aquí: ${pubLink(q)} – ${first||D.contractor}`
+    : `Hi ${n}, just checking in on the ${D.doc_title?D.doc_title.toLowerCase():'quote'} for ${q.project}. You can review and accept it here: ${pubLink(q)} – ${first||D.contractor}`;
   if (navigator.share) navigator.share({ text: msg }).catch(()=>{});
   else if (c(q).email) location.href = `mailto:${encodeURIComponent(c(q).email)}?subject=${encodeURIComponent('Your '+(D.doc_title?D.doc_title.toLowerCase():'quote')+' from '+D.contractor)}&body=${encodeURIComponent(msg)}`;
-  else copyText(msg, 'Message copied – paste it in a text ✓');
+  else copyText(msg, t('msgCopied'));
 }
 function adjust(q){
   const body = `Hi David,\n\nPlease adjust ${q.quote_no} for ${c(q).name} (${q.project}).\n\nWhat to change:\n\n\n– ${D.contractor}`;
@@ -586,12 +656,15 @@ document.addEventListener('click', ev => {
   else if (act==='day') { S.day = S.day===el.dataset.v ? '' : el.dataset.v; S.tab=0; haptic(); render(); document.getElementById('seg').scrollIntoView({behavior:'smooth',block:'start'}); }
   else if (act==='who') { S.who = el.dataset.v; S.tab=0; haptic(); render(); }
   else if (act==='clear') { S.day=''; S.who=''; render(); }
-  else if (act==='copy') copyText(el.dataset.v, /^https?:/.test(el.dataset.v)?'Link copied ✓':'Address copied ✓');
-  else if (act==='date' && q) pickDate(q.sd, v => { save(q,{start_date:v},'Start date saved ✓'); render(); });
+  else if (act==='copy') copyText(el.dataset.v, /^https?:/.test(el.dataset.v)?t('linkCopied'):t('addrCopied'));
+  else if (act==='date' && q) pickDate(q.sd, v => { save(q,{start_date:v},t('sdSaved')); render(); });
   else if (act==='job' && q) jobSheet(q);
   else if (act==='nudge' && q) nudge(q);
   else if (act==='adjust' && q) adjust(q);
   else if (act==='close') closeSheet();
+  else if (act==='lang') { LANG = LANG==='es' ? 'en' : 'es'; localStorage.setItem('lang_'+TOK, LANG); haptic(); renderHeader(); render();
+    if (sheet.classList.contains('on')) closeSheet(); toast(LANG==='es' ? 'Español ✓' : 'English ✓');
+    document.querySelectorAll('[data-to]').forEach(x=>{ x.textContent = x.dataset.fmt==='$' ? m0(+x.dataset.to) : x.dataset.to; }); const b=document.getElementById('bars'); if(b) b.classList.add('go'); }
   else if (act==='bell') bellSheet();
   else if (act==='search') searchSheet();
   else if (act==='req') reqSheet();
@@ -599,9 +672,9 @@ document.addEventListener('click', ev => {
     const body = `New job for DuPage Quotes\n\nContractor: ${D.contractor}\nClient: ${v('r1')}\nAddress: ${v('r2')}\nClient email: ${v('r3')}\nJob: ${v('r4')}\nPrice: ${v('r5')}\n`;
     location.href = `mailto:dupagequotes@gmail.com?subject=${encodeURIComponent('New quote – '+D.contractor+(v('r1')?' – '+v('r1'):''))}&body=${encodeURIComponent(body)}`; }
   else if (act==='crewt') { const jq = Q.find(x=>x.quote_no===sheet.dataset.q); if(!jq) return; const n = el.dataset.v; const cur = new Set(jq.crew||[]);
-    cur.has(n) ? cur.delete(n) : cur.add(n); el.classList.toggle('on'); haptic(); save(jq,{crew:[...cur]},'Crew updated ✓'); render(); }
-  else if (act==='crewadd') { const n = (prompt('Crew member name') || '').trim().slice(0,30); if(!n) return; if(!CREW.includes(n)) { CREW.push(n); saveCrew(); }
-    const jq = Q.find(x=>x.quote_no===sheet.dataset.q); if (jq) { const cur=new Set(jq.crew||[]); cur.add(n); save(jq,{crew:[...cur]},'Added '+n+' ✓'); render(); jobSheet(jq); } }
+    cur.has(n) ? cur.delete(n) : cur.add(n); el.classList.toggle('on'); haptic(); save(jq,{crew:[...cur]},t('crewUpd')); render(); }
+  else if (act==='crewadd') { const n = (prompt(t('crewName')) || '').trim().slice(0,30); if(!n) return; if(!CREW.includes(n)) { CREW.push(n); saveCrew(); }
+    const jq = Q.find(x=>x.quote_no===sheet.dataset.q); if (jq) { const cur=new Set(jq.crew||[]); cur.add(n); save(jq,{crew:[...cur]},t('added',n)); render(); jobSheet(jq); } }
 });
 render();
 (window.onReady = window.onReady || []).push(()=>setTimeout(()=>{
