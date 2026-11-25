@@ -76,7 +76,7 @@ async function api(params){ const r = await fetch(API + '?' + new URLSearchParam
 function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),650); } }
 function fail(msg){ hideLoad(); document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
 (async()=>{
-const j = await api({api:'quote', q:P.get('q')||'', t:P.get('t')||''});
+const j = await api({api:'quote', q:P.get('q')||'', t:P.get('t')||'', src:P.get('src')||''});
 if(!j.ok){ fail(j.error||'This quote link is not valid. Please contact your contractor.'); return; }
 const D = j.data; document.title = 'Quote ' + D.quote_no + ' – ' + D.contractor;
 
