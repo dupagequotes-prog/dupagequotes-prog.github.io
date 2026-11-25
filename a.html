@@ -245,6 +245,9 @@ document.addEventListener('click', async ev => {
     const sc = document.getElementById('sc_'+v); if (sc) pj.scope = [...sc.querySelectorAll('.ln')].map(l=>({lead:l.querySelector('.lead').value.trim(), text:l.querySelector('textarea').value.trim()})).filter(l=>l.lead||l.text);
     pj.items = [...document.getElementById('it_'+v).querySelectorAll('.ln')].map(l=>{ const am=l.querySelector('.amt').value.replace(/[$,\s]/g,''); const o={title:l.querySelector('.lead').value.trim(), description:l.querySelector('textarea').value.trim()}; if(am!=='') o.amount=Number(am); else o.detail='Included'; return o; }).filter(i=>i.title||i.description);
     if (!pj.items.length) { toast('Add at least one item'); return; }
+    if (pj.items.length === 1 && pj.items[0].amount != null && pj.price !== '') pj.items[0].amount = pj.price;   // one line: keep it equal to the total
+    const withAmt = pj.items.filter(i=>i.amount!=null), sumA = withAmt.reduce((t,i)=>t+Number(i.amount||0),0);
+    if (withAmt.length === pj.items.length && pj.items.length > 1 && pj.price !== '' && Math.abs(sumA - pj.price) > 0.5 && !confirm(`The line amounts add up to ${m0(sumA)} but the total is ${m0(pj.price)}. Save anyway? (It won't be built until they match.)`)) return;
     x.polished = pj; x.polish='Ready'; delete EDIT[v]; render(); post({action:'admin_req_edit', k:K, id:v, polished:pj}, 'Quote saved ✓'); }
   else if (act==='repolish' && x) { x.polish='Requested'; render(); post({action:'admin_req_edit', k:K, id:v, repolish:true}, 'Will be re-polished on the next run ✓'); }
   else if (act==='approve' && x) { const pj = x.polished||{}; if (!(Number(pj.price)>0) || !(pj.client&&pj.client.name)) { toast('Add the client name and price first (Edit quote)'); return; }
