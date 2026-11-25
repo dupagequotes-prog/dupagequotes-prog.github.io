@@ -6,6 +6,7 @@
 body{margin:0;background:#F1F4F2;font-family:-apple-system,Helvetica,Arial,sans-serif;color:#1f2723;font-size:15px;line-height:1.4}
 header{background:var(--g);color:#fff;padding:18px 18px 54px}
 .wrap{max-width:980px;margin:0 auto}
+.hrow{display:flex;justify-content:space-between;align-items:center;gap:16px}#logo img{max-height:64px;max-width:190px;background:#fff;border-radius:10px;padding:6px 10px;display:block}
 .brand{font-size:13px;font-weight:700;letter-spacing:.05em;opacity:.85}.brand span{color:var(--a)}
 h1{margin:6px 0 2px;font-size:24px}.sub{opacity:.8;font-size:14px}
 main{max-width:980px;margin:-38px auto 40px;padding:0 14px}
@@ -19,7 +20,7 @@ main{max-width:980px;margin:-38px auto 40px;padding:0 14px}
 .card h2 em{font-style:normal;font-size:12px;background:var(--a);color:#fff;border-radius:10px;padding:1px 8px}
 .job{display:grid;grid-template-columns:58px 1fr;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
 .job:first-of-type{border-top:0}
-.day{background:#EAF2EE;border-radius:10px;text-align:center;padding:6px 0;color:var(--g)}
+.day{background:color-mix(in srgb, var(--g) 10%, white);border-radius:10px;text-align:center;padding:6px 0;color:var(--g)}
 .day small{display:block;font-size:11px;font-weight:700;text-transform:uppercase}.day b{font-size:22px;line-height:1}
 .day.nd{background:#F4F4F4;color:#888;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:700}
 .job p{margin:0}.job .t{font-weight:700}.job .m{font-size:13px;color:var(--mute)}
@@ -27,7 +28,7 @@ main{max-width:980px;margin:-38px auto 40px;padding:0 14px}
 .row:first-of-type{border-top:0}
 a.v{color:var(--g);font-weight:700;text-decoration:none;font-size:13px;white-space:nowrap}
 .chip{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:10px;white-space:nowrap}
-.ok{background:#D8F0DF;color:#1e6b33}.wait{background:#FFF1D6;color:#8a5a00}
+.ok{background:color-mix(in srgb, var(--g) 14%, white);color:var(--g)}.wait{background:#FFF1D6;color:#8a5a00}
 table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);padding:6px 6px;border-bottom:2px solid var(--line)}
 td{padding:8px 6px;border-bottom:1px solid var(--line)}
 .empty{color:var(--mute);font-size:14px;padding:6px 0}
@@ -37,9 +38,9 @@ footer{text-align:center;font-size:12px;color:#8a968f;margin-bottom:30px}
 @media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}.hide-sm{display:none}}
 </style></head>
 <body>
-<header><div class="wrap"><div class="brand">DUPAGE <span>QUOTES</span></div><h1 id="hi"></h1><div class="sub" id="sub"></div></div></header>
+<header><div class="wrap hrow"><div><div class="brand" id="brand">MY QUOTES &amp; SCHEDULE</div><h1 id="hi"></h1><div class="sub" id="sub"></div></div><div id="logo"></div></div></header>
 <main id="main"></main>
-<footer>Updated automatically every time a quote is made or accepted · Questions? dupagequotes@gmail.com</footer>
+<footer>Updated automatically every time a quote is made or accepted · Powered by DuPage Quotes · dupagequotes@gmail.com</footer>
 <script>
 const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
 const P = new URLSearchParams(location.search);
@@ -54,6 +55,10 @@ const D = j.data; D.base = 'q.html'; document.title = D.contractor + ' – My Du
 const e = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)).toLocaleString('en-US');
 const m2 = x => '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const th = D.theme || {p:'#1F4D3A',a:'#C8892B',s:'#F1F4F2',f:'-apple-system,Helvetica,Arial,sans-serif'};
+const rs = document.documentElement.style; rs.setProperty('--g', th.p); rs.setProperty('--a', th.a); document.body.style.fontFamily = th.f;
+if (D.logo) document.getElementById('logo').innerHTML = '<img src="' + D.logo + '" alt="logo">';
+document.querySelectorAll('.day').forEach(()=>{});
 const today = D.today, month = today.slice(0,7);
 const Q = D.quotes.map(q=>Object.assign({},q,{iso:q.date_iso||'', sd:(q.start_date||'').slice(0,10)}));
 const link = q => `${D.base||''}?q=${encodeURIComponent(q.quote_no)}&t=${encodeURIComponent(q.token)}`;
