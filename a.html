@@ -60,7 +60,7 @@ audio{width:100%;margin-top:10px}
 .pvb{padding:10px 14px 12px;font-size:14px}.pvc{color:var(--mute);font-size:13px}.pvc b{color:var(--ink)}.pvp{font-weight:700;font-size:15.5px;margin:6px 0 2px;color:var(--c)}
 .pvb ul{margin:6px 0 8px;padding-left:18px}.pvb li{margin:3px 0}.pvb i{font-style:normal;color:var(--mute);font-weight:600}
 .pvt{display:flex;justify-content:space-between;border-top:2px solid var(--c);padding-top:6px;font-size:15px}.pvt b{color:var(--c)}.pvd{font-size:12.5px;color:var(--mute);margin-top:3px}
-.wait{margin-top:10px;font-size:13px;color:#6b21a8;background:#f6f0ff;border-radius:10px;padding:8px 10px}.wait.ok{color:#15803d;background:#ecf8f0}.wait a{color:inherit;font-weight:700}
+.wait{margin-top:10px;font-size:13px;color:#6b21a8;background:#f6f0ff;border-radius:10px;padding:8px 10px}.wait.idle{color:var(--mute);background:#f3f4f8}.wait.ok{color:#15803d;background:#ecf8f0}.wait a{color:inherit;font-weight:700}
 .fl{display:block;font-size:12px;font-weight:600;color:var(--mute);margin:10px 2px 4px}
 .tx{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font:500 14.5px Inter,-apple-system,sans-serif;background:#fff;outline:none;resize:vertical}.tx:focus{border-color:var(--n);box-shadow:0 0 0 3px rgba(34,43,69,.12)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
@@ -144,15 +144,15 @@ function render(){
   const Q = (D.quotes||[]).slice().sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
   const waiting = Q.filter(q=>q.status!=='Accepted'), month = (D.today||'').slice(0,7), accM = Q.filter(q=>q.status==='Accepted' && (q.date_iso||'').slice(0,7)===month);
   document.title = (newR.length ? '('+newR.length+') ' : '') + 'DuPage Quotes – HQ';
-  const list = RF==='open' ? open : RF==='new' ? newR : R;
+  const done = R.filter(x=>x.status==='Done'); const list = RF==='open' ? open : RF==='new' ? newR : RF==='done' ? done : R;
   const reqCard = x => { const a=[x.address].filter(Boolean).join(''), th = themeOf(x.contractor_token), pj = x.polished, ed = EDIT[x.id];
     const qdone = x.quote_no && Q.find(q=>q.quote_no===x.quote_no);
-    const pill = x.status==='Done' ? '<span class="tag t-done">Done</span>' : x.status==='Approved' ? '<span class="tag t-work">Approved – building</span>' : (x.polish==='Ready' ? '<span class="tag t-ready">✨ Polished</span>' : '<span class="tag t-new">'+(x.status==='Working'?'Polishing…':'New')+'</span>');
+    const pill = x.status==='Done' ? '<span class="tag t-done">Done</span>' : x.status==='Approved' ? '<span class="tag t-work">Approved – building</span>' : (x.polish==='Ready' ? '<span class="tag t-ready">✨ Polished</span>' : x.polish==='Requested' ? '<span class="tag t-work">Polishing…</span>' : '<span class="tag t-new">New</span>');
     if (ed === 'raw') return `<div class="card" id="rq_${e(x.id)}"><div class="rh"><div class="who">✏️ Edit request · ${e(x.contractor)}</div>${pill}</div>
       ${['client','address','email','price'].map(k=>`<label class="fl">${({client:'Client',address:'Address',email:'Client email',price:'Price'})[k]}</label><input class="tx" data-f="${k}" value="${e(x[k]||'')}">`).join('')}
       <label class="fl">Job</label><textarea class="tx" rows="3" data-f="job">${e(x.job||'')}</textarea>
       <label class="fl">Voice note (written out)</label><textarea class="tx" rows="4" data-f="voice_text">${e(x.voice_text||'')}</textarea>
-      <label class="chk"><input type="checkbox" id="rp_${e(x.id)}" checked> Polish it again after saving</label>
+      <label class="chk"><input type="checkbox" id="rp_${e(x.id)}" ${x.polished?'checked':''}> ${x.polished?'Polish it again after saving':'Polish it after saving'}</label>
       ${x.original?`<details class="orig"><summary>What the contractor originally sent</summary>${e([x.original.client,x.original.address,x.original.email,x.original.job,x.original.price,x.original.voice_text].filter(Boolean).join(' · '))}</details>`:''}
       <div class="acts"><button class="btn pri" data-act="saveraw" data-v="${e(x.id)}">Save</button><button class="btn sec" data-act="cancel" data-v="${e(x.id)}">Cancel</button></div></div>`;
     if (ed === 'quote' && pj) { const c = pj.client||{}, its = pj.items||[], sc = pj.scope||null;
@@ -178,13 +178,14 @@ function render(){
     ${x.voice_text?`<div class="voice"><b>Voice note (written out${x.lang&&x.lang!=='en'?' · '+({es:'Spanish',it:'Italian'})[x.lang]:''})</b>${e(x.voice_text)}</div>`:''}
     <div id="media_${e(x.id)}"></div>
     ${preview}
-    ${!pj && x.status!=='Done' ? `<div class="wait">✨ Being polished into ${e(x.contractor)}’s ${e(th.doc||'quote')} format on the next run (within 30 min) – or tell Claude “polish requests”.</div>`:''}
-    ${x.polish==='Requested' && pj ? `<div class="wait">✨ Re-polish requested – updated version on the next run.</div>`:''}
-    ${qdone?`<div class="wait ok">✅ Quote ${e(x.quote_no)} made – <a target="_blank" rel="noopener" href="${quote(qdone)}">open it</a></div>`:''}
+    ${x.polish==='Requested' && x.status!=='Done' ? `<div class="wait">✨ Polishing into ${e(x.contractor)}’s ${e(th.doc||'quote')} template – ready on the next run (within 30 min), or right away if you tell Claude “polish requests”.</div>`:''}
+    ${!pj && x.polish!=='Requested' && x.status!=='Done' ? `<div class="wait idle">Not polished yet. Edit it first if you like, then tap <b>✨ Polish</b> to turn it into ${e(x.contractor)}’s ${e(th.doc||'quote')} template.</div>`:''}
+    ${qdone?`<div class="wait ok">✅ Quote ${e(x.quote_no)} made · ${m0(qdone.price)} · ${qdone.status==='Accepted'?'client accepted ✓':qdone.viewed_at?'client opened it':'waiting for the client'} – <a target="_blank" rel="noopener" href="${quote(qdone)}">open it</a></div>`:(x.status==='Done'?`<div class="wait idle">Closed${x.updated?' '+when(x.updated):''} – no quote made from this request.</div>`:'')}
     <div class="acts">
       ${x.audio?`<button class="btn sec" data-act="audio" data-v="${e(x.id)}">▶ Play recording</button>`:''}
       ${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
       ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editraw" data-v="${e(x.id)}">✏️ Edit request</button>`:''}
+      ${!pj&&x.polish!=='Requested'&&x.status!=='Done'?`<button class="btn org" data-act="polish" data-v="${e(x.id)}">✨ Polish</button>`:''}
       ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editquote" data-v="${e(x.id)}">✏️ Edit quote</button><button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn org" data-act="approve" data-v="${e(x.id)}">✓ Approve – make the quote</button>`:''}
       <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy</button>
       ${x.status!=='Done'?`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="Done">Close</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
@@ -205,7 +206,7 @@ function render(){
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
   <div class="seg">${['Requests','Quotes','Contractors','Activity'].map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
-  ${TAB===0?`<div class="filter">${[['open','Open'],['new','New'],['all','All']].map(([k,n])=>`<button class="${RF===k?'on':''}" data-act="rf" data-v="${k}">${n}</button>`).join('')}</div>
+  ${TAB===0?`<div class="filter">${[['open','Open ('+open.length+')'],['new','New ('+newR.length+')'],['done','Finished ('+done.length+')'],['all','All']].map(([k,n])=>`<button class="${RF===k?'on':''}" data-act="rf" data-v="${k}">${n}</button>`).join('')}</div>
     ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
   ${TAB===1?`<div class="card">${Q.length?Q.map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
   ${TAB===2?`<div class="card">${ks.length?ks.map(o=>`<div class="row"><div class="av">${ini(o.k.contractor)}</div><div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div>
@@ -237,7 +238,7 @@ document.addEventListener('click', async ev => {
     box.insertAdjacentHTML('beforeend', it ? '<div class="ln it"><input class="tx lead" placeholder="Item"><textarea class="tx" rows="2" placeholder="Description"></textarea><input class="tx amt" placeholder="$ (optional)"><button class="x" data-act="rmline">×</button></div>'
       : '<div class="ln"><input class="tx lead" placeholder="Heading"><textarea class="tx" rows="2" placeholder="Details"></textarea><button class="x" data-act="rmline">×</button></div>'); }
   else if (act==='saveraw' && x) { const card = document.getElementById('rq_'+v), f = {}; card.querySelectorAll('[data-f]').forEach(i=>f[i.dataset.f]=i.value.trim());
-    const rp = document.getElementById('rp_'+v).checked; Object.assign(x, f); if (rp && x.polished) x.polish='Requested'; delete EDIT[v]; render();
+    const rp = document.getElementById('rp_'+v).checked; Object.assign(x, f); if (rp) x.polish='Requested'; delete EDIT[v]; render();
     post({action:'admin_req_edit', k:K, id:v, fields:f, repolish:rp}, rp?'Saved – it will be polished again ✓':'Saved ✓'); }
   else if (act==='savequote' && x) { const card = document.getElementById('rq_'+v), pj = JSON.parse(JSON.stringify(x.polished||{}));
     card.querySelectorAll('[data-q]').forEach(i=>{ const path=i.dataset.q.split('.'), val=i.value.trim(); if(path.length===2){ pj[path[0]]=pj[path[0]]||{}; pj[path[0]][path[1]]=val; } else pj[path[0]]=val; });
@@ -249,6 +250,7 @@ document.addEventListener('click', async ev => {
     const withAmt = pj.items.filter(i=>i.amount!=null), sumA = withAmt.reduce((t,i)=>t+Number(i.amount||0),0);
     if (withAmt.length === pj.items.length && pj.items.length > 1 && pj.price !== '' && Math.abs(sumA - pj.price) > 0.5 && !confirm(`The line amounts add up to ${m0(sumA)} but the total is ${m0(pj.price)}. Save anyway? (It won't be built until they match.)`)) return;
     x.polished = pj; x.polish='Ready'; delete EDIT[v]; render(); post({action:'admin_req_edit', k:K, id:v, polished:pj}, 'Quote saved ✓'); }
+  else if (act==='polish' && x) { x.polish='Requested'; render(); post({action:'admin_req_edit', k:K, id:v, repolish:true}, '✨ Polishing – ready on the next run ✓'); }
   else if (act==='repolish' && x) { x.polish='Requested'; render(); post({action:'admin_req_edit', k:K, id:v, repolish:true}, 'Will be re-polished on the next run ✓'); }
   else if (act==='approve' && x) { const pj = x.polished||{}; if (!(Number(pj.price)>0) || !(pj.client&&pj.client.name)) { toast('Add the client name and price first (Edit quote)'); return; }
     x.status='Approved'; render(); post({action:'admin_req', k:K, id:v, status:'Approved'}, 'Approved – the quote gets made on the next run ✓'); }
