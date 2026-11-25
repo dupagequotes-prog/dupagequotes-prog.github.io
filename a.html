@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="DuPage HQ"><meta name="theme-color" content="#222B45"><meta name="robots" content="noindex">
+<title>DuPage Quotes – HQ</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* DuPage Quotes – David's own page (HQ). DuPage brand: navy #222B45 + orange #E8913F */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--n:#222B45;--o:#E8913F;--ink:#121726;--mute:#666d80;--line:rgba(18,23,38,.08);--bg:#f3f4f8;--card:#fff;--ease:cubic-bezier(.23,1,.32,1);--spring:cubic-bezier(.34,1.4,.64,1);
+  --sh:0 1px 2px rgba(18,23,38,.04),0 4px 12px rgba(18,23,38,.05),0 16px 32px -12px rgba(18,23,38,.1)}
+html,body{background:var(--bg)}body{margin:0;font-family:Inter,-apple-system,Helvetica,Arial,sans-serif;color:var(--ink);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased;padding-bottom:40px}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.hero{color:#fff;padding:calc(env(safe-area-inset-top) + 16px) 18px 78px;position:relative;overflow:hidden;
+  background:radial-gradient(70% 90% at 100% 0%,rgba(232,145,63,.35) 0%,transparent 60%),radial-gradient(90% 80% at 0% 100%,#141a2e 0%,transparent 60%),var(--n)}
+.hero:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:20px 20px;mask-image:linear-gradient(to bottom,#000,transparent 85%);-webkit-mask-image:linear-gradient(to bottom,#000,transparent 85%)}
+.wrap{max-width:1080px;margin:0 auto;position:relative}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:6px 11px;border-radius:99px}
+.pill i{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.25);animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(74,222,128,0)}}
+.ib{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:#fff;cursor:pointer}
+.ib svg{width:18px;height:18px}.ib.spin svg{animation:spin .8s var(--ease)}@keyframes spin{to{transform:rotate(360deg)}}
+.id{display:flex;align-items:center;gap:14px;margin-top:22px}.id .lg{width:58px;height:58px;border-radius:18px;background:rgba(255,255,255,.1);display:grid;place-items:center;border:1px solid rgba(255,255,255,.18)}.id .lg svg{width:44px;height:44px}
+.hi{font-size:13px;opacity:.75}h1{margin:2px 0 0;font-size:clamp(23px,6vw,32px);line-height:1.1;letter-spacing:-.03em}h1 span{color:var(--o)}
+.upd{margin-top:12px;font-size:12.5px;opacity:.7}
+main{max-width:1080px;margin:-56px auto 0;padding:0 14px;position:relative}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:var(--card);border-radius:20px;padding:14px 15px;box-shadow:var(--sh);border:1px solid var(--line)}
+.kpi .l{font-size:12px;color:var(--mute);font-weight:500}.kpi b{display:block;font-size:27px;font-weight:700;margin-top:4px}.kpi small{color:var(--mute);font-size:12px}
+.kpi.hot{background:linear-gradient(160deg,var(--o),#c96f22);color:#fff;border-color:transparent}.kpi.hot .l,.kpi.hot small{color:rgba(255,255,255,.85)}
+.seg{position:sticky;top:calc(env(safe-area-inset-top) + 8px);z-index:5;margin:16px 0 12px;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,255,255,.75);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:16px;padding:4px}
+.seg button{border:0;background:none;font:600 13px Inter,-apple-system,sans-serif;color:var(--mute);padding:10px 2px;border-radius:12px;cursor:pointer}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.07)}
+.seg em{font-style:normal;font-size:11px;font-weight:700;margin-left:4px;padding:1px 6px;border-radius:99px;background:var(--o);color:#fff}
+.card{background:var(--card);border-radius:20px;padding:14px 16px;box-shadow:var(--sh);border:1px solid var(--line);margin-bottom:12px;animation:in .35s var(--ease) both}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card.new{border:2px solid var(--o)}
+.rh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.rh .who{font-weight:700;font-size:15.5px}.rh .sub{font-size:12.5px;color:var(--mute)}
+.tag{display:inline-flex;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:99px;white-space:nowrap}
+.t-new{background:#fff1e3;color:#b4570f}.t-work{background:#e8edff;color:#3346a8}.t-done{background:#e6f6ec;color:#15803d}.t-wait{background:#fff4e0;color:#a15c00}.t-view{background:#eef0f6;color:#3c4257}
+.kv{margin-top:10px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:14px}.kv span{color:var(--mute);font-size:12.5px}
+.voice{margin-top:10px;background:#fff8f0;border:1px dashed var(--o);border-radius:14px;padding:10px 12px;font-size:14px;white-space:pre-wrap}
+.voice b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#b4570f;margin-bottom:3px}
+.addr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.mb{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 10px;font:600 12px Inter,sans-serif;color:var(--n);text-decoration:none;cursor:pointer;white-space:nowrap}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.btn{border:0;border-radius:12px;padding:10px 13px;font:700 13.5px Inter,-apple-system,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;transition:transform .14s var(--ease)}
+.btn:active{transform:scale(.96)}.pri{background:var(--n);color:#fff}.org{background:var(--o);color:#fff}.sec{background:#eef0f6;color:var(--ink)}
+.phs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:10px}.phs a{display:block;aspect-ratio:1;border-radius:12px;overflow:hidden;background:#e3e5ee}.phs img{width:100%;height:100%;object-fit:cover}
+audio{width:100%;margin-top:10px}
+.row{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}.row:first-child{border-top:0}
+.av{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-weight:700;font-size:14px;background:#eef0f6;color:var(--n);flex:none}
+.mid{flex:1;min-width:0}.mid .n{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mid .s{font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r{text-align:right;flex:none}.r .num{font-weight:700}
+.empty{color:var(--mute);text-align:center;padding:22px 0}
+.filter{display:flex;gap:8px;overflow-x:auto;margin:-2px 0 12px;scrollbar-width:none}.filter::-webkit-scrollbar{display:none}
+.filter button{flex:none;border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 13px;font:600 13px Inter,sans-serif;color:var(--mute);cursor:pointer}.filter button.on{background:var(--n);color:#fff;border-color:var(--n)}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 14px);transform:translate(-50%,-150%);z-index:60;background:#111317;color:#fff;border-radius:99px;padding:10px 16px;font:600 13.5px Inter,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.3);transition:transform .4s var(--spring);white-space:nowrap}
+#toast.on{transform:translate(-50%,0)}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><link rel="icon" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20120%20120%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20rx%3D%2226%22%20fill%3D%22%23222B45%22/%3E%3Cpath%20d%3D%22M33%2031a27%2023%200%200%201%2054%200z%22%20fill%3D%22%23E8913F%22/%3E%3Crect%20x%3D%2257.5%22%20y%3D%2210%22%20width%3D%225%22%20height%3D%2220%22%20rx%3D%222.5%22%20fill%3D%22%23C46F28%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2228%22%20width%3D%2276%22%20height%3D%2210%22%20rx%3D%225%22%20fill%3D%22%23E8913F%22/%3E%3Crect%20x%3D%2232%22%20y%3D%2238%22%20width%3D%2256%22%20height%3D%2274%22%20rx%3D%227%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%2238.5%22%20y%3D%2244%22%20width%3D%2243%22%20height%3D%2262%22%20rx%3D%224%22%20fill%3D%22%23EEF1F8%22/%3E%3Cpath%20d%3D%22M47%2069l9%209%2018-20%22%20fill%3D%22none%22%20stroke%3D%22%23E8913F%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%2245%22%20y%3D%2286%22%20width%3D%2230%22%20height%3D%223.4%22%20rx%3D%221.7%22%20fill%3D%22%23B3B8CC%22/%3E%3Crect%20x%3D%2245%22%20y%3D%2294%22%20width%3D%2221%22%20height%3D%223.4%22%20rx%3D%221.7%22%20fill%3D%22%23B3B8CC%22/%3E%3C/svg%3E"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet"><style>
+/* DuPage Quotes loading screen v2 – navy #222B45 + orange #E8913F */
+#dq-load{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;overflow:hidden;
+  background:radial-gradient(60% 45% at 50% 38%,rgba(232,145,63,.22) 0%,rgba(232,145,63,0) 70%),radial-gradient(120% 80% at 50% 120%,#141a2e 0%,transparent 60%),#222B45;
+  font-family:Poppins,-apple-system,Helvetica,Arial,sans-serif;transition:opacity .6s cubic-bezier(.23,1,.32,1),visibility .6s,transform .6s cubic-bezier(.23,1,.32,1),filter .6s}
+#dq-load:before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;
+  mask-image:radial-gradient(circle at 50% 42%,black 0%,transparent 65%);-webkit-mask-image:radial-gradient(circle at 50% 42%,black 0%,transparent 65%)}
+#dq-load.hide{opacity:0;visibility:hidden;transform:scale(1.06);filter:blur(6px)}
+#dq-load .tile{position:relative;width:124px;height:124px;border-radius:34px;display:grid;place-items:center;
+  background:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 24px 60px -18px rgba(0,0,0,.6),0 0 80px -10px rgba(232,145,63,.35);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:dqpop .8s cubic-bezier(.34,1.4,.64,1) both}
+#dq-load .tile:after{content:"";position:absolute;inset:-2px;border-radius:36px;padding:2px;background:conic-gradient(from var(--dqa,0deg),transparent 0 70%,#E8913F 85%,transparent 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:dqspin 1.6s linear infinite}
+@property --dqa{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes dqspin{to{--dqa:360deg}}
+#dq-load .lg{width:92px;height:92px;animation:dqfloat 3s ease-in-out .8s infinite}
+#dq-load .wm{font-size:38px;font-weight:700;line-height:1;color:#fff;letter-spacing:-1px;margin-top:26px;animation:dqfade .7s .15s cubic-bezier(.23,1,.32,1) both}
+#dq-load .wq{font-size:14px;font-weight:600;color:#E8913F;letter-spacing:.5em;margin:8px 0 0 .5em;animation:dqfade .7s .22s cubic-bezier(.23,1,.32,1) both}
+#dq-load .tg{font-size:13px;margin-top:26px;font-family:-apple-system,Helvetica,Arial,sans-serif;font-weight:500;letter-spacing:.01em;
+  background:linear-gradient(90deg,#8d95b3 0%,#fff 50%,#8d95b3 100%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:dqfade .7s .3s cubic-bezier(.23,1,.32,1) both,dqshine 2.2s linear infinite}
+#dq-load .lbar{display:none}
+@keyframes dqshine{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes dqpop{from{transform:scale(.6) translateY(10px);opacity:0;filter:blur(8px)}to{transform:none;opacity:1;filter:none}}
+@keyframes dqfloat{50%{transform:translateY(-4px)}}
+@keyframes dqfade{from{opacity:0;transform:translateY(8px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@media(prefers-reduced-motion:reduce){#dq-load *{animation:none!important}}
+</style></head>
+<body><div id="dq-load"><div class="tile"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading DuPage HQ…</div></div>
+<section class="hero"><div class="wrap">
+  <div class="top"><span class="pill"><i></i><span id="live">Live · checks every 30 seconds</span></span><button class="ib" id="rf" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button></div>
+  <div class="id"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div><div><div class="hi" id="hi"></div><h1>DuPage <span>Quotes</span> HQ</h1></div></div>
+  <div class="upd" id="upd"></div>
+</div></section>
+<main id="main"></main>
+<div id="toast"></div>
+<script>
+const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
+const P = new URLSearchParams(location.search);
+async function api(params){ const r = await fetch(API + '?' + new URLSearchParams(params), {credentials:'omit'}); return r.json(); }
+function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),650); } }
+function fail(msg){ hideLoad(); document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
+(async()=>{
+const j = await api({api:'admin', k:P.get('k')||''});
+if(!j.ok){ fail(j.error||'This link is not valid.'); return; }
+const D0 = j.data;
+
+
+let D = D0, TAB = 0, RF = 'open', SEEN = null;
+const K = (typeof P !== 'undefined' && P.get('k')) || '';
+const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const m0 = x => '$'+Math.round(Number(x)||0).toLocaleString('en-US');
+const ini = s => (String(s||'').match(/[A-Za-z]+/g)||['?']).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+const ago = iso => { if(!iso) return ''; const s=(Date.now()-new Date(iso))/1000; if(s<90) return 'just now'; if(s<3600) return Math.round(s/60)+'m ago'; if(s<86400) return Math.round(s/3600)+'h ago'; return Math.round(s/86400)+'d ago'; };
+const when = iso => iso ? new Date(iso).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}) : '';
+let tt; const toast = m => { const t=document.getElementById('toast'); t.textContent=m; t.classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>t.classList.remove('on'),2200); };
+const amap = a => 'https://maps.apple.com/?q='+encodeURIComponent(a), gmap = a => 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(a);
+const site = () => location.href.replace(/a\.html.*$/, '');
+const dash = tok => site() + 'd.html?d=' + encodeURIComponent(tok);
+const quote = q => site() + 'q.html?q=' + encodeURIComponent(q.quote_no) + '&t=' + encodeURIComponent(q.token) + '&src=k';
+async function copy(t, msg){ try { await navigator.clipboard.writeText(t); } catch(x){ const a=document.createElement('textarea'); a.value=t; document.body.appendChild(a); a.select(); document.execCommand('copy'); a.remove(); } toast(msg||'Copied ✓'); }
+const stTag = s => s==='Done' ? '<span class="tag t-done">Done</span>' : s==='Working' ? '<span class="tag t-work">Working on it</span>' : '<span class="tag t-new">New</span>';
+
+function render(){
+  const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', David';
+  document.getElementById('upd').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const R = (D.requests||[]).slice().sort((a,b)=>String(b.created).localeCompare(String(a.created)));
+  const open = R.filter(x=>x.status!=='Done'), newR = R.filter(x=>x.status==='New');
+  const Q = (D.quotes||[]).slice().sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
+  const waiting = Q.filter(q=>q.status!=='Accepted'), month = (D.today||'').slice(0,7), accM = Q.filter(q=>q.status==='Accepted' && (q.date_iso||'').slice(0,7)===month);
+  document.title = (newR.length ? '('+newR.length+') ' : '') + 'DuPage Quotes – HQ';
+  const list = RF==='open' ? open : RF==='new' ? newR : R;
+  const reqCard = x => { const a=[x.address].filter(Boolean).join(''); return `<div class="card ${x.status==='New'?'new':''}" id="rq_${e(x.id)}">
+    <div class="rh"><div><div class="who">${e(x.contractor)}</div><div class="sub">${when(x.created)} · ${ago(x.created)} · ${e(x.id)}</div></div>${stTag(x.status)}</div>
+    <div class="kv">${x.client?`<span>Client</span><div><b>${e(x.client)}</b></div>`:''}${x.email?`<span>Email</span><div>${e(x.email)}</div>`:''}${x.job?`<span>Job</span><div>${e(x.job)}</div>`:''}${x.price!==''&&x.price!=null?`<span>Price</span><div><b>${/^[0-9]/.test(String(x.price))?'$'+e(x.price):e(x.price)}</b></div>`:''}</div>
+    ${a?`<div class="addr"><span>${e(a)}</span><button class="mb" data-act="copy" data-v="${e(a)}">Copy</button><a class="mb" target="_blank" rel="noopener" href="${amap(a)}">Apple</a><a class="mb" target="_blank" rel="noopener" href="${gmap(a)}">Google</a></div>`:''}
+    ${x.voice_text?`<div class="voice"><b>Voice note (written out${x.lang&&x.lang!=='en'?' · '+({es:'Spanish',it:'Italian'})[x.lang]:''})</b>${e(x.voice_text)}</div>`:''}
+    <div id="media_${e(x.id)}"></div>
+    <div class="acts">
+      ${x.audio?`<button class="btn sec" data-act="audio" data-v="${e(x.id)}">▶ Play recording</button>`:''}
+      ${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
+      <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy job</button>
+      ${x.status!=='Working'&&x.status!=='Done'?`<button class="btn pri" data-act="st" data-v="${e(x.id)}" data-s="Working">Start</button>`:''}
+      ${x.status!=='Done'?`<button class="btn org" data-act="st" data-v="${e(x.id)}" data-s="Done">✓ Done</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
+      <a class="btn sec" target="_blank" rel="noopener" href="${dash(x.contractor_token)}">Their dashboard ↗</a>
+    </div></div>`; };
+  const qRow = q => `<a class="row" style="text-decoration:none;color:inherit" target="_blank" rel="noopener" href="${quote(q)}"><div class="av">${ini(q.contractor)}</div>
+    <div class="mid"><div class="n">${e((q.client||{}).name)} <span style="color:var(--mute);font-weight:500">· ${e(q.contractor)}</span></div><div class="s">${e(q.quote_no)} · ${e(q.date)} · ${e(q.project)}</div></div>
+    <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?'<span class="tag t-done">Accepted</span>':q.viewed_at?`<span class="tag t-view">Opened ${ago(q.last_viewed_at||q.viewed_at)}</span>`:'<span class="tag t-wait">Waiting</span>'}</div></a>`;
+  const ks = (D.contractors||[]).map(k => { const kq = Q.filter(q=>q.contractor_token===k.token); return {k, n:kq.length, won:kq.filter(q=>q.status==='Accepted').reduce((s,q)=>s+Number(q.price||0),0), open:R.filter(x=>x.contractor_token===k.token && x.status!=='Done').length}; });
+  const events = []; R.forEach(x=>events.push({t:x.created, h:`📨 New request · <b>${e(x.contractor)}</b>${x.client?' – '+e(x.client):''}`}));
+  Q.forEach(q=>{ if(q.viewed_at) events.push({t:q.last_viewed_at||q.viewed_at, h:`👀 <b>${e((q.client||{}).name)}</b> opened ${e(q.quote_no)} (${e(q.contractor)})`}); if(q.status==='Accepted'){ const d=new Date(q.accepted_at); events.push({t:isNaN(d)?(q.date_iso||''):d.toISOString(), h:`✅ <b>${e((q.client||{}).name)}</b> accepted ${m0(q.price)} (${e(q.contractor)})`}); } if(q.created_iso) events.push({t:q.created_iso, h:`📄 Quote ${e(q.quote_no)} made for <b>${e(q.contractor)}</b>`}); });
+  events.sort((a,b)=>String(b.t).localeCompare(String(a.t)));
+  document.getElementById('main').innerHTML = `
+  <div class="kpis">
+    <div class="kpi ${newR.length?'hot':''}"><div class="l">New requests</div><b class="num">${newR.length}</b><small>${open.length} open in total</small></div>
+    <div class="kpi"><div class="l">Quotes waiting</div><b class="num">${waiting.length}</b><small>${m0(waiting.reduce((s,q)=>s+Number(q.price||0),0))} not signed</small></div>
+    <div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>
+    <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
+  </div>
+  <div class="seg">${['Requests','Quotes','Contractors','Activity'].map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
+  ${TAB===0?`<div class="filter">${[['open','Open'],['new','New'],['all','All']].map(([k,n])=>`<button class="${RF===k?'on':''}" data-act="rf" data-v="${k}">${n}</button>`).join('')}</div>
+    ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
+  ${TAB===1?`<div class="card">${Q.length?Q.map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
+  ${TAB===2?`<div class="card">${ks.length?ks.map(o=>`<div class="row"><div class="av">${ini(o.k.contractor)}</div><div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div>
+      <div class="r" style="display:flex;gap:6px"><button class="mb" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button><a class="mb" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open ↗</a></div></div>`).join(''):'<div class="empty">No contractors yet.</div>'}</div>`:''}
+  ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
+}
+async function getFile(id){ const j = await api({api:'admin_file', k:K, id}); if(!j.ok) throw new Error(j.error); return 'data:'+j.type+';base64,'+j.data; }
+async function refresh(manual){
+  try { const j = await api({api:'admin', k:K}); if (!j.ok) return; const before = new Set((D.requests||[]).map(x=>x.id));
+    const fresh = (j.data.requests||[]).filter(x=>!before.has(x.id)); D = j.data; render();
+    if (fresh.length && !manual) { toast('📨 New request from ' + fresh[fresh.length-1].contractor); if (navigator.vibrate) navigator.vibrate([60,40,60]); }
+    else if (manual) toast('Up to date ✓');
+  } catch(x) { if (manual) toast('No connection'); }
+}
+document.addEventListener('click', async ev => {
+  const el = ev.target.closest('[data-act]'); if (!el) return; const act = el.dataset.act, v = el.dataset.v; ev.preventDefault();
+  const x = (D.requests||[]).find(r=>r.id===v);
+  if (act==='tab') { TAB=+v; render(); }
+  else if (act==='rf') { RF=v; render(); }
+  else if (act==='copy') copy(v, /^https?:/.test(v)?'Link copied ✓':'Address copied ✓');
+  else if (act==='copyjob' && x) copy([`Job for ${x.contractor}`, x.client&&`Client: ${x.client}`, x.address&&`Address: ${x.address}`, x.email&&`Client email: ${x.email}`, x.job&&`Job: ${x.job}`, x.price&&`Price: ${x.price}`, x.voice_text&&`Voice note: ${x.voice_text}`, `(request ${x.id})`].filter(Boolean).join('\n'), 'Job copied – paste it to Claude ✓');
+  else if (act==='st' && x) { const s = el.dataset.s; x.status = s; render(); try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'admin_req',k:K,id:x.id,status:s})}); const j=await r.json(); toast(j.ok ? (s==='Done'?'Marked done ✓':s==='Working'?'Marked working ✓':'Reopened ✓') : 'Not saved'); } catch(y) { toast('No connection – not saved'); } }
+  else if (act==='audio' && x) { const box = document.getElementById('media_'+v); el.textContent = 'Loading…'; try { const src = await getFile(x.audio); box.insertAdjacentHTML('beforeend', `<audio controls autoplay src="${src}"></audio>`); el.remove(); } catch(y) { el.textContent = 'Could not load'; } }
+  else if (act==='photos' && x) { const box = document.getElementById('media_'+v); el.textContent = 'Loading…'; box.insertAdjacentHTML('beforeend', '<div class="phs"></div>'); const g = box.querySelector('.phs');
+    for (const id of x.photos) { try { const src = await getFile(id); g.insertAdjacentHTML('beforeend', `<a href="${src}" target="_blank" rel="noopener" download="${e(x.id)}.jpg"><img src="${src}" alt=""></a>`); } catch(y) {} } el.remove(); }
+});
+document.getElementById('rf').onclick = ev => { ev.currentTarget.classList.add('spin'); setTimeout(()=>ev.currentTarget.classList.remove('spin'), 800); refresh(true); };
+render();
+setInterval(() => { if (!document.hidden) refresh(false); }, 30000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });
+
+hideLoad();
+})();
+</script>
+</body></html>
