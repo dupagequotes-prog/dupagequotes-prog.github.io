@@ -321,20 +321,23 @@ function welcomeCard(cv, p, o){   // o: {face: Image|null, cut: Image|null (tran
   c.globalAlpha = .22; c.beginPath(); c.moveTo(W*.55, H); c.lineTo(W, H*.45); c.lineTo(W, H); c.closePath(); c.fill();
   c.globalAlpha = .18; c.fillStyle = '#8f8676'; c.beginPath(); c.moveTo(W*.62, H*.88); c.lineTo(W*.86, H*.88); c.lineTo(W*1.02, H*.66); c.lineTo(W*.8, H*.66); c.closePath(); c.fill(); c.restore();
   // big grayscale face, melted into the paper
-  if (o.face) { const t = document.createElement('canvas'); t.width = W; t.height = H; const x = t.getContext('2d'), fw = W * .9, fh = H * .92;
-    const zm = (o.fz || 200) / 100, s = Math.max(fw / o.face.width, fh / o.face.height) * zm, dw = o.face.width * s, dh = o.face.height * s;
-    const fx = (o.fx != null ? o.fx : 50) / 100, fy = (o.fy != null ? o.fy : 25) / 100;
-    const ax = W * .36, ay = H * (o.fmt === 'story' ? .36 : .4);   // where the face centre lands
-    x.filter = 'grayscale(1) contrast(1.2) brightness(1.03)'; x.drawImage(o.face, ax - dw * fx, ay - dh * fy, dw, dh); x.filter = 'none';
-    x.globalCompositeOperation = 'destination-in'; let m = x.createRadialGradient(ax, ay + H * .05, W * .14, ax, ay + H * .05, W * .6); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(.6, 'rgba(0,0,0,.85)'); m.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = m; x.fillRect(0, 0, W, H);
-    c.save(); c.globalAlpha = o.cut ? .9 : 1; c.globalCompositeOperation = 'multiply'; c.drawImage(t, 0, 0); c.restore(); }
+  // 1) big background portrait (cut out, grayscale), face lined up automatically, melting into the paper
+  if (o.bg) { const t = document.createElement('canvas'); t.width = W; t.height = H; const x = t.getContext('2d'), b = o.bg, bx = o.bgBox;
+    const z = (o.fz || 100) / 100, cxT = W * (.29 + (o.fx || 0) / 100), cyT = H * ((o.fmt === 'story' ? .34 : .4) + (o.fy || 0) / 100);
+    let s, ox, oy; if (bx) { s = H * (o.fmt === 'story' ? .3 : .38) * z / bx.h; ox = cxT - (bx.x + bx.w / 2) * s; oy = cyT - (bx.y + bx.h * .45) * s; }
+    else { s = Math.max(W * .85 / b.width, H * .9 / b.height) * z; ox = cxT - b.width * s / 2; oy = cyT - b.height * s * .3; }
+    x.filter = 'grayscale(1) contrast(1.18) brightness(1.04)'; x.drawImage(b, ox, oy, b.width * s, b.height * s); x.filter = 'none';
+    x.globalCompositeOperation = 'destination-in'; let m = x.createLinearGradient(0, 0, 0, H); m.addColorStop(0, '#000'); m.addColorStop(.66, '#000'); m.addColorStop(.93, 'rgba(0,0,0,0)'); x.fillStyle = m; x.fillRect(0, 0, W, H);
+    m = x.createLinearGradient(0, 0, W, 0); m.addColorStop(0, '#000'); m.addColorStop(.7, '#000'); m.addColorStop(.96, 'rgba(0,0,0,0)'); x.fillStyle = m; x.fillRect(0, 0, W, H);
+    c.save(); c.globalCompositeOperation = 'multiply'; c.globalAlpha = .95; c.drawImage(t, 0, 0); c.restore(); }
   // gold brush stroke
   c.save(); c.lineCap = 'round'; c.lineJoin = 'round'; const gg = c.createLinearGradient(W*.55, H*.75, W*.95, H*.95); gg.addColorStop(0, 'rgba(214,170,96,0)'); gg.addColorStop(.3, 'rgba(201,158,84,.85)'); gg.addColorStop(1, 'rgba(176,132,62,.7)'); c.strokeStyle = gg;
   [[14,0],[7,9],[4,-8]].forEach(([lw, off]) => { c.lineWidth = lw * k; c.beginPath(); c.moveTo(W*.56, H*.91 + off*k); c.bezierCurveTo(W*.68, H*.86 + off*k, W*.8, H*.79 + off*k, W*.9, H*.72 + off*k); c.lineTo(W*.74, H*.88 + off*k); c.bezierCurveTo(W*.8, H*.87, W*.86, H*.85 + off*k, W*.92, H*.82 + off*k); c.stroke(); }); c.restore();
-  // the player cut out (transparent PNG), in color, with a soft floor shadow
-  if (o.cut) { let ch = H * (o.fmt === 'story' ? .7 : .86), cw = o.cut.width * ch / o.cut.height; if (cw > W * .62) { cw = W * .62; ch = o.cut.height * cw / o.cut.width; } const cx = Math.min(W - cw - 20, W * .6 - cw / 2), cy = H - ch + H * .01;
+  // 2) the player in front, in color (cut out), standing on the bottom edge
+  if (o.cut) { const cs = (o.cs || 100) / 100; let ch = H * (o.fmt === 'story' ? .66 : .8) * cs, cw = o.cut.width * ch / o.cut.height; if (cw > W * .66 * cs) { cw = W * .66 * cs; ch = o.cut.height * cw / o.cut.width; }
+    const cx = W * (.6 + (o.cx || 0) / 100) - cw / 2, cy = H - ch + (o.cutFull ? -H * .03 : 2);
     c.save(); const sh = c.createRadialGradient(cx + cw/2, H - H*.04, 0, cx + cw/2, H - H*.04, cw*.55); sh.addColorStop(0, 'rgba(40,32,22,.35)'); sh.addColorStop(1, 'rgba(40,32,22,0)'); c.fillStyle = sh; c.fillRect(cx - cw*.2, H - H*.1, cw*1.4, H*.1);
-    c.shadowColor = 'rgba(0,0,0,.28)'; c.shadowBlur = 30; c.shadowOffsetX = 10; c.drawImage(o.cut, cx, cy, cw, ch); c.restore(); }
+    c.shadowColor = 'rgba(0,0,0,.3)'; c.shadowBlur = 34; c.shadowOffsetX = 12; c.drawImage(o.cut, cx, cy, cw, ch); c.restore(); }
   // paper grain
   const n = document.createElement('canvas'); n.width = n.height = 160; const nx = n.getContext('2d'), id = nx.createImageData(160, 160); for (let i = 0; i < id.data.length; i += 4) { const v = Math.random() * 255; id.data[i] = id.data[i+1] = id.data[i+2] = v; id.data[i+3] = 14; } nx.putImageData(id, 0, 0);
   c.save(); c.fillStyle = c.createPattern(n, 'repeat'); c.fillRect(0, 0, W, H); c.restore();
@@ -348,7 +351,7 @@ function welcomeCard(cv, p, o){   // o: {face: Image|null, cut: Image|null (tran
   // DK mark bottom left (silver mark darkened for the light paper)
   if (o.mark) { const mh = 120, mw = o.mark.width * mh / o.mark.height; c.save(); c.filter = 'brightness(.12)'; c.drawImage(o.mark, 52, H - mh - 70, mw, mh); c.restore();
     c.save(); c.fillStyle = '#1a1a1a'; c.font = '600 13px "Helvetica Neue", Arial, sans-serif'; if ('letterSpacing' in c) c.letterSpacing = '4px'; c.textAlign = 'center'; c.fillText('MANAGEMENT', 52 + mw/2, H - 48); c.restore(); }
-  if (!o.face && !o.cut) { c.save(); c.fillStyle = 'rgba(0,0,0,.35)'; c.font = '600 30px "Helvetica Neue", Arial'; c.textAlign = 'center'; c.fillText('+ photo', W*.4, H*.5); c.restore(); }
+  if (!o.bg && !o.cut) { c.save(); c.fillStyle = 'rgba(0,0,0,.35)'; c.font = '600 30px "Helvetica Neue", Arial'; c.textAlign = 'center'; c.fillText('+ photo', W*.4, H*.5); c.restore(); }
 }
 
 (async () => {
@@ -371,7 +374,7 @@ async function saveNow(){ if (saving) { queueSave(); return; } saving = true; co
   try { const j = await post({action:'admin_profile_save', profile:data}); if (!j.ok) { st('Not saved'); toast('Not saved: ' + (j.error || 'try again')); }
     else { if (!p.id) { p.id = j.id; } p._token = j.token; st('Saved ✓'); links(); fillList(); } }
   catch (x) { st('Offline – not saved'); } saving = false; }
-function links(){ const l = link(cur()), o = document.getElementById('open'), c = document.getElementById('card'); o.href = l ? l + '&src=k' : '#'; o.style.opacity = l ? 1 : .4; c.href = l ? l + '&src=k&card=1' : '#'; c.style.opacity = l ? 1 : .4; }
+function links(){ const l = link(cur()), o = document.getElementById('open'), c = document.getElementById('card'); o.href = l ? l + '&src=k' : '#'; o.style.opacity = l ? 1 : .4; c.href = l ? l + '&src=k&card=1&v=2' : '#'; c.style.opacity = l ? 1 : .4; }
 const F = [
  ['Player', [['name','Full name'],['number','Shirt number'],['@upload','Photo – upload (stored privately)'],['photo','…or a photo web link'],['photo_x','Photo focus left↔right (0–100)','number'],['photo_y','Photo focus top↕bottom (0–100)','number'],['photo_zoom','Scout-sheet circle zoom % (100 = fit)','number'],['dob','Date of birth','date'],['birthplace','Place of birth'],['nat','Nationality (English, e.g. Italy)'],['nat2','Second nationality'],['height','Height (cm)','number'],['foot','Foot','select:r=Right,l=Left,b=Both']]],
  ['Position', [['pos_main','Main position','select:'+Object.keys(POS).map(k=>k+'='+POS[k][3]).join(',')],['pos_other','Other positions (codes, e.g. CM, AM)'],['@pos','Codes: '+Object.keys(POS).join(' ')]]],
