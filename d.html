@@ -655,7 +655,7 @@ function renderProfiles(){
        <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="copy" data-v="${e(plink(x,false))}">${t('pCopy')}</button>
        <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&print=1" target="_blank" rel="noopener">PDF</a>
        ${x.reports?`<a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&doc=report" target="_blank" rel="noopener">📈 ${t('pRep')}</a>`:''}
-       <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&card=1" target="_blank" rel="noopener">${t('pCard')}</a></div></div></div>`).join('') + `<div class="empty" id="pnm" style="display:none">${t('pNoMatch')}</div>` : `<div class="empty">${t('pEmpty')}</div>`}</div>
+       <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&card=1&v=2" target="_blank" rel="noopener">${t('pCard')}</a></div></div></div>`).join('') + `<div class="empty" id="pnm" style="display:none">${t('pNoMatch')}</div>` : `<div class="empty">${t('pEmpty')}</div>`}</div>
   ${PR.length?`<div class="card rise" style="--i:5;--d0:120ms;margin-top:14px"><div class="ch"><h2>📋 ${t('slT')}</h2><span>${(D.shortlists||[]).length}</span></div>
    ${(D.shortlists||[]).length ? (D.shortlists||[]).slice().sort((a,b)=>String(b.created).localeCompare(String(a.created))).map(x=>`<div style="padding:12px 0;border-top:1px solid var(--line)">
      <div style="font-weight:700;font-size:15px">${e(x.title)}${x.club?` <span style="font-weight:500;color:var(--mute)">· ${e(x.club)}</span>`:''}</div>
