@@ -61,6 +61,10 @@
 .sc ul{margin:0;padding:0;list-style:none}.sc li{position:relative;padding-left:5mm;font-size:9.5pt;line-height:1.5;margin-bottom:2.2mm}.sc li:before{content:"";position:absolute;left:0;top:2.2mm;width:2mm;height:.4mm;background:var(--g)}
 .sc .foot{color:#8a8d93;border-top:.3mm solid #e1e1e6;padding-top:3mm}
 .games{margin:0;padding:0;list-style:none}.games li{padding:0!important;margin-bottom:2mm!important}.games li:before{display:none}.games a{display:flex;align-items:center;gap:3mm;text-decoration:none;color:var(--ink);font-size:9pt;border:.3mm solid #dedcd6;border-radius:2mm;padding:2.4mm 3mm;background:#fff}.games a i{flex:none;width:5.5mm;height:5.5mm;border-radius:50%;background:var(--g);position:relative}.games a i:after{content:"";position:absolute;left:2.1mm;top:1.5mm;border-left:2mm solid #fff;border-top:1.25mm solid transparent;border-bottom:1.25mm solid transparent}.games a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl2{margin-top:1.5mm;font-size:7.5pt}.dl2 i{font-style:normal;font-weight:700}.du{color:#1f8a3c}.dd{color:#b42318}.dz{color:#888}
+.rp .stats{grid-template-columns:repeat(6,1fr)}
+.cmp{width:100%;border-collapse:collapse;font-size:8.6pt}.cmp th{background:var(--g);color:#fff;text-align:left;padding:2.4mm 2mm;font-size:6.6pt;letter-spacing:.12em;text-transform:uppercase;font-weight:600}.cmp td{padding:2.6mm 2mm;border-bottom:.3mm solid #dedcd6;vertical-align:middle}.cmp td small{color:#888;font-size:7pt}
+.cmp .th{display:inline-block;width:9mm;height:9mm;border-radius:50%;background-size:cover;background-position:center top;filter:grayscale(1);flex:none}
 
 *{box-sizing:border-box}
 body{margin:0;background:#16171b;font-family:var(--sans)}
@@ -72,13 +76,31 @@ body{margin:0;background:#16171b;font-family:var(--sans)}
 .stack{display:flex;flex-direction:column;align-items:center;gap:20px;transform-origin:top center}
 .page{box-shadow:0 20px 60px rgba(0,0,0,.5)}
 @media print{@page{size:A4;margin:0}body{background:#fff}.tb{display:none}.main{padding:0}.stack{gap:0;transform:none!important;height:auto!important}.page{box-shadow:none;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+.cardw{display:none;max-width:1100px;margin:0 auto;padding:18px 14px 50px;gap:22px;color:#e9eaee;font:14px var(--sans)}
+.cardw.on{display:grid;grid-template-columns:minmax(0,1fr) 320px}@media(max-width:820px){.cardw.on{grid-template-columns:1fr}}
+.cardw canvas{width:100%;height:auto;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);background:#cfc7b8}
+.cp{display:flex;flex-direction:column;gap:12px}.cp h2{margin:0;font:700 18px var(--sans)}.cp label{font-size:12px;color:#9aa0a8;font-weight:600;display:block;margin-bottom:5px}
+.cp input[type=file]{width:100%;color:#c9ccd2;font-size:12px}.cp .hint{font-size:12px;color:#9aa0a8;line-height:1.45}.cp textarea{width:100%;min-height:90px;border-radius:9px;border:1px solid #333;background:#0f1013;color:#eee;padding:9px;font:13px var(--sans)}
+.cp .btn{border:0;border-radius:10px;padding:12px;font:700 14px var(--sans);cursor:pointer;background:#fff;color:#111;width:100%}.cp .btn.g{background:rgba(255,255,255,.1);color:#fff}
+.warn{background:#3a2a10;color:#ffd58a;border-radius:9px;padding:10px;font-size:12.5px;line-height:1.4}
 </style><style>#dq-load{position:fixed;inset:0;z-index:9999;background:#0b0b0f;display:grid;place-items:center;transition:opacity .5s}#dq-load.hide{opacity:0;pointer-events:none}#dq-load i{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#fff;animation:pl 1s linear infinite}@keyframes pl{to{transform:rotate(360deg)}}</style></head>
 <body><div id="dq-load"><i></i></div>
 <div class="tb"><img id="lg" alt=""><div class="nm" id="tn"></div>
-  <div class="sg" id="dg"><button data-doc="profile" class="on">Profilo</button><button data-doc="scout">Scheda</button></div>
+  <div class="sg" id="dg"><button data-doc="profile" class="on">Profilo</button><button data-doc="scout">Scheda</button><button data-doc="report">Report</button></div>
   <div class="sg" id="lgs"><button data-l="it">IT</button><button data-l="en">EN</button><button data-l="es">ES</button></div>
   <button class="pdf" id="pdf">PDF</button></div>
-<div class="main"><div class="stack" id="out"></div></div>
+<div class="main" id="mainw"><div class="stack" id="out"></div></div>
+<div class="cardw" id="cardw"><div><canvas id="cv"></canvas></div>
+ <div class="cp"><h2 id="ch">📣 Welcome post</h2>
+  <div class="sg" id="fmt"><button data-f="post" class="on">Post 4:5</button><button data-f="story">Story 9:16</button></div>
+  <div><label id="l1">Big background face (close-up)</label><input type="file" accept="image/*" id="ff"></div>
+  <div id="fsl" style="display:grid;gap:6px;font-size:12px;color:#9aa0a8"><label style="margin:0">🔍 <input type="range" id="fz" min="100" max="500" step="5" style="width:80%"></label><label style="margin:0">↔ <input type="range" id="fx" min="0" max="100" style="width:80%"></label><label style="margin:0">↕ <input type="range" id="fy" min="0" max="100" style="width:80%"></label></div>
+  <div><label id="l2">Player cut out – PNG with no background</label><input type="file" accept="image/png,image/webp,image/*" id="fc">
+   <div class="hint" id="h2">iPhone: open the photo, press and hold on the player → Copy / Share → Save image. That gives a PNG without background.</div></div>
+  <div class="warn" id="minor" style="display:none"></div>
+  <button class="btn" id="dl">⬇ Download image</button>
+  <div><label id="l3">Caption</label><textarea id="cap"></textarea></div><button class="btn g" id="cc">Copy caption</button>
+  <div class="hint" id="h3">Photos stay on this device – nothing is uploaded.</div></div></div>
 <script>
 const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
 const P = new URLSearchParams(location.search);
@@ -86,7 +108,7 @@ async function api(params){ const r = await fetch(API + '?' + new URLSearchParam
 function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),650); } }
 function fail(msg){ hideLoad(); document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
 (async()=>{
-const j = await api({api:'profile', p:P.get('p')||'', t:P.get('t')||'', src:P.get('src')||''});
+const j = P.get('s') ? await api({api:'shortlist', s:P.get('s'), t:P.get('t')||'', src:P.get('src')||''}) : await api({api:'profile', p:P.get('p')||'', t:P.get('t')||'', src:P.get('src')||''});
 if(!j.ok){ fail(j.error||'This profile link is not valid.'); return; }
 const D = j.data;
 
@@ -102,7 +124,7 @@ const POS = { // code: [x%, y% on a vertical pitch (attack up), it, en, es]
  AM:[50,40,'Trequartista','Attacking Midfield','Mediapunta'], LW:[20,28,'Ala sinistra','Left Winger','Extremo izquierdo'], RW:[80,28,'Ala destra','Right Winger','Extremo derecho'], SS:[50,26,'Seconda punta','Second Striker','Segundo delantero'], CF:[50,16,'Centravanti','Centre-Forward','Delantero centro']};
 const NAT = {Italy:['Italia','Italy','Italia'], Bolivia:['Bolivia','Bolivia','Bolivia'], Peru:['Perù','Peru','Perú'], Venezuela:['Venezuela','Venezuela','Venezuela'], Panama:['Panamá','Panama','Panamá'], 'El Salvador':['El Salvador','El Salvador','El Salvador'], Kosovo:['Kosovo','Kosovo','Kosovo'], Argentina:['Argentina','Argentina','Argentina'], Brazil:['Brasile','Brazil','Brasil'], Colombia:['Colombia','Colombia','Colombia'], Mexico:['Messico','Mexico','México'], Spain:['Spagna','Spain','España'], Germany:['Germania','Germany','Alemania'], Albania:['Albania','Albania','Albania'], Uruguay:['Uruguay','Uruguay','Uruguay'], Paraguay:['Paraguay','Paraguay','Paraguay'], Ecuador:['Ecuador','Ecuador','Ecuador'], Chile:['Cile','Chile','Chile']};
 const LI = {it:2, en:3, es:4}, NI = {it:0, en:1, es:2};
-const BLANK = {name:'', number:'', photo:'', photo_id:'', games:'', extra:'', dob:'', birthplace:'', nat:'Italy', nat2:'', height:'', foot:'r', pos_main:'CM', pos_other:'', club:'', league:'', contract:'', value:'', season:'2026/27',
+const BLANK = {name:'', number:'', photo:'', photo_id:'', games:'', extra:'', tm:'', snapshots:[], report_notes:{it:'',en:'',es:''}, dob:'', birthplace:'', nat:'Italy', nat2:'', height:'', foot:'r', pos_main:'CM', pos_other:'', club:'', league:'', contract:'', value:'', season:'2026/27',
   apps:'', starts_pct:'', mins_pct:'', goals:'', assists:'', yellow:'', red:'', intl:{it:'',en:'',es:''}, career:'', summary:{it:'',en:'',es:''}, notes:{it:'',en:'',es:''}, video:'', agent:'Giorgio Barbieri', email:'info@dkmanagementitaly.com', phone:'', data_date:'', sources:'', sample:true};
 const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function age(dob){ if(!dob) return ''; const d=new Date(dob), n=new Date(); let a=n.getFullYear()-d.getFullYear(); if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate())) a--; return a; }
@@ -192,24 +214,153 @@ function drawPhotos(){   // photo blended into the dark page inside a canvas (pr
       c.globalCompositeOperation = 'source-over'; window.__photosDone = (window.__photosDone||0) + 1; };
     img.src = cv.dataset.src; });
 }
-function renderDocs(p, out){ out.innerHTML = DOC==='profile' ? profile(p) : DOC==='scout' ? scout(p) : profile(p)+scout(p); fit(); drawPhotos(); }
+function renderDocs(p, out){ out.innerHTML = DOC==='profile' ? profile(p) : DOC==='scout' ? scout(p) : DOC==='report' ? report(p) : profile(p)+scout(p); fit(); drawPhotos(); }
 function fit(){ const m=document.querySelector('.main'), s=document.getElementById('out'); if(!m||!s) return; const w=m.clientWidth-(innerWidth<700?16:56), pw=794; s.style.transform = w<pw ? `scale(${w/pw})` : ''; s.style.height = w<pw ? (s.scrollHeight*w/pw)+'px' : ''; }
 
+/* ---------- monthly report + club shortlist (DK) ---------- */
+const RL = {
+ it:{rep:'REPORT MENSILE', months:['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'], vs:'rispetto al mese scorso', trend:'Andamento presenze', vtrend:'Valore di mercato', notes:'Note del mese', src:'Fonte', first:'Primo report – il confronto arriva dal prossimo mese.',
+     sl:'PROPOSTA GIOCATORI', forc:'Per', need:'Profilo richiesto', comp:'Confronto giocatori', player:'Giocatore', note:'Nota', players:'giocatori', min:'Min.'},
+ en:{rep:'MONTHLY REPORT', months:['January','February','March','April','May','June','July','August','September','October','November','December'], vs:'vs last month', trend:'Appearances trend', vtrend:'Market value', notes:'Notes this month', src:'Source', first:'First report – the comparison starts next month.',
+     sl:'PLAYER SHORTLIST', forc:'For', need:'Profile requested', comp:'Player comparison', player:'Player', note:'Note', players:'players', min:'Min.'},
+ es:{rep:'INFORME MENSUAL', months:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'], vs:'frente al mes pasado', trend:'Evolución de partidos', vtrend:'Valor de mercado', notes:'Notas del mes', src:'Fuente', first:'Primer informe – la comparación empieza el próximo mes.',
+     sl:'PROPUESTA DE JUGADORES', forc:'Para', need:'Perfil solicitado', comp:'Comparación de jugadores', player:'Jugador', note:'Nota', players:'jugadores', min:'Min.'}};
+function moneyNum(v){ const m = String(v||'').replace(',', '.').match(/([\d.]+)\s*(k|m|mln|bn)?/i); if (!m) return null; let n = parseFloat(m[1]); const u = (m[2]||'').toLowerCase(); if (u==='k') n*=1e3; else if (u==='m'||u==='mln') n*=1e6; else if (u==='bn') n*=1e9; return n; }
+function snaps(p){ const s = (p.snapshots||[]).slice().sort((a,b)=>String(a.month).localeCompare(String(b.month))); return s.length ? s : [{month:(p.data_date||new Date().toISOString()).slice(0,7), apps:p.apps, goals:p.goals, assists:p.assists, starts_pct:p.starts_pct, mins_pct:p.mins_pct, value:p.value, contract:p.contract, club:p.club}]; }
+function report(p){
+  const L=T[LANG], R=RL[LANG], [first,last]=nameParts(p.name), S=snaps(p), cur=S[S.length-1], prev=S.length>1?S[S.length-2]:null;
+  const [yy,mm]=String(cur.month||'').split('-'); const mname = mm ? R.months[+mm-1]+' '+yy : '';
+  const delta = (k) => { if (!prev) return ''; const a=Number(cur[k]), b=Number(prev[k]); if (isNaN(a)||isNaN(b)||cur[k]===''||prev[k]==='') return ''; const d=a-b; return d===0?'<i class="dz">=</i>':`<i class="${d>0?'du':'dd'}">${d>0?'▲ +':'▼ '}${d}</i>`; };
+  const vd = (() => { if (!prev) return ''; const a=moneyNum(cur.value), b=moneyNum(prev.value); if (a==null||b==null) return ''; return a===b?'<i class="dz">=</i>':`<i class="${a>b?'du':'dd'}">${a>b?'▲':'▼'}</i>`; })();
+  const tiles = [[cur.apps,L.apps,delta('apps')],[cur.goals,L.goals,delta('goals')],[cur.assists,L.assists,delta('assists')],[cur.starts_pct!==''&&cur.starts_pct!=null?cur.starts_pct+'%':'',L.starts,delta('starts_pct')],[cur.mins_pct!==''&&cur.mins_pct!=null?cur.mins_pct+'%':'',L.mins,delta('mins_pct')],[cur.value,L.value,vd]];
+  const last6 = S.slice(-6), mx = Math.max(1, ...last6.map(s=>Number(s.apps)||0));
+  const bars = last6.map((s,i)=>{ const h = (Number(s.apps)||0)/mx*60, x = 8+i*(184/Math.max(1,last6.length)); const [y2,m2]=String(s.month).split('-'); return `<rect x="${x}" y="${70-h}" width="${Math.min(22,150/last6.length)}" height="${h}" rx="2" fill="${i===last6.length-1?'#1c1d22':'#c9c7c0'}"/><text x="${x+Math.min(11,75/last6.length)}" y="82" font-size="7" text-anchor="middle" fill="#777">${e((R.months[+m2-1]||'').slice(0,3))}</text><text x="${x+Math.min(11,75/last6.length)}" y="${66-h}" font-size="7" text-anchor="middle" fill="#333">${e(s.apps||0)}</text>`; }).join('');
+  const notes = String(tr(p.report_notes)).split('\n').map(s=>s.trim()).filter(Boolean);
+  return `<div class="page sc rp">${stamp(p)}<div class="band" style="height:62mm"><div class="hex"></div><div class="spot"></div><img class="mk" src="${MARK}" alt="">
+     ${photoSrc(p)?`<div class="ph" style="width:40mm;height:40mm;top:12mm;background-image:url('${e(photoSrc(p))}');background-size:${e(p.photo_zoom||100)}%;background-position:${e(p.photo_x||50)}% ${e(p.photo_y||15)}%;filter:grayscale(1)"></div>`:''}
+     <div class="who" style="top:27mm"><div class="first">${e(first)}</div><div class="last chrome">${e(last)}</div><div class="pos">${e(pos(p.pos_main))} <span>· ${e(cur.club||p.club||'')}</span></div></div>
+     <div class="kind">${R.rep} · ${e(mname)}</div></div>
+   <div class="row stats" style="top:70mm">${tiles.map(t=>`<div><small>${t[1]}</small><b>${e(t[0]===''||t[0]==null?'—':t[0])}</b>${t[2]?`<div class="dl2">${t[2]}</div>`:''}</div>`).join('')}</div>
+   <div style="position:absolute;left:14mm;right:14mm;top:101mm;font-size:8pt;color:#888">${prev?R.vs+' ('+e((R.months[+String(prev.month).split('-')[1]-1]||''))+')':R.first}</div>
+   <div class="two" style="top:110mm;grid-template-columns:1fr 1fr">
+    <div><h3>${R.trend}</h3><svg viewBox="0 0 200 88" style="width:100%">${bars}<line x1="4" y1="70.5" x2="196" y2="70.5" stroke="#ccc" stroke-width=".6"/></svg>
+      <h3 style="margin-top:6mm">${L.posH}</h3>${pitch(p)}</div>
+    <div>${notes.length?`<h3>${R.notes}</h3><ul>${notes.map(n=>`<li>${e(n)}</li>`).join('')}</ul>`:''}
+      <h3 style="margin-top:6mm">${L.contract}</h3><p style="font-size:11pt;margin:0 0 5mm">${e(month(cur.contract||p.contract)||'—')}</p>
+      ${games(p).length?`<h3>${GL[LANG]}</h3><ul class="games">${games(p,4).map(g=>`<li><a href="${e(g.url)}" target="_blank" rel="noopener"><i></i><span>${e(g.label)}</span></a></li>`).join('')}</ul>`:''}
+      <div class="card" style="margin-top:6mm"><div class="hex"></div><small>${L.contactH}</small><b>DK Management Italy</b><div>${e(p.agent)} · ${e(p.email)}</div></div></div></div>
+   <div class="foot"><span>${R.src}: ${p.tm?`<a href="${e(p.tm)}" style="color:inherit">Transfermarkt</a>`:'Transfermarkt'}${cur.date?' · '+e(dmy(cur.date)):''}</span><span>dkmanagementitaly.com</span></div></div>`;
+}
+function tmParse(t){   // reads the text copied from a Transfermarkt profile page (EN / IT / ES)
+  t = String(t||''); const o = {}, num = re => { const m = t.match(re); return m ? m[1] : undefined; };
+  o.apps = num(/(?:Appearances|Presenze|Partidos)\s*\n\s*(\d+)/i); o.goals = num(/\n\s*(?:Goals|Gol|Goles)\s*\n\s*(\d+)/i); o.assists = num(/\n\s*(?:Assists|Assist|Asistencias)\s*\n\s*(\d+)/i);
+  o.starts_pct = num(/(\d+)\s*\n?\s*%\s*\n?\s*(?:Starting eleven|Titolare|Titular)/i); o.mins_pct = num(/(\d+)\s*\n?\s*%\s*\n?\s*(?:Minutes|Minuti|Minutos)\b/i);
+  const v = t.match(/€\s?[\d.,]+\s?(?:k|m|mln|bn|mila|mil\.?)?/i) || t.match(/[\d.,]+\s?(?:k|m|mln|mila)?\s?€/i); if (v) o.value = v[0].replace(/\s+/g,'').replace(/k$/,'K').replace(/m$/,'M');
+  const c = t.match(/(?:Contract expires|Scadenza contratto|Contrato hasta|Vence el contrato)\s*:?\s*\n?\s*(\d{2})[\/.](\d{2})[\/.](\d{4})/i); if (c) o.contract = c[3]+'-'+c[2];
+  const d = t.match(/(?:Date of birth\/Age|Nato il\/Età|F\. Nacim\.\/Edad|Data di nascita\/Età)\s*:?\s*\n?\s*(\d{2})[\/.](\d{2})[\/.](\d{4})/i); if (d) o.dob = d[3]+'-'+d[2]+'-'+d[1];
+  else { const MO = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12}, d2 = t.match(/(?:Date of birth\/Age|Date of birth)\s*:?\s*\n?\s*([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),\s*(\d{4})/i); if (d2 && MO[d2[1].toLowerCase()]) o.dob = d2[3] + '-' + String(MO[d2[1].toLowerCase()]).padStart(2,'0') + '-' + d2[2].padStart(2,'0'); }
+  const h = t.match(/(?:Height|Altezza|Altura)\s*:?\s*\n?\s*(\d)[,.](\d{2})\s*m/i); if (h) o.height = String(+h[1]*100 + +h[2]);
+  const cl = t.match(/(?:Current club|Squadra attuale|Club actual)\s*:?\s*\n\s*([^\n]+)/i); if (cl) o.club = cl[1].trim();
+  Object.keys(o).forEach(k => o[k] === undefined && delete o[k]); return o;
+}
+function shortlistDocs(SL, profs){
+  const R=RL[LANG], L=T[LANG], d=new Date(SL.created||Date.now());
+  const rows = profs.map(p=>{ const a=age(p.dob); return `<tr><td><div style="display:flex;align-items:center;gap:3mm">${photoSrc(p)?`<span class="th" style="background-image:url('${e(photoSrc(p))}')"></span>`:''}<b>${e(p.name)}</b></div></td><td>${e(pos(p.pos_main))}</td><td>${a!==''?a:'—'}</td><td>${e(nat(p.nat))}</td><td>${e(p.club||'')}<br><small>${e(p.league||'')}</small></td><td>${e(month(p.contract)||'—')}</td><td>${e(p.apps||'—')}</td><td>${e(p.goals||'—')}</td><td>${p.mins_pct?e(p.mins_pct)+'%':'—'}</td><td>${e(p.value||'—')}</td></tr>`; }).join('');
+  const cover = `<div class="page dark cv"><div class="hex"></div><div class="spot"></div>
+   <div class="top"><img src="${MARK}" alt=""><div class="kind"><b>${R.sl}</b>${e(d.toLocaleDateString(LANG==='en'?'en-GB':LANG,{day:'numeric',month:'long',year:'numeric'}))}<div class="flag" style="justify-content:flex-end;margin-top:3mm"><i></i><i></i><i></i></div></div></div>
+   <div class="who" style="top:78mm;max-width:182mm">${SL.club?`<div class="first">${R.forc} ${e(SL.club)}</div>`:''}<div class="last chrome" style="font-size:38pt;line-height:1.05">${e(SL.title||'')}</div>
+     ${SL.need?`<div class="pos" style="margin-top:7mm;letter-spacing:.12em;text-transform:none;font-size:11pt"><span>${R.need}:</span> ${e(SL.need)}</div>`:''}
+     <div class="intl" style="margin-top:8mm">${profs.length} ${R.players} · ${profs.map(p=>e(p.name)).join(' · ')}</div>
+     ${SL.note?`<p style="margin-top:9mm;font-size:10.5pt;line-height:1.65;color:#d6d9de;max-width:150mm;white-space:pre-wrap">${e(SL.note)}</p>`:''}</div>
+   <div class="foot"><span>dkmanagementitaly.com</span><span>DK Management Italy</span></div></div>`;
+  const comp = `<div class="page in"><div class="hd"><img src="${MARK}" alt=""><div class="nm">${R.comp}<small>${e(SL.club||'')}</small></div></div>
+   <div style="position:absolute;left:12mm;right:12mm;top:30mm"><table class="cmp"><tr><th>${R.player}</th><th>${L.posH.slice(0,3)==='Pos'?'Pos.':L.posH}</th><th>${L.age}</th><th>${L.nat}</th><th>${L.club}</th><th>${L.contract}</th><th>${L.apps}</th><th>${L.goals}</th><th>${R.min}</th><th>${L.value}</th></tr>${rows}</table></div>
+   <div class="foot"><span>dkmanagementitaly.com</span><span>${e(SL.title||'')}</span></div></div>`;
+  return cover + comp + profs.map(scout).join('');
+}
+
+/* ---------- Instagram "Welcome to the DK family" post (style of @dkmanagementitaly) ---------- */
+const WC = {it:['BENVENUTO','BENVENUTO','NELLA','FAMIGLIA DK','Benvenuto nella famiglia DK, '], en:['WELCOME','WELCOME','TO THE','DK FAMILY','Welcome to the DK family, '], es:['BIENVENIDO','BIENVENIDO','A LA','FAMILIA DK','Bienvenido a la familia DK, ']};
+const FLAG = {Italy:'🇮🇹',Germany:'🇩🇪',Albania:'🇦🇱',Kosovo:'🇽🇰',Spain:'🇪🇸',France:'🇫🇷',Argentina:'🇦🇷',Brazil:'🇧🇷',Portugal:'🇵🇹',Switzerland:'🇨🇭',Austria:'🇦🇹',Croatia:'🇭🇷',Serbia:'🇷🇸',Romania:'🇷🇴',Poland:'🇵🇱',Netherlands:'🇳🇱',Belgium:'🇧🇪',England:'🏴',Morocco:'🇲🇦',Senegal:'🇸🇳',Nigeria:'🇳🇬',Ghana:'🇬🇭',Uruguay:'🇺🇾',Colombia:'🇨🇴','United States':'🇺🇸',USA:'🇺🇸',Mexico:'🇲🇽',Greece:'🇬🇷',Turkey:'🇹🇷',Ukraine:'🇺🇦','Bosnia-Herzegovina':'🇧🇦',Montenegro:'🇲🇪','North Macedonia':'🇲🇰',Slovenia:'🇸🇮',Denmark:'🇩🇰',Sweden:'🇸🇪',Norway:'🇳🇴'};
+function welcomeCaption(p, lang){ const f = nameParts(p.name)[0] || p.name || ''; return WC[lang||LANG][4] + f + '. ' + [p.nat, p.nat2].map(n => FLAG[n] || '').join('') + '\n\n#DKManagement #DKfamily' + (p.club ? ' #' + String(p.club).replace(/[^\p{L}\p{N}]/gu, '') : ''); }
+function welcomeCard(cv, p, o){   // o: {face: Image|null, cut: Image|null (transparent PNG), mark: Image|null, fmt: 'post'|'story', lang}
+  const W = 1080, H = o.fmt === 'story' ? 1920 : 1350, k = H / 1350, w = WC[o.lang || LANG]; cv.width = W; cv.height = H; const c = cv.getContext('2d');
+  // sand paper background with angled light panels
+  let g = c.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#cfc7b8'); g.addColorStop(.5, '#d9d2c4'); g.addColorStop(1, '#b9b09f'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  c.save(); c.globalAlpha = .35; c.fillStyle = '#efe9dd'; c.beginPath(); c.moveTo(W*.42, 0); c.lineTo(W, 0); c.lineTo(W, H*.62); c.closePath(); c.fill();
+  c.globalAlpha = .22; c.beginPath(); c.moveTo(W*.55, H); c.lineTo(W, H*.45); c.lineTo(W, H); c.closePath(); c.fill();
+  c.globalAlpha = .18; c.fillStyle = '#8f8676'; c.beginPath(); c.moveTo(W*.62, H*.88); c.lineTo(W*.86, H*.88); c.lineTo(W*1.02, H*.66); c.lineTo(W*.8, H*.66); c.closePath(); c.fill(); c.restore();
+  // big grayscale face, melted into the paper
+  if (o.face) { const t = document.createElement('canvas'); t.width = W; t.height = H; const x = t.getContext('2d'), fw = W * .9, fh = H * .92;
+    const zm = (o.fz || 200) / 100, s = Math.max(fw / o.face.width, fh / o.face.height) * zm, dw = o.face.width * s, dh = o.face.height * s;
+    const fx = (o.fx != null ? o.fx : 50) / 100, fy = (o.fy != null ? o.fy : 25) / 100;
+    const ax = W * .36, ay = H * (o.fmt === 'story' ? .36 : .4);   // where the face centre lands
+    x.filter = 'grayscale(1) contrast(1.2) brightness(1.03)'; x.drawImage(o.face, ax - dw * fx, ay - dh * fy, dw, dh); x.filter = 'none';
+    x.globalCompositeOperation = 'destination-in'; let m = x.createRadialGradient(ax, ay + H * .05, W * .14, ax, ay + H * .05, W * .6); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(.6, 'rgba(0,0,0,.85)'); m.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = m; x.fillRect(0, 0, W, H);
+    c.save(); c.globalAlpha = o.cut ? .9 : 1; c.globalCompositeOperation = 'multiply'; c.drawImage(t, 0, 0); c.restore(); }
+  // gold brush stroke
+  c.save(); c.lineCap = 'round'; c.lineJoin = 'round'; const gg = c.createLinearGradient(W*.55, H*.75, W*.95, H*.95); gg.addColorStop(0, 'rgba(214,170,96,0)'); gg.addColorStop(.3, 'rgba(201,158,84,.85)'); gg.addColorStop(1, 'rgba(176,132,62,.7)'); c.strokeStyle = gg;
+  [[14,0],[7,9],[4,-8]].forEach(([lw, off]) => { c.lineWidth = lw * k; c.beginPath(); c.moveTo(W*.56, H*.91 + off*k); c.bezierCurveTo(W*.68, H*.86 + off*k, W*.8, H*.79 + off*k, W*.9, H*.72 + off*k); c.lineTo(W*.74, H*.88 + off*k); c.bezierCurveTo(W*.8, H*.87, W*.86, H*.85 + off*k, W*.92, H*.82 + off*k); c.stroke(); }); c.restore();
+  // the player cut out (transparent PNG), in color, with a soft floor shadow
+  if (o.cut) { let ch = H * (o.fmt === 'story' ? .7 : .86), cw = o.cut.width * ch / o.cut.height; if (cw > W * .62) { cw = W * .62; ch = o.cut.height * cw / o.cut.width; } const cx = Math.min(W - cw - 20, W * .6 - cw / 2), cy = H - ch + H * .01;
+    c.save(); const sh = c.createRadialGradient(cx + cw/2, H - H*.04, 0, cx + cw/2, H - H*.04, cw*.55); sh.addColorStop(0, 'rgba(40,32,22,.35)'); sh.addColorStop(1, 'rgba(40,32,22,0)'); c.fillStyle = sh; c.fillRect(cx - cw*.2, H - H*.1, cw*1.4, H*.1);
+    c.shadowColor = 'rgba(0,0,0,.28)'; c.shadowBlur = 30; c.shadowOffsetX = 10; c.drawImage(o.cut, cx, cy, cw, ch); c.restore(); }
+  // paper grain
+  const n = document.createElement('canvas'); n.width = n.height = 160; const nx = n.getContext('2d'), id = nx.createImageData(160, 160); for (let i = 0; i < id.data.length; i += 4) { const v = Math.random() * 255; id.data[i] = id.data[i+1] = id.data[i+2] = v; id.data[i+3] = 14; } nx.putImageData(id, 0, 0);
+  c.save(); c.fillStyle = c.createPattern(n, 'repeat'); c.fillRect(0, 0, W, H); c.restore();
+  // WELCOME + name, top right
+  const R = W - 40, ty = (o.fmt === 'story' ? 230 : 120) * 1; c.save(); c.fillStyle = '#121212'; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
+  let fs = w[0].length > 7 ? 118 : 138; c.font = `700 ${fs}px "Bodoni 72", Didot, "Playfair Display", "Times New Roman", serif`; c.save(); c.translate(R, ty); c.scale(.82, 1); c.fillText(w[0], 0, 0); c.restore();
+  c.font = `italic 700 30px "Helvetica Neue", Arial, sans-serif`; if ('letterSpacing' in c) c.letterSpacing = '1px'; c.fillText(String(p.name || '').toUpperCase(), R - 44, ty + 50);
+  // side tagline
+  const sx = W * .77, sy = H * .515; c.textAlign = 'left'; c.font = `500 25px "Helvetica Neue", Arial, sans-serif`; if ('letterSpacing' in c) c.letterSpacing = '6px'; c.fillStyle = '#2a2a2a';
+  [w[1], w[2], w[3]].forEach((l, i) => c.fillText(l, sx, sy + i * 38)); c.fillRect(sx, sy + 3 * 38, 64, 3); c.restore();
+  // DK mark bottom left (silver mark darkened for the light paper)
+  if (o.mark) { const mh = 120, mw = o.mark.width * mh / o.mark.height; c.save(); c.filter = 'brightness(.12)'; c.drawImage(o.mark, 52, H - mh - 70, mw, mh); c.restore();
+    c.save(); c.fillStyle = '#1a1a1a'; c.font = '600 13px "Helvetica Neue", Arial, sans-serif'; if ('letterSpacing' in c) c.letterSpacing = '4px'; c.textAlign = 'center'; c.fillText('MANAGEMENT', 52 + mw/2, H - 48); c.restore(); }
+  if (!o.face && !o.cut) { c.save(); c.fillStyle = 'rgba(0,0,0,.35)'; c.font = '600 30px "Helvetica Neue", Arial'; c.textAlign = 'center'; c.fillText('+ photo', W*.4, H*.5); c.restore(); }
+}
+
 (async () => {
-  const p = D.profile, P2 = new URLSearchParams(location.search);
-  LANG = ['it','en','es'].includes(P2.get('lang')) ? P2.get('lang') : (localStorage.getItem('plang') || 'it');
+  const P2 = new URLSearchParams(location.search), SL = D.shortlist, CARD = P2.get('card') === '1';
+  LANG = ['it','en','es'].includes(P2.get('lang')) ? P2.get('lang') : (SL ? SL.lang : (localStorage.getItem('plang') || 'it'));
+  if (['profile','scout','report'].includes(P2.get('doc'))) DOC = P2.get('doc');
   if (D.intro && /\.txt$/.test(D.intro.mark || '')) { try { MARK = (await (await fetch(D.intro.mark)).text()).trim(); } catch (x) {} }
   if (!MARK) MARK = D.logo || '';
-  document.getElementById('lg').src = MARK; document.title = (p.name || 'Player') + ' – ' + D.contractor;
-  document.getElementById('tn').innerHTML = `${e(p.name)}<small>${e(D.contractor)}</small>`;
-  if (p.photo_id && typeof API !== 'undefined') { try { const j = await api({api:'pphoto', p:D.id, id:p.photo_id, t:P2.get('t')||''}); if (j.ok) PHOTOS[p.photo_id] = 'data:' + j.type + ';base64,' + j.data; } catch (x) {} }
-  const DL = {it:['Profilo','Scheda'], en:['Profile','Scout sheet'], es:['Perfil','Ficha']};
+  document.getElementById('lg').src = MARK;
+  const profs = SL ? D.profiles : [Object.assign({}, D.profile, {id: D.id})], p = profs[0] || {};
+  await Promise.all(profs.map(async x => { if (x.photo_id && typeof API !== 'undefined') { try { const j = await api(SL ? {api:'pphoto', p:x.id, id:x.photo_id, s:SL.id, t:P2.get('t')||''} : {api:'pphoto', p:D.id, id:x.photo_id, t:P2.get('t')||''}); if (j.ok) PHOTOS[x.photo_id] = 'data:' + j.type + ';base64,' + j.data; } catch (e2) {} } }));
+  const title = SL ? (SL.title || 'Shortlist') : (p.name || 'Player');
+  document.title = title + ' – ' + D.contractor; document.getElementById('tn').innerHTML = `${e(title)}<small>${e(SL && SL.club ? SL.club + ' · ' + D.contractor : D.contractor)}</small>`;
+  const DL = {it:['Profilo','Scheda','Report'], en:['Profile','Scout sheet','Report'], es:['Perfil','Ficha','Informe']};
+  if (SL) document.getElementById('dg').style.display = 'none';
+  if (SL || !(p.snapshots && p.snapshots.length)) document.querySelector('#dg [data-doc=report]').style.display = 'none';
   const draw = () => { document.documentElement.lang = LANG; document.querySelectorAll('#lgs button').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
     document.querySelectorAll('#dg button').forEach((b, i) => { b.classList.toggle('on', b.dataset.doc === DOC); b.textContent = DL[LANG][i]; });
-    renderDocs(p, document.getElementById('out')); };
+    if (CARD) { drawCard(); return; }
+    if (SL) { const out = document.getElementById('out'); out.innerHTML = shortlistDocs(SL, profs); fit(); drawPhotos(); } else renderDocs(p, document.getElementById('out')); };
   document.getElementById('lgs').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; LANG = b.dataset.l; localStorage.setItem('plang', LANG); draw(); };
   document.getElementById('dg').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; DOC = b.dataset.doc; draw(); };
-  document.getElementById('pdf').onclick = () => { document.title = (p.name || 'player').replace(/\s+/g, '_') + '_' + (DOC === 'scout' ? 'Scout' : 'Profile') + '_' + LANG.toUpperCase(); window.print(); };
+  document.getElementById('pdf').onclick = () => { document.title = title.replace(/\s+/g, '_') + '_' + (SL ? 'Shortlist' : DOC === 'scout' ? 'Scout' : DOC === 'report' ? 'Report' : 'Profile') + '_' + LANG.toUpperCase(); window.print(); };
+  /* ---- Welcome post ---- */
+  let FMT = 'post', FACE = null, CUT = null, MK = null, fz, fx, fy;
+  const img = src => new Promise(ok => { if (!src) return ok(null); const i = new Image(); if (/^https?:/.test(src)) i.crossOrigin = 'anonymous'; i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+  const CT = {it:['📣 Post di benvenuto','Volto grande sullo sfondo (primo piano)','Giocatore scontornato – PNG senza sfondo','iPhone: apri la foto, tieni premuto sul giocatore → Condividi → Salva immagine. Ottieni un PNG senza sfondo.','⬇ Scarica immagine','Didascalia','Copia didascalia','Le foto restano su questo dispositivo – niente viene caricato.','Minorenne: pubblicare solo con il consenso scritto dei genitori.'],
+    en:['📣 Welcome post','Big background face (close-up)','Player cut out – PNG with no background','iPhone: open the photo, press and hold on the player → Share → Save image. That gives a PNG without background.','⬇ Download image','Caption','Copy caption','Photos stay on this device – nothing is uploaded.','Under 18: post only with the parents\' written consent.'],
+    es:['📣 Post de bienvenida','Cara grande de fondo (primer plano)','Jugador recortado – PNG sin fondo','iPhone: abre la foto, mantén pulsado sobre el jugador → Compartir → Guardar imagen. Así tienes un PNG sin fondo.','⬇ Descargar imagen','Texto','Copiar texto','Las fotos se quedan en este dispositivo – no se sube nada.','Menor de edad: publicar solo con el consentimiento escrito de los padres.']};
+  async function drawCard(){ const t = CT[LANG]; ['ch','l1','l2','h2','dl','l3','cc','h3'].forEach((id, i) => document.getElementById(id).textContent = t[i]);
+    const a = age(p.dob), mn = document.getElementById('minor'); mn.style.display = a !== '' && a < 18 ? 'block' : 'none'; mn.textContent = t[8];
+    document.getElementById('cap').value = welcomeCaption(p, LANG);
+    welcomeCard(document.getElementById('cv'), p, {face: FACE, cut: CUT, mark: MK, fmt: FMT, lang: LANG, fz: +fz.value, fx: +fx.value, fy: +fy.value}); }
+  if (CARD) { document.getElementById('mainw').style.display = 'none'; document.getElementById('dg').style.display = 'none'; document.getElementById('pdf').style.display = 'none'; document.getElementById('cardw').classList.add('on');
+    fz = document.getElementById('fz'); fx = document.getElementById('fx'); fy = document.getElementById('fy'); const FK = 'wc_' + D.id, sv = JSON.parse(localStorage.getItem(FK) || 'null') || {z: 220, x: 55, y: 22};
+    fz.value = sv.z; fx.value = sv.x; fy.value = sv.y; [fz, fx, fy].forEach(r => r.oninput = () => { localStorage.setItem(FK, JSON.stringify({z: fz.value, x: fx.value, y: fy.value})); drawCard(); });
+    MK = await img(MARK); const ps = photoSrc(p); if (ps) FACE = await img(ps);
+    const read = (el, set) => el.onchange = () => { const f = el.files[0]; if (!f) return; const r = new FileReader(); r.onload = async () => { set(await img(r.result)); drawCard(); }; r.readAsDataURL(f); };
+    read(document.getElementById('ff'), v => FACE = v); read(document.getElementById('fc'), v => CUT = v);
+    document.getElementById('fmt').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; FMT = b.dataset.f; [...ev.currentTarget.children].forEach(x => x.classList.toggle('on', x === b)); drawCard(); };
+    document.getElementById('dl').onclick = () => { const cv = document.getElementById('cv'); cv.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = (p.name || 'player').replace(/\s+/g, '_') + '_DK_welcome_' + FMT + '.png'; document.body.appendChild(a); a.click(); a.remove(); }, 'image/png'); };
+    document.getElementById('cc').onclick = async () => { try { await navigator.clipboard.writeText(document.getElementById('cap').value); } catch (x) {} document.getElementById('cc').textContent = '✓'; setTimeout(() => document.getElementById('cc').textContent = CT[LANG][6], 1500); }; }
   window.addEventListener('resize', fit);
   draw();
   if (P2.get('print') === '1') setTimeout(() => window.print(), 1500);
