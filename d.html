@@ -188,6 +188,7 @@ body:not(.ready) .rise,body:not(.ready) .panel.on{animation-play-state:paused}
 .chips::-webkit-scrollbar{display:none}
 .chip2{flex:none;border:1px solid rgba(255,255,255,.28);background:transparent;color:#fff;border-radius:99px;padding:7px 14px;font:600 13px Inter,-apple-system,sans-serif;cursor:pointer;transition:background .2s}
 .chip2.on{background:#fff;color:var(--g);border-color:#fff}
+.card .chip2{border-color:var(--line);color:inherit}.card .chip2.on{background:var(--g);color:#fff;border-color:var(--g)}
 .hero.v3{padding-bottom:78px}
 /* address */
 .addr{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px}
@@ -464,11 +465,11 @@ const lastLang = ((D.quotes||[]).slice(-1)[0]||{}).language;
 let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : /ital/i.test(lastLang||D.language||'') ? 'it' : 'en');
 const TXP = {   // wording for contractors in "player profiles" mode (e.g. DK Management)
  en:{fab:'Request a player profile', foot:'Updated automatically when a profile is made or changed', reqTitle:'Request a player profile', reqIntro:'Talk or type: a new player, an update, game links… add photos if you like, and tap Send.', rName:'Player name', rNamePh:'e.g. Andrea Marcucci', rAddr:'Club / league', rAddrPh:'e.g. Trestina, Serie D', rEmail:'Transfermarkt or video link (optional)', rJob:'What you need', rJobPh:'e.g. New profile + scout sheet in IT/EN, add 3 game links', sentS:'David has it. The profile shows up here when it’s ready.', reqs:'Your profile requests',
-   pTitle:'Player profiles', pPlayers:'Players', pViews:'Profile views', pSent:'Sent to clubs', pUpd:'Last update', pOpen:'Open', pCopy:'Copy link', pMail:'Email to a club', pViewsN:'{0} views', pSentN:'sent {0}×', pEmpty:'No profiles yet – tap “Request a player profile”.', pTo:'Club / person email', pNote:'Message (optional)', pLang:'Language', pSend:'Send', pSentOk:'Sent to {0} ✓', pAll:'All players', pNone:'—'},
+   pTitle:'Player profiles', pPlayers:'Players', pViews:'Profile views', pSent:'Sent to clubs', pUpd:'Last update', pOpen:'Open', pCopy:'Copy link', pMail:'Email to a club', pViewsN:'{0} views', pSentN:'sent {0}×', pEmpty:'No profiles yet – tap “Request a player profile”.', pTo:'Club / person email', pNote:'Message (optional)', pLang:'Language', pSend:'Send', pSentOk:'Sent to {0} ✓', pAll:'All players', pNone:'—', pSearch:'Search a player by name…', pPos:'Position', pAny:'Any', pAge:'Age', pFrom:'from', pTo2:'to', pGK:'Goalkeepers', pDEF:'Defenders', pMID:'Midfielders', pATT:'Forwards', pSel:'{0} selected', pMake:'Create club shortlist', pClear:'Clear', pNoMatch:'No players match these filters.', pRep:'Report', pCard:'📣 Post', slT:'Club shortlists', slClub:'Club', slClubPh:'e.g. AC Perugia', slTitle:'Title / what they need', slTitlePh:'e.g. Central midfielders U23', slNeed:'Profile requested (optional)', slNeedPh:'e.g. left-footed, available in January', slNote:'Note to the club (optional)', slMake:'Create shortlist', slMade:'Shortlist ready ✓', slEmpty:'Select players above, then tap “Create club shortlist”.', slDel:'Delete', slDelQ:'Delete this shortlist? The link stops working.', slPl:'{0} players', slOpen:'Open', yrs:'{0} y'},
  es:{fab:'Pedir un perfil de jugador', foot:'Se actualiza solo cuando se crea o cambia un perfil', reqTitle:'Pedir un perfil de jugador', reqIntro:'Hable o escriba: un jugador nuevo, una actualización, enlaces de partidos… agregue fotos si quiere y toque Enviar.', rName:'Nombre del jugador', rNamePh:'ej. Andrea Marcucci', rAddr:'Club / liga', rAddrPh:'ej. Trestina, Serie D', rEmail:'Enlace Transfermarkt o video (opcional)', rJob:'Qué necesita', rJobPh:'ej. Perfil nuevo + ficha en IT/ES, agregar 3 partidos', sentS:'David ya lo tiene. El perfil aparecerá aquí cuando esté listo.', reqs:'Sus pedidos de perfiles',
-   pTitle:'Perfiles de jugadores', pPlayers:'Jugadores', pViews:'Vistas del perfil', pSent:'Enviados a clubes', pUpd:'Última actualización', pOpen:'Abrir', pCopy:'Copiar enlace', pMail:'Enviar a un club', pViewsN:'{0} vistas', pSentN:'enviado {0}×', pEmpty:'Todavía no hay perfiles – toque “Pedir un perfil de jugador”.', pTo:'Correo del club / persona', pNote:'Mensaje (opcional)', pLang:'Idioma', pSend:'Enviar', pSentOk:'Enviado a {0} ✓', pAll:'Todos los jugadores', pNone:'—'},
+   pTitle:'Perfiles de jugadores', pPlayers:'Jugadores', pViews:'Vistas del perfil', pSent:'Enviados a clubes', pUpd:'Última actualización', pOpen:'Abrir', pCopy:'Copiar enlace', pMail:'Enviar a un club', pViewsN:'{0} vistas', pSentN:'enviado {0}×', pEmpty:'Todavía no hay perfiles – toque “Pedir un perfil de jugador”.', pTo:'Correo del club / persona', pNote:'Mensaje (opcional)', pLang:'Idioma', pSend:'Enviar', pSentOk:'Enviado a {0} ✓', pAll:'Todos los jugadores', pNone:'—', pSearch:'Buscar un jugador por nombre…', pPos:'Posición', pAny:'Todas', pAge:'Edad', pFrom:'de', pTo2:'a', pGK:'Porteros', pDEF:'Defensas', pMID:'Centrocampistas', pATT:'Delanteros', pSel:'{0} seleccionados', pMake:'Crear propuesta para un club', pClear:'Quitar', pNoMatch:'Ningún jugador con estos filtros.', pRep:'Informe', pCard:'📣 Post', slT:'Propuestas a clubes', slClub:'Club', slClubPh:'ej. AC Perugia', slTitle:'Título / qué buscan', slTitlePh:'ej. Centrocampistas sub-23', slNeed:'Perfil solicitado (opcional)', slNeedPh:'ej. zurdo, disponible en enero', slNote:'Nota para el club (opcional)', slMake:'Crear propuesta', slMade:'Propuesta lista ✓', slEmpty:'Seleccione jugadores arriba y toque “Crear propuesta para un club”.', slDel:'Eliminar', slDelQ:'¿Eliminar esta propuesta? El enlace deja de funcionar.', slPl:'{0} jugadores', slOpen:'Abrir', yrs:'{0} años'},
  it:{fab:'Richiedi un profilo giocatore', foot:'Si aggiorna da solo quando un profilo viene creato o modificato', reqTitle:'Richiedi un profilo giocatore', reqIntro:'Parla o scrivi: un nuovo giocatore, un aggiornamento, link delle partite… aggiungi foto se vuoi e tocca Invia.', rName:'Nome del giocatore', rNamePh:'es. Andrea Marcucci', rAddr:'Club / campionato', rAddrPh:'es. Trestina, Serie D', rEmail:'Link Transfermarkt o video (facoltativo)', rJob:'Cosa ti serve', rJobPh:'es. Nuovo profilo + scheda in IT/EN, aggiungere 3 partite', sentS:'David l’ha ricevuta. Il profilo apparirà qui quando è pronto.', reqs:'Le tue richieste di profili',
-   pTitle:'Profili giocatori', pPlayers:'Giocatori', pViews:'Visualizzazioni', pSent:'Inviati ai club', pUpd:'Ultimo aggiornamento', pOpen:'Apri', pCopy:'Copia link', pMail:'Invia a un club', pViewsN:'{0} visualizzazioni', pSentN:'inviato {0}×', pEmpty:'Ancora nessun profilo – tocca “Richiedi un profilo giocatore”.', pTo:'Email del club / della persona', pNote:'Messaggio (facoltativo)', pLang:'Lingua', pSend:'Invia', pSentOk:'Inviato a {0} ✓', pAll:'Tutti i giocatori', pNone:'—'}};
+   pTitle:'Profili giocatori', pPlayers:'Giocatori', pViews:'Visualizzazioni', pSent:'Inviati ai club', pUpd:'Ultimo aggiornamento', pOpen:'Apri', pCopy:'Copia link', pMail:'Invia a un club', pViewsN:'{0} visualizzazioni', pSentN:'inviato {0}×', pEmpty:'Ancora nessun profilo – tocca “Richiedi un profilo giocatore”.', pTo:'Email del club / della persona', pNote:'Messaggio (facoltativo)', pLang:'Lingua', pSend:'Invia', pSentOk:'Inviato a {0} ✓', pAll:'Tutti i giocatori', pNone:'—', pSearch:'Cerca un giocatore per nome…', pPos:'Ruolo', pAny:'Tutti', pAge:'Età', pFrom:'da', pTo2:'a', pGK:'Portieri', pDEF:'Difensori', pMID:'Centrocampisti', pATT:'Attaccanti', pSel:'{0} selezionati', pMake:'Crea proposta per un club', pClear:'Annulla', pNoMatch:'Nessun giocatore con questi filtri.', pRep:'Report', pCard:'📣 Post', slT:'Proposte ai club', slClub:'Club', slClubPh:'es. AC Perugia', slTitle:'Titolo / cosa cercano', slTitlePh:'es. Centrocampisti Under 23', slNeed:'Profilo richiesto (facoltativo)', slNeedPh:'es. mancino, disponibile a gennaio', slNote:'Nota per il club (facoltativo)', slMake:'Crea proposta', slMade:'Proposta pronta ✓', slEmpty:'Seleziona i giocatori sopra, poi tocca “Crea proposta per un club”.', slDel:'Elimina', slDelQ:'Eliminare questa proposta? Il link smette di funzionare.', slPl:'{0} giocatori', slOpen:'Apri', yrs:'{0} anni'}};
 if (D.mode === 'profiles') Object.keys(TXP).forEach(l => Object.assign(TX[l], TXP[l]));
 const POSN = {GK:['Portiere','Goalkeeper','Portero'],CB:['Difensore centrale','Centre-Back','Defensa central'],LB:['Terzino sinistro','Left-Back','Lateral izquierdo'],RB:['Terzino destro','Right-Back','Lateral derecho'],DM:['Mediano','Defensive Midfield','Mediocentro defensivo'],CM:['Centrocampista','Central Midfield','Mediocentro'],LM:['Esterno sinistro','Left Midfield','Volante izquierdo'],RM:['Esterno destro','Right Midfield','Volante derecho'],AM:['Trequartista','Attacking Midfield','Mediapunta'],LW:['Ala sinistra','Left Winger','Extremo izquierdo'],RW:['Ala destra','Right Winger','Extremo derecho'],SS:['Seconda punta','Second Striker','Segundo delantero'],CF:['Centravanti','Centre-Forward','Delantero centro']};
 const t = (k, ...a) => String((TX[LANG]||TX.en)[k] ?? TX.en[k] ?? k).replace(/\{(\d)\}/g, (_, i) => a[i]);
@@ -599,6 +600,34 @@ function renderWeek(){
 /* ---------- main ---------- */
 const PPH = {};   // player photos loaded from Drive
 const plink = (x, own) => location.href.replace(/d\.html.*$/, '') + 'p.html?p=' + encodeURIComponent(x.id) + '&t=' + encodeURIComponent(x.token) + '&lang=' + LANG + (own ? '&src=k' : '');
+const PGRP = {GK:['GK'], DEF:['CB','LB','RB'], MID:['DM','CM','LM','RM','AM'], ATT:['LW','RW','SS','CF']}, PF = {q:'', g:'', pos:'', amin:'', amax:'', sel:new Set()};
+const pAge = d => { if (!d) return ''; const b = new Date(d), n = new Date(); if (isNaN(b)) return ''; let a = n.getFullYear() - b.getFullYear(); if (n.getMonth() < b.getMonth() || (n.getMonth() === b.getMonth() && n.getDate() < b.getDate())) a--; return a; };
+const pPosAll = x => [x.pos_main].concat(String(x.pos_other||'').toUpperCase().split(/[^A-Z]+/)).filter(Boolean);
+const sllink = (x, own) => location.href.replace(/d\.html.*$/, '') + 'p.html?s=' + encodeURIComponent(x.id) + '&t=' + encodeURIComponent(x.token) + '&lang=' + (x.lang||LANG) + (own ? '&src=k' : '');
+function pFilter(){ let n = 0; document.querySelectorAll('[data-prow]').forEach(r => { const x = (D.profiles||[]).find(p => p.id === r.dataset.prow); if (!x) return; const a = pAge(x.dob), ps = pPosAll(x);
+    const ok = (!PF.q || String(x.name).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').includes(PF.q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')))
+      && (!PF.g || ps.some(c => PGRP[PF.g].includes(c))) && (!PF.pos || ps.includes(PF.pos))
+      && (PF.amin === '' || (a !== '' && a >= +PF.amin)) && (PF.amax === '' || (a !== '' && a <= +PF.amax));
+    r.style.display = ok ? '' : 'none'; if (ok) n++; });
+  const nm = document.getElementById('pnm'); if (nm) nm.style.display = n ? 'none' : 'block';
+  const cn = document.getElementById('pcnt'); if (cn) cn.textContent = n;
+  const sb = document.getElementById('psel'); if (sb) { sb.style.display = PF.sel.size ? 'flex' : 'none'; document.getElementById('pseln').textContent = t('pSel', PF.sel.size); } }
+function slSheet(){ const names = (D.profiles||[]).filter(x => PF.sel.has(x.id)).map(x => x.name);
+  openSheet('📋 ' + t('pMake'), `<div style="font-size:13px;color:var(--mute);margin-bottom:6px">${e(names.join(' · '))}</div>
+   <label class="fl">${t('slClub')}</label><input class="tx" id="slc" placeholder="${t('slClubPh')}">
+   <label class="fl">${t('slTitle')}</label><input class="tx" id="slt" placeholder="${t('slTitlePh')}">
+   <label class="fl">${t('slNeed')}</label><input class="tx" id="sln" placeholder="${t('slNeedPh')}">
+   <label class="fl">${t('pLang')}</label><select class="tx" id="sll"><option value="it">Italiano</option><option value="en">English</option><option value="es">Español</option></select>
+   <label class="fl">${t('slNote')}</label><textarea class="nt" id="slo" rows="3"></textarea>
+   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" id="slb" data-act="slsave">${t('slMake')}</button></div><div class="sferr" id="sle"></div>`);
+  document.getElementById('sll').value = LANG; }
+function slMailSheet(x){
+  openSheet('✉️ ' + e(x.title), `<label class="fl">${t('pTo')}</label><input class="tx" id="pmt" type="email" inputmode="email" placeholder="ds@club.it">
+   <label class="fl">${t('pLang')}</label><select class="tx" id="pml"><option value="it">Italiano</option><option value="en">English</option><option value="es">Español</option></select>
+   <label class="fl">${t('pNote')}</label><textarea class="nt" id="pmn" rows="4"></textarea>
+   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" id="pmb" data-act="slsend" data-v="${e(x.id)}">${t('pSend')}</button></div><div class="sferr" id="pme"></div>`);
+  document.getElementById('pml').value = x.lang || LANG; }
+const slPost = body => fetch(API, {method:'POST', credentials:'omit', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(Object.assign({d:TOK}, body))}).then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); return j; });
 function renderProfiles(){
   document.getElementById('week').innerHTML = ''; document.getElementById('chips').innerHTML = ''; document.title = D.contractor + ' – ' + t('pTitle');
   const PR = (D.profiles||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)));
@@ -609,17 +638,41 @@ function renderProfiles(){
   document.getElementById('main').innerHTML = `
   <div class="kpis">${kpi(0,'hl',t('pPlayers'),PR.length,t('pTitle'))}${kpi(1,'',t('pViews'),views,'')}${kpi(2,'',t('pSent'),sent,'')}${kpi(3,'',t('pUpd'),upd?fd(new Date(upd),{day:'numeric',month:'short'}):t('pNone'),'')}</div>
   <div class="card rise" style="--i:4;--d0:120ms;margin-top:14px"><div class="ch"><h2>${t('pTitle')}</h2><span>${PR.length}</span></div>
-   ${PR.length ? PR.map(x=>`<div style="display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)">${av(x)}
-     <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">${e(x.name)}</div><div style="font-size:13px;color:var(--mute)">${e([pn(x.pos_main), x.club].filter(Boolean).join(' · '))}</div>
+   ${PR.length ? `<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+      <input class="tx" id="pq" type="search" placeholder="${t('pSearch')}" value="${e(PF.q)}" style="margin:0">
+      <div style="display:flex;flex-wrap:wrap;gap:6px">${['','GK','DEF','MID','ATT'].map(g=>`<button class="chip2${PF.g===g?' on':''}" data-act="pgrp" data-v="${g}">${g?t('p'+g):t('pAny')}</button>`).join('')}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px;color:var(--mute)">
+       <select class="tx" id="ppos" style="margin:0;width:auto;flex:1 1 150px"><option value="">${t('pPos')}: ${t('pAny')}</option>${Object.keys(POSN).map(c=>`<option value="${c}" ${PF.pos===c?'selected':''}>${c} · ${e(pn(c))}</option>`).join('')}</select>
+       <span>${t('pAge')}</span><input class="tx" id="pamin" type="number" inputmode="numeric" min="10" max="45" placeholder="${t('pFrom')}" value="${e(PF.amin)}" style="margin:0;width:72px">
+       <input class="tx" id="pamax" type="number" inputmode="numeric" min="10" max="45" placeholder="${t('pTo2')}" value="${e(PF.amax)}" style="margin:0;width:72px"></div></div>
+     <div id="psel" style="display:none;position:sticky;top:8px;z-index:5;align-items:center;gap:8px;background:var(--p,#1c1d22);color:#fff;border-radius:14px;padding:10px 12px;margin-bottom:8px">
+      <b id="pseln" style="flex:1;font-size:14px"></b><button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="pclr">${t('pClear')}</button><button class="btn pri" style="padding:7px 12px;font-size:13px;background:#fff;color:#111" data-act="slnew">📋 ${t('pMake')}</button></div>` : ''}
+   ${PR.length ? PR.map(x=>`<div data-prow="${e(x.id)}" style="display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)"><input type="checkbox" data-psel="${e(x.id)}" ${PF.sel.has(x.id)?'checked':''} style="width:22px;height:22px;flex:none;accent-color:var(--p,#1c1d22)">${av(x)}
+     <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">${e(x.name)}</div><div style="font-size:13px;color:var(--mute)">${e([pn(x.pos_main), pAge(x.dob)!==''?t('yrs', pAge(x.dob)):'', x.club].filter(Boolean).join(' · '))}</div>
       <div style="font-size:12px;color:var(--mute);margin-top:2px">${t('pViewsN', x.views||0)}${x.sent?` · ${t('pSentN', x.sent)}`:''}${x.updated?` · ${fd(new Date(x.updated),{day:'numeric',month:'short'})}`:''}</div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><a class="btn pri" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}" target="_blank" rel="noopener">${t('pOpen')} ↗</a>
        <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="pmail" data-v="${e(x.id)}">✉️ ${t('pMail')}</button>
        <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="copy" data-v="${e(plink(x,false))}">${t('pCopy')}</button>
-       <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&print=1" target="_blank" rel="noopener">PDF</a></div></div></div>`).join('') : `<div class="empty">${t('pEmpty')}</div>`}</div>
+       <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&print=1" target="_blank" rel="noopener">PDF</a>
+       ${x.reports?`<a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&doc=report" target="_blank" rel="noopener">📈 ${t('pRep')}</a>`:''}
+       <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&card=1" target="_blank" rel="noopener">${t('pCard')}</a></div></div></div>`).join('') + `<div class="empty" id="pnm" style="display:none">${t('pNoMatch')}</div>` : `<div class="empty">${t('pEmpty')}</div>`}</div>
+  ${PR.length?`<div class="card rise" style="--i:5;--d0:120ms;margin-top:14px"><div class="ch"><h2>📋 ${t('slT')}</h2><span>${(D.shortlists||[]).length}</span></div>
+   ${(D.shortlists||[]).length ? (D.shortlists||[]).slice().sort((a,b)=>String(b.created).localeCompare(String(a.created))).map(x=>`<div style="padding:12px 0;border-top:1px solid var(--line)">
+     <div style="font-weight:700;font-size:15px">${e(x.title)}${x.club?` <span style="font-weight:500;color:var(--mute)">· ${e(x.club)}</span>`:''}</div>
+     <div style="font-size:12px;color:var(--mute);margin-top:2px">${t('slPl', x.count)} · ${t('pViewsN', x.views||0)}${x.sent?` · ${t('pSentN', x.sent)}`:''}${x.created?` · ${fd(new Date(x.created),{day:'numeric',month:'short'})}`:''}</div>
+     <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><a class="btn pri" style="padding:7px 12px;font-size:13px" href="${sllink(x,true)}" target="_blank" rel="noopener">${t('slOpen')} ↗</a>
+      <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="slmail" data-v="${e(x.id)}">✉️ ${t('pMail')}</button>
+      <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="copy" data-v="${e(sllink(x,false))}">${t('pCopy')}</button>
+      <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${sllink(x,true)}&print=1" target="_blank" rel="noopener">PDF</a>
+      <button class="btn sec" style="padding:7px 12px;font-size:13px;color:#b42318" data-act="sldel" data-v="${e(x.id)}">${t('slDel')}</button></div></div>`).join('') : `<div class="empty">${t('slEmpty')}</div>`}</div>`:''}
   ${(D.requests||[]).length?`<div class="card rise" style="--i:5;--d0:120ms;margin-top:14px"><div class="ch" data-act="reqall"><h2>${t('reqs')}</h2><span>${(D.requests||[]).length}</span></div>
    ${(D.requests||[]).slice().reverse().slice(0,5).map(x=>`<div class="rq" data-act="reqview" data-v="${e(x.id)}" style="cursor:pointer"><div class="ic">${x.status==='Done'?'✅':x.status==='Working'?'🛠️':'📨'}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e(x.client||x.job||'—')}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${fd(new Date(x.created),{month:'short',day:'numeric'})} · ${ago(x.created)}</div></div></div>`).join('')}</div>`:''}`;
   document.querySelectorAll('[data-ph]').forEach(async el => { const id = el.dataset.ph; if (!id || PPH[id] || typeof api === 'undefined') return;
     try { const j = await api({api:'pphoto', p:el.dataset.pid, id, d:TOK}); if (j.ok) { PPH[id] = 'data:'+j.type+';base64,'+j.data; el.innerHTML = `<img src="${PPH[id]}" alt="" style="width:100%;height:100%;object-fit:cover;filter:grayscale(1)">`; } } catch(x) {} });
+  const q = document.getElementById('pq'); if (q) { q.oninput = () => { PF.q = q.value.trim(); pFilter(); };
+    document.getElementById('ppos').onchange = ev => { PF.pos = ev.target.value; pFilter(); };
+    ['pamin','pamax'].forEach(id => document.getElementById(id).oninput = ev => { PF[id.slice(1)] = ev.target.value; pFilter(); });
+    document.querySelectorAll('[data-psel]').forEach(c => c.onchange = () => { c.checked ? PF.sel.add(c.dataset.psel) : PF.sel.delete(c.dataset.psel); pFilter(); }); pFilter(); }
   if (document.body.classList.contains('ready')) document.querySelectorAll('#main .rise').forEach(x=>x.style.animationPlayState='running');
 }
 function pmailSheet(x){
@@ -948,6 +1001,22 @@ document.addEventListener('click', ev => {
     if (v==='up' || v==='wait') { S.tab = v==='up'?0:1; S.day=''; S.who=''; render(); document.getElementById('seg').scrollIntoView({behavior:'smooth',block:'start'}); }
     else if (v==='won') qListSheet(t('won'), Q.filter(q=>q.iso.slice(0,7)===month && q.status==='Accepted').sort((a,b)=>b.iso.localeCompare(a.iso)));
     else if (v==='bill') qListSheet(t('bill'), Q.filter(q=>q.iso.slice(0,7)===month).sort((a,b)=>b.iso.localeCompare(a.iso)), true); }
+  else if (act==='pgrp') { PF.g = el.dataset.v; document.querySelectorAll('[data-act=pgrp]').forEach(b => b.classList.toggle('on', b === el)); pFilter(); }
+  else if (act==='pclr') { PF.sel.clear(); document.querySelectorAll('[data-psel]').forEach(c => c.checked = false); pFilter(); }
+  else if (act==='slnew') slSheet();
+  else if (act==='slsave') { const b = el, er = document.getElementById('sle'); b.disabled = true; b.textContent = '…'; er.textContent = '';
+    const body = {action:'shortlist_save', ids:[...PF.sel], club:document.getElementById('slc').value, title:document.getElementById('slt').value, need:document.getElementById('sln').value, lang:document.getElementById('sll').value, note:document.getElementById('slo').value};
+    slPost(body).then(j => { D.shortlists = (D.shortlists||[]).concat([{id:j.id, token:j.token, title:body.title||'Shortlist', club:body.club, created:new Date().toISOString(), count:body.ids.length, views:0, sent:0, lang:body.lang}]);
+      PF.sel.clear(); closeSheet(); toast(t('slMade')); render(); window.open(sllink({id:j.id, token:j.token, lang:body.lang}, true), '_blank'); })
+      .catch(y => { b.disabled = false; b.textContent = t('slMake'); er.textContent = String(y.message||y); }); }
+  else if (act==='slmail') { const x = (D.shortlists||[]).find(s=>s.id===el.dataset.v); if (x) slMailSheet(x); }
+  else if (act==='slsend') { const b = el, er = document.getElementById('pme'), x = (D.shortlists||[]).find(s=>s.id===el.dataset.v); if (!x) return; b.disabled = true; b.textContent = '…'; er.textContent = '';
+    slPost({action:'shortlist_email', id:x.id, to:document.getElementById('pmt').value.trim(), lang:document.getElementById('pml').value, note:document.getElementById('pmn').value})
+      .then(j => { x.sent = (x.sent||0)+1; closeSheet(); toast(t('pSentOk', j.sent)); render(); }).catch(y => { b.disabled = false; b.textContent = t('pSend'); er.textContent = String(y.message||y); }); }
+  else if (act==='sldel') { const x = (D.shortlists||[]).find(s=>s.id===el.dataset.v); if (!x) return;
+    openSheet('🗑 ' + e(x.title), `<p style="margin:4px 0 16px">${t('slDelQ')}</p><div class="btns"><button class="btn sec" data-act="slno">${t('pClear')}</button><button class="btn pri" style="background:#b42318" data-act="slyes" data-v="${e(x.id)}">${t('slDel')}</button></div>`); }
+  else if (act==='slno') closeSheet();
+  else if (act==='slyes') { const id = el.dataset.v; el.disabled = true; slPost({action:'shortlist_delete', id}).then(() => { D.shortlists = (D.shortlists||[]).filter(s=>s.id!==id); closeSheet(); render(); }).catch(y => toast(String(y.message||y))); }
   else if (act==='pmail') { const x = (D.profiles||[]).find(p=>p.id===el.dataset.v); if (x) pmailSheet(x); }
   else if (act==='pmsend') { const b = el, er = document.getElementById('pme'), x = (D.profiles||[]).find(p=>p.id===el.dataset.v); if (!x) return;
     b.disabled = true; b.textContent = '…'; er.textContent = '';
