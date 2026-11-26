@@ -61,6 +61,10 @@
 .sc ul{margin:0;padding:0;list-style:none}.sc li{position:relative;padding-left:5mm;font-size:9.5pt;line-height:1.5;margin-bottom:2.2mm}.sc li:before{content:"";position:absolute;left:0;top:2.2mm;width:2mm;height:.4mm;background:var(--g)}
 .sc .foot{color:#8a8d93;border-top:.3mm solid #e1e1e6;padding-top:3mm}
 .games{margin:0;padding:0;list-style:none}.games li{padding:0!important;margin-bottom:2mm!important}.games li:before{display:none}.games a{display:flex;align-items:center;gap:3mm;text-decoration:none;color:var(--ink);font-size:9pt;border:.3mm solid #dedcd6;border-radius:2mm;padding:2.4mm 3mm;background:#fff}.games a i{flex:none;width:5.5mm;height:5.5mm;border-radius:50%;background:var(--g);position:relative}.games a i:after{content:"";position:absolute;left:2.1mm;top:1.5mm;border-left:2mm solid #fff;border-top:1.25mm solid transparent;border-bottom:1.25mm solid transparent}.games a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl2{margin-top:1.5mm;font-size:7.5pt}.dl2 i{font-style:normal;font-weight:700}.du{color:#1f8a3c}.dd{color:#b42318}.dz{color:#888}
+.rp .stats{grid-template-columns:repeat(6,1fr)}
+.cmp{width:100%;border-collapse:collapse;font-size:8.6pt}.cmp th{background:var(--g);color:#fff;text-align:left;padding:2.4mm 2mm;font-size:6.6pt;letter-spacing:.12em;text-transform:uppercase;font-weight:600}.cmp td{padding:2.6mm 2mm;border-bottom:.3mm solid #dedcd6;vertical-align:middle}.cmp td small{color:#888;font-size:7pt}
+.cmp .th{display:inline-block;width:9mm;height:9mm;border-radius:50%;background-size:cover;background-position:center top;filter:grayscale(1);flex:none}
 
 *{box-sizing:border-box}
 body{margin:0;font-family:var(--sans);background:#e9eaee;color:var(--ink)}
@@ -119,9 +123,9 @@ input,textarea,select{width:100%;border:1px solid #dcdee4;border-radius:8px;padd
   <div class="bar"><select id="plist" style="flex:1 1 100%;font-weight:600"></select>
     <button class="btn" id="new">+ New player</button><button class="btn" id="dup">Copy</button><button class="btn red" id="del">Delete</button></div>
   <div class="bar">
-    <div class="seg" id="docSeg"><button data-doc="profile" class="on">Profile</button><button data-doc="scout">Scout sheet</button><button data-doc="both">Both</button></div>
+    <div class="seg" id="docSeg"><button data-doc="profile" class="on">Profile</button><button data-doc="scout">Scout sheet</button><button data-doc="report">Report</button><button data-doc="both">Both</button></div>
     <div class="seg" id="langSeg"><button data-l="it" class="on">IT</button><button data-l="en">EN</button><button data-l="es">ES</button></div></div>
-  <div class="bar"><a class="btn dark" id="open" target="_blank" rel="noopener">Open live page ↗</a><button class="btn" id="copy">Copy link</button><button class="btn" id="mail">✉️ Email to a club</button><button class="btn" id="print">PDF</button></div>
+  <div class="bar"><a class="btn dark" id="open" target="_blank" rel="noopener">Open live page ↗</a><button class="btn" id="copy">Copy link</button><button class="btn" id="mail">✉️ Email to a club</button><button class="btn" id="print">PDF</button><a class="btn" id="card" target="_blank" rel="noopener">📣 Welcome post</a></div>
   <form id="f" onsubmit="return false"></form>
 </aside>
 <main class="main"><div class="stack" id="out"></div></main>
@@ -150,7 +154,7 @@ const POS = { // code: [x%, y% on a vertical pitch (attack up), it, en, es]
  AM:[50,40,'Trequartista','Attacking Midfield','Mediapunta'], LW:[20,28,'Ala sinistra','Left Winger','Extremo izquierdo'], RW:[80,28,'Ala destra','Right Winger','Extremo derecho'], SS:[50,26,'Seconda punta','Second Striker','Segundo delantero'], CF:[50,16,'Centravanti','Centre-Forward','Delantero centro']};
 const NAT = {Italy:['Italia','Italy','Italia'], Bolivia:['Bolivia','Bolivia','Bolivia'], Peru:['Perù','Peru','Perú'], Venezuela:['Venezuela','Venezuela','Venezuela'], Panama:['Panamá','Panama','Panamá'], 'El Salvador':['El Salvador','El Salvador','El Salvador'], Kosovo:['Kosovo','Kosovo','Kosovo'], Argentina:['Argentina','Argentina','Argentina'], Brazil:['Brasile','Brazil','Brasil'], Colombia:['Colombia','Colombia','Colombia'], Mexico:['Messico','Mexico','México'], Spain:['Spagna','Spain','España'], Germany:['Germania','Germany','Alemania'], Albania:['Albania','Albania','Albania'], Uruguay:['Uruguay','Uruguay','Uruguay'], Paraguay:['Paraguay','Paraguay','Paraguay'], Ecuador:['Ecuador','Ecuador','Ecuador'], Chile:['Cile','Chile','Chile']};
 const LI = {it:2, en:3, es:4}, NI = {it:0, en:1, es:2};
-const BLANK = {name:'', number:'', photo:'', photo_id:'', games:'', extra:'', dob:'', birthplace:'', nat:'Italy', nat2:'', height:'', foot:'r', pos_main:'CM', pos_other:'', club:'', league:'', contract:'', value:'', season:'2026/27',
+const BLANK = {name:'', number:'', photo:'', photo_id:'', games:'', extra:'', tm:'', snapshots:[], report_notes:{it:'',en:'',es:''}, dob:'', birthplace:'', nat:'Italy', nat2:'', height:'', foot:'r', pos_main:'CM', pos_other:'', club:'', league:'', contract:'', value:'', season:'2026/27',
   apps:'', starts_pct:'', mins_pct:'', goals:'', assists:'', yellow:'', red:'', intl:{it:'',en:'',es:''}, career:'', summary:{it:'',en:'',es:''}, notes:{it:'',en:'',es:''}, video:'', agent:'Giorgio Barbieri', email:'info@dkmanagementitaly.com', phone:'', data_date:'', sources:'', sample:true};
 const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function age(dob){ if(!dob) return ''; const d=new Date(dob), n=new Date(); let a=n.getFullYear()-d.getFullYear(); if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate())) a--; return a; }
@@ -240,8 +244,112 @@ function drawPhotos(){   // photo blended into the dark page inside a canvas (pr
       c.globalCompositeOperation = 'source-over'; window.__photosDone = (window.__photosDone||0) + 1; };
     img.src = cv.dataset.src; });
 }
-function renderDocs(p, out){ out.innerHTML = DOC==='profile' ? profile(p) : DOC==='scout' ? scout(p) : profile(p)+scout(p); fit(); drawPhotos(); }
+function renderDocs(p, out){ out.innerHTML = DOC==='profile' ? profile(p) : DOC==='scout' ? scout(p) : DOC==='report' ? report(p) : profile(p)+scout(p); fit(); drawPhotos(); }
 function fit(){ const m=document.querySelector('.main'), s=document.getElementById('out'); if(!m||!s) return; const w=m.clientWidth-(innerWidth<700?16:56), pw=794; s.style.transform = w<pw ? `scale(${w/pw})` : ''; s.style.height = w<pw ? (s.scrollHeight*w/pw)+'px' : ''; }
+
+/* ---------- monthly report + club shortlist (DK) ---------- */
+const RL = {
+ it:{rep:'REPORT MENSILE', months:['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'], vs:'rispetto al mese scorso', trend:'Andamento presenze', vtrend:'Valore di mercato', notes:'Note del mese', src:'Fonte', first:'Primo report – il confronto arriva dal prossimo mese.',
+     sl:'PROPOSTA GIOCATORI', forc:'Per', need:'Profilo richiesto', comp:'Confronto giocatori', player:'Giocatore', note:'Nota', players:'giocatori', min:'Min.'},
+ en:{rep:'MONTHLY REPORT', months:['January','February','March','April','May','June','July','August','September','October','November','December'], vs:'vs last month', trend:'Appearances trend', vtrend:'Market value', notes:'Notes this month', src:'Source', first:'First report – the comparison starts next month.',
+     sl:'PLAYER SHORTLIST', forc:'For', need:'Profile requested', comp:'Player comparison', player:'Player', note:'Note', players:'players', min:'Min.'},
+ es:{rep:'INFORME MENSUAL', months:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'], vs:'frente al mes pasado', trend:'Evolución de partidos', vtrend:'Valor de mercado', notes:'Notas del mes', src:'Fuente', first:'Primer informe – la comparación empieza el próximo mes.',
+     sl:'PROPUESTA DE JUGADORES', forc:'Para', need:'Perfil solicitado', comp:'Comparación de jugadores', player:'Jugador', note:'Nota', players:'jugadores', min:'Min.'}};
+function moneyNum(v){ const m = String(v||'').replace(',', '.').match(/([\d.]+)\s*(k|m|mln|bn)?/i); if (!m) return null; let n = parseFloat(m[1]); const u = (m[2]||'').toLowerCase(); if (u==='k') n*=1e3; else if (u==='m'||u==='mln') n*=1e6; else if (u==='bn') n*=1e9; return n; }
+function snaps(p){ const s = (p.snapshots||[]).slice().sort((a,b)=>String(a.month).localeCompare(String(b.month))); return s.length ? s : [{month:(p.data_date||new Date().toISOString()).slice(0,7), apps:p.apps, goals:p.goals, assists:p.assists, starts_pct:p.starts_pct, mins_pct:p.mins_pct, value:p.value, contract:p.contract, club:p.club}]; }
+function report(p){
+  const L=T[LANG], R=RL[LANG], [first,last]=nameParts(p.name), S=snaps(p), cur=S[S.length-1], prev=S.length>1?S[S.length-2]:null;
+  const [yy,mm]=String(cur.month||'').split('-'); const mname = mm ? R.months[+mm-1]+' '+yy : '';
+  const delta = (k) => { if (!prev) return ''; const a=Number(cur[k]), b=Number(prev[k]); if (isNaN(a)||isNaN(b)||cur[k]===''||prev[k]==='') return ''; const d=a-b; return d===0?'<i class="dz">=</i>':`<i class="${d>0?'du':'dd'}">${d>0?'▲ +':'▼ '}${d}</i>`; };
+  const vd = (() => { if (!prev) return ''; const a=moneyNum(cur.value), b=moneyNum(prev.value); if (a==null||b==null) return ''; return a===b?'<i class="dz">=</i>':`<i class="${a>b?'du':'dd'}">${a>b?'▲':'▼'}</i>`; })();
+  const tiles = [[cur.apps,L.apps,delta('apps')],[cur.goals,L.goals,delta('goals')],[cur.assists,L.assists,delta('assists')],[cur.starts_pct!==''&&cur.starts_pct!=null?cur.starts_pct+'%':'',L.starts,delta('starts_pct')],[cur.mins_pct!==''&&cur.mins_pct!=null?cur.mins_pct+'%':'',L.mins,delta('mins_pct')],[cur.value,L.value,vd]];
+  const last6 = S.slice(-6), mx = Math.max(1, ...last6.map(s=>Number(s.apps)||0));
+  const bars = last6.map((s,i)=>{ const h = (Number(s.apps)||0)/mx*60, x = 8+i*(184/Math.max(1,last6.length)); const [y2,m2]=String(s.month).split('-'); return `<rect x="${x}" y="${70-h}" width="${Math.min(22,150/last6.length)}" height="${h}" rx="2" fill="${i===last6.length-1?'#1c1d22':'#c9c7c0'}"/><text x="${x+Math.min(11,75/last6.length)}" y="82" font-size="7" text-anchor="middle" fill="#777">${e((R.months[+m2-1]||'').slice(0,3))}</text><text x="${x+Math.min(11,75/last6.length)}" y="${66-h}" font-size="7" text-anchor="middle" fill="#333">${e(s.apps||0)}</text>`; }).join('');
+  const notes = String(tr(p.report_notes)).split('\n').map(s=>s.trim()).filter(Boolean);
+  return `<div class="page sc rp">${stamp(p)}<div class="band" style="height:62mm"><div class="hex"></div><div class="spot"></div><img class="mk" src="${MARK}" alt="">
+     ${photoSrc(p)?`<div class="ph" style="width:40mm;height:40mm;top:12mm;background-image:url('${e(photoSrc(p))}');background-size:${e(p.photo_zoom||100)}%;background-position:${e(p.photo_x||50)}% ${e(p.photo_y||15)}%;filter:grayscale(1)"></div>`:''}
+     <div class="who" style="top:27mm"><div class="first">${e(first)}</div><div class="last chrome">${e(last)}</div><div class="pos">${e(pos(p.pos_main))} <span>· ${e(cur.club||p.club||'')}</span></div></div>
+     <div class="kind">${R.rep} · ${e(mname)}</div></div>
+   <div class="row stats" style="top:70mm">${tiles.map(t=>`<div><small>${t[1]}</small><b>${e(t[0]===''||t[0]==null?'—':t[0])}</b>${t[2]?`<div class="dl2">${t[2]}</div>`:''}</div>`).join('')}</div>
+   <div style="position:absolute;left:14mm;right:14mm;top:101mm;font-size:8pt;color:#888">${prev?R.vs+' ('+e((R.months[+String(prev.month).split('-')[1]-1]||''))+')':R.first}</div>
+   <div class="two" style="top:110mm;grid-template-columns:1fr 1fr">
+    <div><h3>${R.trend}</h3><svg viewBox="0 0 200 88" style="width:100%">${bars}<line x1="4" y1="70.5" x2="196" y2="70.5" stroke="#ccc" stroke-width=".6"/></svg>
+      <h3 style="margin-top:6mm">${L.posH}</h3>${pitch(p)}</div>
+    <div>${notes.length?`<h3>${R.notes}</h3><ul>${notes.map(n=>`<li>${e(n)}</li>`).join('')}</ul>`:''}
+      <h3 style="margin-top:6mm">${L.contract}</h3><p style="font-size:11pt;margin:0 0 5mm">${e(month(cur.contract||p.contract)||'—')}</p>
+      ${games(p).length?`<h3>${GL[LANG]}</h3><ul class="games">${games(p,4).map(g=>`<li><a href="${e(g.url)}" target="_blank" rel="noopener"><i></i><span>${e(g.label)}</span></a></li>`).join('')}</ul>`:''}
+      <div class="card" style="margin-top:6mm"><div class="hex"></div><small>${L.contactH}</small><b>DK Management Italy</b><div>${e(p.agent)} · ${e(p.email)}</div></div></div></div>
+   <div class="foot"><span>${R.src}: ${p.tm?`<a href="${e(p.tm)}" style="color:inherit">Transfermarkt</a>`:'Transfermarkt'}${cur.date?' · '+e(dmy(cur.date)):''}</span><span>dkmanagementitaly.com</span></div></div>`;
+}
+function tmParse(t){   // reads the text copied from a Transfermarkt profile page (EN / IT / ES)
+  t = String(t||''); const o = {}, num = re => { const m = t.match(re); return m ? m[1] : undefined; };
+  o.apps = num(/(?:Appearances|Presenze|Partidos)\s*\n\s*(\d+)/i); o.goals = num(/\n\s*(?:Goals|Gol|Goles)\s*\n\s*(\d+)/i); o.assists = num(/\n\s*(?:Assists|Assist|Asistencias)\s*\n\s*(\d+)/i);
+  o.starts_pct = num(/(\d+)\s*\n?\s*%\s*\n?\s*(?:Starting eleven|Titolare|Titular)/i); o.mins_pct = num(/(\d+)\s*\n?\s*%\s*\n?\s*(?:Minutes|Minuti|Minutos)\b/i);
+  const v = t.match(/€\s?[\d.,]+\s?(?:k|m|mln|bn|mila|mil\.?)?/i) || t.match(/[\d.,]+\s?(?:k|m|mln|mila)?\s?€/i); if (v) o.value = v[0].replace(/\s+/g,'').replace(/k$/,'K').replace(/m$/,'M');
+  const c = t.match(/(?:Contract expires|Scadenza contratto|Contrato hasta|Vence el contrato)\s*:?\s*\n?\s*(\d{2})[\/.](\d{2})[\/.](\d{4})/i); if (c) o.contract = c[3]+'-'+c[2];
+  const d = t.match(/(?:Date of birth\/Age|Nato il\/Età|F\. Nacim\.\/Edad|Data di nascita\/Età)\s*:?\s*\n?\s*(\d{2})[\/.](\d{2})[\/.](\d{4})/i); if (d) o.dob = d[3]+'-'+d[2]+'-'+d[1];
+  else { const MO = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12}, d2 = t.match(/(?:Date of birth\/Age|Date of birth)\s*:?\s*\n?\s*([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),\s*(\d{4})/i); if (d2 && MO[d2[1].toLowerCase()]) o.dob = d2[3] + '-' + String(MO[d2[1].toLowerCase()]).padStart(2,'0') + '-' + d2[2].padStart(2,'0'); }
+  const h = t.match(/(?:Height|Altezza|Altura)\s*:?\s*\n?\s*(\d)[,.](\d{2})\s*m/i); if (h) o.height = String(+h[1]*100 + +h[2]);
+  const cl = t.match(/(?:Current club|Squadra attuale|Club actual)\s*:?\s*\n\s*([^\n]+)/i); if (cl) o.club = cl[1].trim();
+  Object.keys(o).forEach(k => o[k] === undefined && delete o[k]); return o;
+}
+function shortlistDocs(SL, profs){
+  const R=RL[LANG], L=T[LANG], d=new Date(SL.created||Date.now());
+  const rows = profs.map(p=>{ const a=age(p.dob); return `<tr><td><div style="display:flex;align-items:center;gap:3mm">${photoSrc(p)?`<span class="th" style="background-image:url('${e(photoSrc(p))}')"></span>`:''}<b>${e(p.name)}</b></div></td><td>${e(pos(p.pos_main))}</td><td>${a!==''?a:'—'}</td><td>${e(nat(p.nat))}</td><td>${e(p.club||'')}<br><small>${e(p.league||'')}</small></td><td>${e(month(p.contract)||'—')}</td><td>${e(p.apps||'—')}</td><td>${e(p.goals||'—')}</td><td>${p.mins_pct?e(p.mins_pct)+'%':'—'}</td><td>${e(p.value||'—')}</td></tr>`; }).join('');
+  const cover = `<div class="page dark cv"><div class="hex"></div><div class="spot"></div>
+   <div class="top"><img src="${MARK}" alt=""><div class="kind"><b>${R.sl}</b>${e(d.toLocaleDateString(LANG==='en'?'en-GB':LANG,{day:'numeric',month:'long',year:'numeric'}))}<div class="flag" style="justify-content:flex-end;margin-top:3mm"><i></i><i></i><i></i></div></div></div>
+   <div class="who" style="top:78mm;max-width:182mm">${SL.club?`<div class="first">${R.forc} ${e(SL.club)}</div>`:''}<div class="last chrome" style="font-size:38pt;line-height:1.05">${e(SL.title||'')}</div>
+     ${SL.need?`<div class="pos" style="margin-top:7mm;letter-spacing:.12em;text-transform:none;font-size:11pt"><span>${R.need}:</span> ${e(SL.need)}</div>`:''}
+     <div class="intl" style="margin-top:8mm">${profs.length} ${R.players} · ${profs.map(p=>e(p.name)).join(' · ')}</div>
+     ${SL.note?`<p style="margin-top:9mm;font-size:10.5pt;line-height:1.65;color:#d6d9de;max-width:150mm;white-space:pre-wrap">${e(SL.note)}</p>`:''}</div>
+   <div class="foot"><span>dkmanagementitaly.com</span><span>DK Management Italy</span></div></div>`;
+  const comp = `<div class="page in"><div class="hd"><img src="${MARK}" alt=""><div class="nm">${R.comp}<small>${e(SL.club||'')}</small></div></div>
+   <div style="position:absolute;left:12mm;right:12mm;top:30mm"><table class="cmp"><tr><th>${R.player}</th><th>${L.posH.slice(0,3)==='Pos'?'Pos.':L.posH}</th><th>${L.age}</th><th>${L.nat}</th><th>${L.club}</th><th>${L.contract}</th><th>${L.apps}</th><th>${L.goals}</th><th>${R.min}</th><th>${L.value}</th></tr>${rows}</table></div>
+   <div class="foot"><span>dkmanagementitaly.com</span><span>${e(SL.title||'')}</span></div></div>`;
+  return cover + comp + profs.map(scout).join('');
+}
+
+/* ---------- Instagram "Welcome to the DK family" post (style of @dkmanagementitaly) ---------- */
+const WC = {it:['BENVENUTO','BENVENUTO','NELLA','FAMIGLIA DK','Benvenuto nella famiglia DK, '], en:['WELCOME','WELCOME','TO THE','DK FAMILY','Welcome to the DK family, '], es:['BIENVENIDO','BIENVENIDO','A LA','FAMILIA DK','Bienvenido a la familia DK, ']};
+const FLAG = {Italy:'🇮🇹',Germany:'🇩🇪',Albania:'🇦🇱',Kosovo:'🇽🇰',Spain:'🇪🇸',France:'🇫🇷',Argentina:'🇦🇷',Brazil:'🇧🇷',Portugal:'🇵🇹',Switzerland:'🇨🇭',Austria:'🇦🇹',Croatia:'🇭🇷',Serbia:'🇷🇸',Romania:'🇷🇴',Poland:'🇵🇱',Netherlands:'🇳🇱',Belgium:'🇧🇪',England:'🏴',Morocco:'🇲🇦',Senegal:'🇸🇳',Nigeria:'🇳🇬',Ghana:'🇬🇭',Uruguay:'🇺🇾',Colombia:'🇨🇴','United States':'🇺🇸',USA:'🇺🇸',Mexico:'🇲🇽',Greece:'🇬🇷',Turkey:'🇹🇷',Ukraine:'🇺🇦','Bosnia-Herzegovina':'🇧🇦',Montenegro:'🇲🇪','North Macedonia':'🇲🇰',Slovenia:'🇸🇮',Denmark:'🇩🇰',Sweden:'🇸🇪',Norway:'🇳🇴'};
+function welcomeCaption(p, lang){ const f = nameParts(p.name)[0] || p.name || ''; return WC[lang||LANG][4] + f + '. ' + [p.nat, p.nat2].map(n => FLAG[n] || '').join('') + '\n\n#DKManagement #DKfamily' + (p.club ? ' #' + String(p.club).replace(/[^\p{L}\p{N}]/gu, '') : ''); }
+function welcomeCard(cv, p, o){   // o: {face: Image|null, cut: Image|null (transparent PNG), mark: Image|null, fmt: 'post'|'story', lang}
+  const W = 1080, H = o.fmt === 'story' ? 1920 : 1350, k = H / 1350, w = WC[o.lang || LANG]; cv.width = W; cv.height = H; const c = cv.getContext('2d');
+  // sand paper background with angled light panels
+  let g = c.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#cfc7b8'); g.addColorStop(.5, '#d9d2c4'); g.addColorStop(1, '#b9b09f'); c.fillStyle = g; c.fillRect(0, 0, W, H);
+  c.save(); c.globalAlpha = .35; c.fillStyle = '#efe9dd'; c.beginPath(); c.moveTo(W*.42, 0); c.lineTo(W, 0); c.lineTo(W, H*.62); c.closePath(); c.fill();
+  c.globalAlpha = .22; c.beginPath(); c.moveTo(W*.55, H); c.lineTo(W, H*.45); c.lineTo(W, H); c.closePath(); c.fill();
+  c.globalAlpha = .18; c.fillStyle = '#8f8676'; c.beginPath(); c.moveTo(W*.62, H*.88); c.lineTo(W*.86, H*.88); c.lineTo(W*1.02, H*.66); c.lineTo(W*.8, H*.66); c.closePath(); c.fill(); c.restore();
+  // big grayscale face, melted into the paper
+  if (o.face) { const t = document.createElement('canvas'); t.width = W; t.height = H; const x = t.getContext('2d'), fw = W * .9, fh = H * .92;
+    const zm = (o.fz || 200) / 100, s = Math.max(fw / o.face.width, fh / o.face.height) * zm, dw = o.face.width * s, dh = o.face.height * s;
+    const fx = (o.fx != null ? o.fx : 50) / 100, fy = (o.fy != null ? o.fy : 25) / 100;
+    const ax = W * .36, ay = H * (o.fmt === 'story' ? .36 : .4);   // where the face centre lands
+    x.filter = 'grayscale(1) contrast(1.2) brightness(1.03)'; x.drawImage(o.face, ax - dw * fx, ay - dh * fy, dw, dh); x.filter = 'none';
+    x.globalCompositeOperation = 'destination-in'; let m = x.createRadialGradient(ax, ay + H * .05, W * .14, ax, ay + H * .05, W * .6); m.addColorStop(0, 'rgba(0,0,0,1)'); m.addColorStop(.6, 'rgba(0,0,0,.85)'); m.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = m; x.fillRect(0, 0, W, H);
+    c.save(); c.globalAlpha = o.cut ? .9 : 1; c.globalCompositeOperation = 'multiply'; c.drawImage(t, 0, 0); c.restore(); }
+  // gold brush stroke
+  c.save(); c.lineCap = 'round'; c.lineJoin = 'round'; const gg = c.createLinearGradient(W*.55, H*.75, W*.95, H*.95); gg.addColorStop(0, 'rgba(214,170,96,0)'); gg.addColorStop(.3, 'rgba(201,158,84,.85)'); gg.addColorStop(1, 'rgba(176,132,62,.7)'); c.strokeStyle = gg;
+  [[14,0],[7,9],[4,-8]].forEach(([lw, off]) => { c.lineWidth = lw * k; c.beginPath(); c.moveTo(W*.56, H*.91 + off*k); c.bezierCurveTo(W*.68, H*.86 + off*k, W*.8, H*.79 + off*k, W*.9, H*.72 + off*k); c.lineTo(W*.74, H*.88 + off*k); c.bezierCurveTo(W*.8, H*.87, W*.86, H*.85 + off*k, W*.92, H*.82 + off*k); c.stroke(); }); c.restore();
+  // the player cut out (transparent PNG), in color, with a soft floor shadow
+  if (o.cut) { let ch = H * (o.fmt === 'story' ? .7 : .86), cw = o.cut.width * ch / o.cut.height; if (cw > W * .62) { cw = W * .62; ch = o.cut.height * cw / o.cut.width; } const cx = Math.min(W - cw - 20, W * .6 - cw / 2), cy = H - ch + H * .01;
+    c.save(); const sh = c.createRadialGradient(cx + cw/2, H - H*.04, 0, cx + cw/2, H - H*.04, cw*.55); sh.addColorStop(0, 'rgba(40,32,22,.35)'); sh.addColorStop(1, 'rgba(40,32,22,0)'); c.fillStyle = sh; c.fillRect(cx - cw*.2, H - H*.1, cw*1.4, H*.1);
+    c.shadowColor = 'rgba(0,0,0,.28)'; c.shadowBlur = 30; c.shadowOffsetX = 10; c.drawImage(o.cut, cx, cy, cw, ch); c.restore(); }
+  // paper grain
+  const n = document.createElement('canvas'); n.width = n.height = 160; const nx = n.getContext('2d'), id = nx.createImageData(160, 160); for (let i = 0; i < id.data.length; i += 4) { const v = Math.random() * 255; id.data[i] = id.data[i+1] = id.data[i+2] = v; id.data[i+3] = 14; } nx.putImageData(id, 0, 0);
+  c.save(); c.fillStyle = c.createPattern(n, 'repeat'); c.fillRect(0, 0, W, H); c.restore();
+  // WELCOME + name, top right
+  const R = W - 40, ty = (o.fmt === 'story' ? 230 : 120) * 1; c.save(); c.fillStyle = '#121212'; c.textAlign = 'right'; c.textBaseline = 'alphabetic';
+  let fs = w[0].length > 7 ? 118 : 138; c.font = `700 ${fs}px "Bodoni 72", Didot, "Playfair Display", "Times New Roman", serif`; c.save(); c.translate(R, ty); c.scale(.82, 1); c.fillText(w[0], 0, 0); c.restore();
+  c.font = `italic 700 30px "Helvetica Neue", Arial, sans-serif`; if ('letterSpacing' in c) c.letterSpacing = '1px'; c.fillText(String(p.name || '').toUpperCase(), R - 44, ty + 50);
+  // side tagline
+  const sx = W * .77, sy = H * .515; c.textAlign = 'left'; c.font = `500 25px "Helvetica Neue", Arial, sans-serif`; if ('letterSpacing' in c) c.letterSpacing = '6px'; c.fillStyle = '#2a2a2a';
+  [w[1], w[2], w[3]].forEach((l, i) => c.fillText(l, sx, sy + i * 38)); c.fillRect(sx, sy + 3 * 38, 64, 3); c.restore();
+  // DK mark bottom left (silver mark darkened for the light paper)
+  if (o.mark) { const mh = 120, mw = o.mark.width * mh / o.mark.height; c.save(); c.filter = 'brightness(.12)'; c.drawImage(o.mark, 52, H - mh - 70, mw, mh); c.restore();
+    c.save(); c.fillStyle = '#1a1a1a'; c.font = '600 13px "Helvetica Neue", Arial, sans-serif'; if ('letterSpacing' in c) c.letterSpacing = '4px'; c.textAlign = 'center'; c.fillText('MANAGEMENT', 52 + mw/2, H - 48); c.restore(); }
+  if (!o.face && !o.cut) { c.save(); c.fillStyle = 'rgba(0,0,0,.35)'; c.font = '600 30px "Helvetica Neue", Arial'; c.textAlign = 'center'; c.fillText('+ photo', W*.4, H*.5); c.restore(); }
+}
 
 (async () => {
 const K = P.get('k') || '', DT = P.get('d') || '';
@@ -263,7 +371,7 @@ async function saveNow(){ if (saving) { queueSave(); return; } saving = true; co
   try { const j = await post({action:'admin_profile_save', profile:data}); if (!j.ok) { st('Not saved'); toast('Not saved: ' + (j.error || 'try again')); }
     else { if (!p.id) { p.id = j.id; } p._token = j.token; st('Saved ✓'); links(); fillList(); } }
   catch (x) { st('Offline – not saved'); } saving = false; }
-function links(){ const l = link(cur()), o = document.getElementById('open'); o.href = l ? l + '&src=k' : '#'; o.style.opacity = l ? 1 : .4; }
+function links(){ const l = link(cur()), o = document.getElementById('open'), c = document.getElementById('card'); o.href = l ? l + '&src=k' : '#'; o.style.opacity = l ? 1 : .4; c.href = l ? l + '&src=k&card=1' : '#'; c.style.opacity = l ? 1 : .4; }
 const F = [
  ['Player', [['name','Full name'],['number','Shirt number'],['@upload','Photo – upload (stored privately)'],['photo','…or a photo web link'],['photo_x','Photo focus left↔right (0–100)','number'],['photo_y','Photo focus top↕bottom (0–100)','number'],['photo_zoom','Scout-sheet circle zoom % (100 = fit)','number'],['dob','Date of birth','date'],['birthplace','Place of birth'],['nat','Nationality (English, e.g. Italy)'],['nat2','Second nationality'],['height','Height (cm)','number'],['foot','Foot','select:r=Right,l=Left,b=Both']]],
  ['Position', [['pos_main','Main position','select:'+Object.keys(POS).map(k=>k+'='+POS[k][3]).join(',')],['pos_other','Other positions (codes, e.g. CM, AM)'],['@pos','Codes: '+Object.keys(POS).join(' ')]]],
@@ -272,10 +380,28 @@ const F = [
  ['Games & video', [['video','Main highlights link (big button)'],['games','Game links – one per line:  label | link','area'],['@g','e.g.  vs Foligno 12/11 – full match | https://youtu.be/…']]],
  ['Texts (per language)', [['intl','Badge line (e.g. Former Italy U20 · 5 caps)','i18n'],['summary','Profile paragraph','i18n-area'],['notes','Key qualities – one per line (from DK only)','i18n-area']]],
  ['Career & extra info', [['career','Career – one per line:  years | club | league','area'],['extra','Extra info rows – one per line:  label | value','area'],['@x','e.g.  Passport | Italian (EU)  ·  Languages | Italian, English']]],
+ ['Monthly report (Transfermarkt)', [['tm','Transfermarkt link (the source every month)'],['@tm',''],['report_notes','Notes for this month – one per line','i18n-area']]],
  ['Contact & sources', [['agent','Contact name'],['email','Email'],['phone','Phone (optional)'],['data_date','Data as of','date'],['sources','Sources line'],['sample','Show SAMPLE stamp','check']]]];
+function tmBox(p){ const S = (p.snapshots||[]).slice().sort((a,b)=>String(b.month).localeCompare(String(a.month)));
+  return `<div class="bar" style="margin-top:8px"><a class="btn" href="${e(p.tm||'#')}" target="_blank" rel="noopener" style="opacity:${p.tm?1:.4}">Open Transfermarkt ↗</a></div>
+  <label>On Transfermarkt: select all (⌘A), copy (⌘C), paste here</label><textarea id="tmtext" rows="3" placeholder="Paste the whole Transfermarkt page…"></textarea>
+  <div class="bar" style="margin-top:6px"><button class="btn dark" type="button" id="tmread">Read it → fill stats</button><button class="btn" type="button" id="snap">📅 Save as ${e(monthKey())} report</button></div>
+  <div class="hint" id="tmres"></div>
+  ${S.length?`<label>Saved months</label>`+S.map(x=>`<div class="hint" style="display:flex;justify-content:space-between;gap:8px"><span><b>${e(x.month)}</b> · ${e(x.apps||0)} apps · ${e(x.goals||0)} G · ${e(x.assists||0)} A · ${e(x.value||'—')}</span><a href="#" data-unsnap="${e(x.month)}" style="color:#b42318">remove</a></div>`).join(''):''}`; }
+const monthKey = () => new Date().toISOString().slice(0,7);
+const STK = ['apps','goals','assists','starts_pct','mins_pct','value','contract','club'];
+document.getElementById('f').addEventListener('click', ev => { const t = ev.target, p = cur();
+  if (t.id === 'tmread') { const o = tmParse(document.getElementById('tmtext').value), ks = Object.keys(o);
+    if (!ks.length) { document.getElementById('tmres').textContent = 'Nothing found – copy the whole Transfermarkt profile page (⌘A then ⌘C) and paste again.'; return; }
+    const ch = ks.filter(k => String(p[k]||'') !== String(o[k])).map(k => k + ': ' + (p[k]||'—') + ' → ' + o[k]); Object.assign(p, o); p.data_date = new Date().toISOString().slice(0,10); if (!/transfermarkt/i.test(p.sources||'')) p.sources = 'Transfermarkt' + (p.sources ? ', ' + p.sources : '');
+    form(); draw(); queueSave(); document.getElementById('tmres').textContent = ch.length ? 'Updated ✓ ' + ch.join(' · ') : 'Read ✓ – nothing changed since last time.'; }
+  if (t.id === 'snap') { const m = monthKey(), sn = {month:m, date:new Date().toISOString().slice(0,10)}; STK.forEach(k => sn[k] = p[k]||'');
+    p.snapshots = (p.snapshots||[]).filter(x => x.month !== m).concat([sn]); form(); DOC = 'report'; [...document.getElementById('docSeg').children].forEach(x=>x.classList.toggle('on', x.dataset.doc==='report')); draw(); queueSave(); toast('Saved ' + m + ' ✓'); }
+  if (t.dataset.unsnap) { ev.preventDefault(); p.snapshots = (p.snapshots||[]).filter(x => x.month !== t.dataset.unsnap); form(); draw(); queueSave(); } });
 function form(){ const p = cur(), out = [];
   F.forEach(([h, fields], i) => { out.push(`<details ${i<2?'open':''}><summary>${h}</summary>`); fields.forEach(([k, lab, type]) => {
     if (k === '@upload') { out.push(`<label>${lab}</label><input type="file" accept="image/*" id="up">`); return; }
+    if (k === '@tm') { out.push(tmBox(p)); return; }
     if (k.charAt(0) === '@') { out.push(`<div class="hint">${lab}</div>`); return; }
     const v = p[k];
     if (type && type.startsWith('select:')) out.push(`<label>${lab}</label><select data-k="${k}">${type.slice(7).split(',').map(o=>{const [a,b]=o.split('=');return `<option value="${a}" ${v===a?'selected':''}>${b}</option>`}).join('')}</select>`);
@@ -307,7 +433,7 @@ document.getElementById('del').onclick = async () => { const p = cur(); if (!(aw
   if (p.id) { const j = await post({action:'admin_profile_delete', id:p.id}); if (!j.ok) { toast('Not deleted'); return; } }
   PROFS.splice(CUR, 1); if (!PROFS.length) PROFS.push(JSON.parse(JSON.stringify(BLANK))); CUR = 0; await loadPhoto(cur()); form(); draw(); toast('Deleted'); };
 document.getElementById('copy').onclick = async () => { const l = link(cur()); if (!l) { toast('Save the player first'); return; } try { await navigator.clipboard.writeText(l); } catch (x) {} toast('Link copied ✓'); };
-document.getElementById('print').onclick = () => { document.title = (cur().name||'player').replace(/\s+/g,'_') + '_' + (DOC==='scout'?'Scout':'Profile') + '_' + LANG.toUpperCase(); window.print(); };
+document.getElementById('print').onclick = () => { document.title = (cur().name||'player').replace(/\s+/g,'_') + '_' + (DOC==='scout'?'Scout':DOC==='report'?'Report_'+monthKey():'Profile') + '_' + LANG.toUpperCase(); window.print(); };
 document.getElementById('mail').onclick = () => { const p = cur(); if (!p.id) { toast('Save the player first'); return; }
   const m = document.createElement('div'); m.className = 'modal'; m.innerHTML = `<div><h3>✉️ Email ${e(p.name)}'s profile</h3><div class="hint">Sent from “${e(D0.contractor)}” with a button to the live profile (PDF inside). Replies go to ${e(D0.email||'them')}.</div>
     <label>Club / person email</label><input id="mt" type="email" placeholder="ds@club.it"><label>Language</label><select id="ml"><option value="it">Italiano</option><option value="en">English</option><option value="es">Español</option></select>
