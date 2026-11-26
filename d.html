@@ -462,6 +462,15 @@ const TX = {
   voiceBtn:'Tocca e parla del lavoro', voiceStop:'Stop – ho finito', voiceHint:'Di’ il nome del cliente, l’indirizzo, cosa farai e il tuo prezzo. Scrive tutto da solo.', voiceLbl:'Il tuo messaggio vocale (scritto)', voicePh:'Le tue parole appaiono qui…', voiceOn:'Ti ascolto… parla ora', micKb:'Tocca il 🎤 sulla tastiera e parla – scrive per te.', micDenied:'Consenti il microfono per usare la voce (Impostazioni → Safari → Microfono).', micErr:'La voce si è fermata – tocca il pulsante per continuare.', orType:'Oppure scrivilo:'} };
 const lastLang = ((D.quotes||[]).slice(-1)[0]||{}).language;
 let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : /ital/i.test(lastLang||D.language||'') ? 'it' : 'en');
+const TXP = {   // wording for contractors in "player profiles" mode (e.g. DK Management)
+ en:{fab:'Request a player profile', foot:'Updated automatically when a profile is made or changed', reqTitle:'Request a player profile', reqIntro:'Talk or type: a new player, an update, game links… add photos if you like, and tap Send.', rName:'Player name', rNamePh:'e.g. Andrea Marcucci', rAddr:'Club / league', rAddrPh:'e.g. Trestina, Serie D', rEmail:'Transfermarkt or video link (optional)', rJob:'What you need', rJobPh:'e.g. New profile + scout sheet in IT/EN, add 3 game links', sentS:'David has it. The profile shows up here when it’s ready.', reqs:'Your profile requests',
+   pTitle:'Player profiles', pPlayers:'Players', pViews:'Profile views', pSent:'Sent to clubs', pUpd:'Last update', pOpen:'Open', pCopy:'Copy link', pMail:'Email to a club', pViewsN:'{0} views', pSentN:'sent {0}×', pEmpty:'No profiles yet – tap “Request a player profile”.', pTo:'Club / person email', pNote:'Message (optional)', pLang:'Language', pSend:'Send', pSentOk:'Sent to {0} ✓', pAll:'All players', pNone:'—'},
+ es:{fab:'Pedir un perfil de jugador', foot:'Se actualiza solo cuando se crea o cambia un perfil', reqTitle:'Pedir un perfil de jugador', reqIntro:'Hable o escriba: un jugador nuevo, una actualización, enlaces de partidos… agregue fotos si quiere y toque Enviar.', rName:'Nombre del jugador', rNamePh:'ej. Andrea Marcucci', rAddr:'Club / liga', rAddrPh:'ej. Trestina, Serie D', rEmail:'Enlace Transfermarkt o video (opcional)', rJob:'Qué necesita', rJobPh:'ej. Perfil nuevo + ficha en IT/ES, agregar 3 partidos', sentS:'David ya lo tiene. El perfil aparecerá aquí cuando esté listo.', reqs:'Sus pedidos de perfiles',
+   pTitle:'Perfiles de jugadores', pPlayers:'Jugadores', pViews:'Vistas del perfil', pSent:'Enviados a clubes', pUpd:'Última actualización', pOpen:'Abrir', pCopy:'Copiar enlace', pMail:'Enviar a un club', pViewsN:'{0} vistas', pSentN:'enviado {0}×', pEmpty:'Todavía no hay perfiles – toque “Pedir un perfil de jugador”.', pTo:'Correo del club / persona', pNote:'Mensaje (opcional)', pLang:'Idioma', pSend:'Enviar', pSentOk:'Enviado a {0} ✓', pAll:'Todos los jugadores', pNone:'—'},
+ it:{fab:'Richiedi un profilo giocatore', foot:'Si aggiorna da solo quando un profilo viene creato o modificato', reqTitle:'Richiedi un profilo giocatore', reqIntro:'Parla o scrivi: un nuovo giocatore, un aggiornamento, link delle partite… aggiungi foto se vuoi e tocca Invia.', rName:'Nome del giocatore', rNamePh:'es. Andrea Marcucci', rAddr:'Club / campionato', rAddrPh:'es. Trestina, Serie D', rEmail:'Link Transfermarkt o video (facoltativo)', rJob:'Cosa ti serve', rJobPh:'es. Nuovo profilo + scheda in IT/EN, aggiungere 3 partite', sentS:'David l’ha ricevuta. Il profilo apparirà qui quando è pronto.', reqs:'Le tue richieste di profili',
+   pTitle:'Profili giocatori', pPlayers:'Giocatori', pViews:'Visualizzazioni', pSent:'Inviati ai club', pUpd:'Ultimo aggiornamento', pOpen:'Apri', pCopy:'Copia link', pMail:'Invia a un club', pViewsN:'{0} visualizzazioni', pSentN:'inviato {0}×', pEmpty:'Ancora nessun profilo – tocca “Richiedi un profilo giocatore”.', pTo:'Email del club / della persona', pNote:'Messaggio (facoltativo)', pLang:'Lingua', pSend:'Invia', pSentOk:'Inviato a {0} ✓', pAll:'Tutti i giocatori', pNone:'—'}};
+if (D.mode === 'profiles') Object.keys(TXP).forEach(l => Object.assign(TX[l], TXP[l]));
+const POSN = {GK:['Portiere','Goalkeeper','Portero'],CB:['Difensore centrale','Centre-Back','Defensa central'],LB:['Terzino sinistro','Left-Back','Lateral izquierdo'],RB:['Terzino destro','Right-Back','Lateral derecho'],DM:['Mediano','Defensive Midfield','Mediocentro defensivo'],CM:['Centrocampista','Central Midfield','Mediocentro'],LM:['Esterno sinistro','Left Midfield','Volante izquierdo'],RM:['Esterno destro','Right Midfield','Volante derecho'],AM:['Trequartista','Attacking Midfield','Mediapunta'],LW:['Ala sinistra','Left Winger','Extremo izquierdo'],RW:['Ala destra','Right Winger','Extremo derecho'],SS:['Seconda punta','Second Striker','Segundo delantero'],CF:['Centravanti','Centre-Forward','Delantero centro']};
 const t = (k, ...a) => String((TX[LANG]||TX.en)[k] ?? TX.en[k] ?? k).replace(/\{(\d)\}/g, (_, i) => a[i]);
 const LOC = () => ({es:'es-US', it:'it-IT'})[LANG] || 'en-US';
 const fd = (d, o) => d.toLocaleDateString(LOC(), o);
@@ -588,7 +597,40 @@ function renderWeek(){
 }
 
 /* ---------- main ---------- */
+const PPH = {};   // player photos loaded from Drive
+const plink = (x, own) => location.href.replace(/d\.html.*$/, '') + 'p.html?p=' + encodeURIComponent(x.id) + '&t=' + encodeURIComponent(x.token) + '&lang=' + LANG + (own ? '&src=k' : '');
+function renderProfiles(){
+  document.getElementById('week').innerHTML = ''; document.getElementById('chips').innerHTML = ''; document.title = D.contractor + ' – ' + t('pTitle');
+  const PR = (D.profiles||[]).slice().sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+  const views = PR.reduce((s,x)=>s+(x.views||0),0), sent = PR.reduce((s,x)=>s+(x.sent||0),0), upd = PR.map(x=>x.updated).filter(Boolean).sort().pop();
+  const pn = c => POSN[c] ? POSN[c][{it:0,en:1,es:2}[LANG]||1] : (c||'');
+  const av = x => { const src = x.photo || PPH[x.photo_id]; return `<div class="av" style="width:58px;height:58px;border-radius:16px;overflow:hidden;background:#1c1d22;color:#fff;flex:none" data-ph="${e(x.photo_id||'')}" data-pid="${e(x.id)}">${src?`<img src="${src}" alt="" style="width:100%;height:100%;object-fit:cover;filter:grayscale(1)">`:ini(x.name)}</div>`; };
+  const kpi = (i,cls,l,v,s) => `<div class="kpi rise ${cls}" style="--i:${i};--d0:120ms"><div class="l">${l}</div><b class="num">${v}</b><small>${s||''}</small></div>`;
+  document.getElementById('main').innerHTML = `
+  <div class="kpis">${kpi(0,'hl',t('pPlayers'),PR.length,t('pTitle'))}${kpi(1,'',t('pViews'),views,'')}${kpi(2,'',t('pSent'),sent,'')}${kpi(3,'',t('pUpd'),upd?fd(new Date(upd),{day:'numeric',month:'short'}):t('pNone'),'')}</div>
+  <div class="card rise" style="--i:4;--d0:120ms;margin-top:14px"><div class="ch"><h2>${t('pTitle')}</h2><span>${PR.length}</span></div>
+   ${PR.length ? PR.map(x=>`<div style="display:flex;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)">${av(x)}
+     <div style="flex:1;min-width:0"><div style="font-weight:700;font-size:16px">${e(x.name)}</div><div style="font-size:13px;color:var(--mute)">${e([pn(x.pos_main), x.club].filter(Boolean).join(' · '))}</div>
+      <div style="font-size:12px;color:var(--mute);margin-top:2px">${t('pViewsN', x.views||0)}${x.sent?` · ${t('pSentN', x.sent)}`:''}${x.updated?` · ${fd(new Date(x.updated),{day:'numeric',month:'short'})}`:''}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"><a class="btn pri" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}" target="_blank" rel="noopener">${t('pOpen')} ↗</a>
+       <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="pmail" data-v="${e(x.id)}">✉️ ${t('pMail')}</button>
+       <button class="btn sec" style="padding:7px 12px;font-size:13px" data-act="copy" data-v="${e(plink(x,false))}">${t('pCopy')}</button>
+       <a class="btn sec" style="padding:7px 12px;font-size:13px" href="${plink(x,true)}&print=1" target="_blank" rel="noopener">PDF</a></div></div></div>`).join('') : `<div class="empty">${t('pEmpty')}</div>`}</div>
+  ${(D.requests||[]).length?`<div class="card rise" style="--i:5;--d0:120ms;margin-top:14px"><div class="ch" data-act="reqall"><h2>${t('reqs')}</h2><span>${(D.requests||[]).length}</span></div>
+   ${(D.requests||[]).slice().reverse().slice(0,5).map(x=>`<div class="rq" data-act="reqview" data-v="${e(x.id)}" style="cursor:pointer"><div class="ic">${x.status==='Done'?'✅':x.status==='Working'?'🛠️':'📨'}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e(x.client||x.job||'—')}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${fd(new Date(x.created),{month:'short',day:'numeric'})} · ${ago(x.created)}</div></div></div>`).join('')}</div>`:''}`;
+  document.querySelectorAll('[data-ph]').forEach(async el => { const id = el.dataset.ph; if (!id || PPH[id] || typeof api === 'undefined') return;
+    try { const j = await api({api:'pphoto', p:el.dataset.pid, id, d:TOK}); if (j.ok) { PPH[id] = 'data:'+j.type+';base64,'+j.data; el.innerHTML = `<img src="${PPH[id]}" alt="" style="width:100%;height:100%;object-fit:cover;filter:grayscale(1)">`; } } catch(x) {} });
+  if (document.body.classList.contains('ready')) document.querySelectorAll('#main .rise').forEach(x=>x.style.animationPlayState='running');
+}
+function pmailSheet(x){
+  openSheet('✉️ ' + e(x.name), `<label class="fl">${t('pTo')}</label><input class="tx" id="pmt" type="email" inputmode="email" placeholder="ds@club.it">
+   <label class="fl">${t('pLang')}</label><select class="tx" id="pml"><option value="it">Italiano</option><option value="en">English</option><option value="es">Español</option></select>
+   <label class="fl">${t('pNote')}</label><textarea class="nt" id="pmn" rows="4"></textarea>
+   <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" id="pmb" data-act="pmsend" data-v="${e(x.id)}">${t('pSend')}</button></div><div class="sferr" id="pme"></div>`);
+  document.getElementById('pml').value = LANG;
+}
 function render(){
+  if (D.mode === 'profiles') { renderProfiles(); return; }
   const acc = Q.filter(q=>q.status==='Accepted'), waiting = Q.filter(q=>q.status!=='Accepted');
   let upcoming = acc.filter(q=>!q.sd || q.sd>=today || (Number(q.progress||0)>0 && Number(q.progress)<100)).sort((a,b)=>(a.sd||'9999').localeCompare(b.sd||'9999'));
   if (S.who) upcoming = upcoming.filter(q=>(q.crew||[]).includes(S.who));
@@ -819,6 +861,7 @@ function reqSheet(){
    <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" id="sendb" data-act="reqsend">${t('rSend')}</button></div>
    <div class="sferr" id="sferr"></div>`);
   PH = []; AUD = null; renderPhotos(); renderRec();
+  if (D.mode === 'profiles') { const r5 = document.getElementById('r5'); r5.style.display = 'none'; r5.previousElementSibling.style.display = 'none'; }
   document.getElementById('phin').onchange = async ev => { for (const f of [...ev.target.files].slice(0, 8 - PH.length)) { try { PH.push(await shrink(f)); } catch(x) { toast(t('photoBig')); } } ev.target.value = ''; renderPhotos(); };
 }
 /* ---- photos (shrunk on the phone before sending) + the real voice recording ---- */
@@ -905,6 +948,12 @@ document.addEventListener('click', ev => {
     if (v==='up' || v==='wait') { S.tab = v==='up'?0:1; S.day=''; S.who=''; render(); document.getElementById('seg').scrollIntoView({behavior:'smooth',block:'start'}); }
     else if (v==='won') qListSheet(t('won'), Q.filter(q=>q.iso.slice(0,7)===month && q.status==='Accepted').sort((a,b)=>b.iso.localeCompare(a.iso)));
     else if (v==='bill') qListSheet(t('bill'), Q.filter(q=>q.iso.slice(0,7)===month).sort((a,b)=>b.iso.localeCompare(a.iso)), true); }
+  else if (act==='pmail') { const x = (D.profiles||[]).find(p=>p.id===el.dataset.v); if (x) pmailSheet(x); }
+  else if (act==='pmsend') { const b = el, er = document.getElementById('pme'), x = (D.profiles||[]).find(p=>p.id===el.dataset.v); if (!x) return;
+    b.disabled = true; b.textContent = '…'; er.textContent = '';
+    fetch(API, {method:'POST', credentials:'omit', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action:'profile_email', d:TOK, id:x.id, to:document.getElementById('pmt').value.trim(), lang:document.getElementById('pml').value, note:document.getElementById('pmn').value})})
+      .then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); x.sent = (x.sent||0)+1; closeSheet(); toast(t('pSentOk', j.sent)); render(); })
+      .catch(y=>{ b.disabled = false; b.textContent = t('pSend'); er.textContent = String(y.message||y); }); }
   else if (act==='reqview') { const x = (D.requests||[]).find(r=>r.id===el.dataset.v); if (x) reqViewSheet(x); }
   else if (act==='mic') toggleVoice();
   else if (act==='setlang') { LANG = el.dataset.v; localStorage.setItem('lang_'+TOK, LANG); haptic(); renderHeader(); render();
