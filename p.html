@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Player profile</title>
+<style>
+:root{--ink:#111216;--g:#1c1d22;--s:#b9bec7;--s2:#e6e8ec;--ivory:#f6f5f2;--red:#c0262d;--green:#1f8a3c;--serif:"Didot","Bodoni 72","Bodoni MT",Georgia,serif;--sans:"Avenir Next","Helvetica Neue",Helvetica,Arial,sans-serif}
+/* ---------- pages (A4) ---------- */
+.page{flex:none;width:210mm;height:297mm;position:relative;overflow:hidden;background:#fff;box-shadow:0 10px 40px rgba(0,0,0,.18);font-family:var(--sans);color:var(--ink)}
+.dark{background:#0b0b0f;color:#fff}
+.hex{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='104' height='180' viewBox='0 0 104 180'%3E%3Cg fill='none' stroke='%23ffffff' stroke-opacity='.06' stroke-width='1.2'%3E%3Cpath d='M52 0 104 30v60L52 120 0 90V30z'/%3E%3Cpath d='M52 120 104 150v60M52 120 0 150v60'/%3E%3C/g%3E%3C/svg%3E");background-size:52px 90px}
+.spot{position:absolute;inset:0;background:radial-gradient(70% 50% at 70% 30%,rgba(255,255,255,.10),transparent 70%),radial-gradient(60% 40% at 10% 100%,rgba(255,255,255,.05),transparent 70%)}
+.flag{display:flex;gap:2.5mm}.flag i{width:9mm;height:1mm;border-radius:1mm;background:#8b8f96}.flag i:first-child{background:var(--green)}.flag i:last-child{background:var(--red)}
+.chrome{color:#eef0f3;text-shadow:0 .3mm 0 rgba(0,0,0,.35)}
+.sample{position:absolute;z-index:9;left:50%;bottom:7.5mm;transform:translateX(-50%);border:.35mm solid var(--red);color:var(--red);font:700 6.5pt var(--sans);letter-spacing:.35em;padding:1mm 3.5mm 1mm 4.2mm;border-radius:5mm;background:rgba(192,38,45,.06)}
+/* cover */
+.cv .top{position:absolute;left:14mm;right:14mm;top:12mm;display:flex;justify-content:space-between;align-items:flex-start;z-index:3}
+.cv .top img{height:17mm}.cv .top .kind{text-align:right;font-size:7.5pt;letter-spacing:.35em;color:var(--s)}.cv .top .kind b{display:block;color:#fff;font-size:9pt;letter-spacing:.3em;margin-bottom:2.5mm}
+.cv .photo{position:absolute;right:0;top:0;width:72%;height:190mm;z-index:1;display:block}
+.cv .who{position:absolute;left:14mm;top:92mm;z-index:3;max-width:120mm}
+.cv .num{font:300 11pt var(--sans);color:var(--s);letter-spacing:.2em}
+.cv .first{font:500 13pt var(--sans);letter-spacing:.45em;color:var(--s);margin-top:3mm;text-transform:uppercase}
+.cv .last{font:400 46pt/0.95 var(--serif);margin-top:1mm}
+.cv .pos{margin-top:5mm;font-size:10pt;letter-spacing:.28em;text-transform:uppercase;color:#fff}.cv .pos span{color:var(--s)}
+.cv .intl{display:inline-flex;align-items:center;gap:2.5mm;margin-top:6mm;border:.3mm solid rgba(255,255,255,.35);border-radius:10mm;padding:2mm 4.5mm;font-size:8.5pt;letter-spacing:.06em;background:rgba(255,255,255,.04)}
+.cv .facts{position:absolute;left:14mm;right:14mm;top:178mm;z-index:3;display:grid;grid-template-columns:repeat(4,1fr);border-top:.3mm solid rgba(255,255,255,.18)}
+.cv .facts div{padding:4mm 3mm 4mm 0;border-bottom:.3mm solid rgba(255,255,255,.18)}.cv .facts small{display:block;font-size:6.5pt;letter-spacing:.25em;color:#8e939b;text-transform:uppercase}.cv .facts b{display:block;font-weight:500;font-size:11pt;margin-top:1.5mm}
+.cv .season{position:absolute;left:14mm;right:14mm;top:222mm;z-index:3}
+.cv .season h4{margin:0 0 4mm;font-size:7.5pt;letter-spacing:.3em;color:#8e939b;font-weight:600;text-transform:uppercase}
+.cv .tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm}.cv .tiles div{border:.3mm solid rgba(255,255,255,.14);border-radius:2.5mm;padding:4mm 3mm;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01))}
+.cv .tiles b{display:block;font:400 26pt/1 var(--serif)}.cv .tiles small{display:block;margin-top:2mm;font-size:6.5pt;letter-spacing:.2em;color:#9aa0a8;text-transform:uppercase}
+.foot{position:absolute;left:14mm;right:14mm;bottom:9mm;display:flex;justify-content:space-between;align-items:center;font-size:7pt;letter-spacing:.08em;z-index:3}
+.dark .foot{color:#8e939b}
+/* inside page */
+.in{background:var(--ivory)}
+.in .hd{position:absolute;left:14mm;right:14mm;top:11mm;display:flex;justify-content:space-between;align-items:center;padding-bottom:5mm;border-bottom:.3mm solid #d7d5cf}
+.in .hd img{height:9mm;filter:invert(1) brightness(.35)}.in .hd .nm{font:400 16pt var(--serif)}.in .hd .nm small{font:500 7.5pt var(--sans);letter-spacing:.3em;color:#777;margin-left:3mm;text-transform:uppercase}
+.in .cols{position:absolute;left:14mm;right:14mm;top:30mm;bottom:22mm;display:grid;grid-template-columns:1.15fr .85fr;gap:10mm}
+.in h3{margin:0 0 3.5mm;font-size:7.5pt;letter-spacing:.3em;text-transform:uppercase;color:#6b6f77;font-weight:700;display:flex;align-items:center;gap:3mm}.in h3:after{content:"";flex:1;height:.3mm;background:#d7d5cf}
+.in .blk{margin-bottom:8mm}.in p{margin:0;font-size:10pt;line-height:1.6;color:#2a2c31}
+.in ul{margin:0;padding:0;list-style:none}.in li{position:relative;padding-left:5mm;font-size:9.5pt;line-height:1.5;margin-bottom:2mm;color:#2a2c31}.in li:before{content:"";position:absolute;left:0;top:2.2mm;width:2mm;height:.4mm;background:var(--g)}
+.tl{position:relative;padding-left:5mm}.tl:before{content:"";position:absolute;left:1mm;top:1.5mm;bottom:1.5mm;width:.3mm;background:#c9c7c0}
+.tl div{position:relative;margin-bottom:3.5mm;font-size:9.5pt}.tl div:before{content:"";position:absolute;left:-5.3mm;top:1.3mm;width:2.2mm;height:2.2mm;border-radius:50%;background:var(--ivory);border:.5mm solid var(--g)}
+.tl div.now:before{background:var(--g)}.tl b{display:block;font-weight:600}.tl small{color:#777;font-size:8pt;letter-spacing:.04em}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2mm 5mm;font-size:9.5pt}.kv span{color:#777;font-size:8pt;letter-spacing:.06em;text-transform:uppercase;padding-top:.6mm}.kv b{font-weight:600}
+.st{width:100%;border-collapse:collapse;font-size:9.5pt}.st td{padding:2.2mm 0;border-bottom:.3mm solid #dedcd6}.st td:last-child{text-align:right;font-weight:600}
+.pitch{width:100%;max-height:92mm;display:block;margin:0 auto}
+.vid{display:flex;align-items:center;gap:3mm;text-decoration:none;color:#fff;background:var(--g);border-radius:2mm;padding:3.5mm 4mm;font-size:9pt;font-weight:600}.vid i{width:0;height:0;border-left:3mm solid #fff;border-top:2mm solid transparent;border-bottom:2mm solid transparent}
+.card{background:#0b0b0f;color:#fff;border-radius:3mm;padding:5mm;position:relative;overflow:hidden}.card .hex{opacity:.7}.card *{position:relative}
+.card small{display:block;font-size:6.5pt;letter-spacing:.3em;color:#8e939b;text-transform:uppercase}.card b{display:block;font:400 14pt var(--serif);margin:2mm 0 1mm}.card div{font-size:8.5pt;color:#d6d9de;line-height:1.6}
+.in .foot{color:#8a8d93;border-top:.3mm solid #d7d5cf;padding-top:3mm}
+/* scout sheet */
+.sc .band{position:absolute;left:0;right:0;top:0;height:78mm;background:#0b0b0f;color:#fff;overflow:hidden}
+.sc .band .ph{position:absolute;right:14mm;top:14mm;width:50mm;height:50mm;border-radius:50%;background-repeat:no-repeat;border:.6mm solid rgba(255,255,255,.5);box-shadow:0 0 0 2mm rgba(255,255,255,.06)}
+.sc .band img.mk{position:absolute;left:14mm;top:11mm;height:11mm}
+.sc .band .who{position:absolute;left:14mm;top:30mm;max-width:115mm}.sc .band .first{font-size:9pt;letter-spacing:.45em;color:var(--s);text-transform:uppercase}.sc .band .last{font:400 32pt/1 var(--serif);margin-top:1mm}
+.sc .band .pos{margin-top:3mm;font-size:8.5pt;letter-spacing:.25em;text-transform:uppercase}.sc .band .pos span{color:var(--s)}
+.sc .band .kind{position:absolute;left:14mm;bottom:7mm;font-size:7pt;letter-spacing:.35em;color:#8e939b}
+.sc .row{position:absolute;left:14mm;right:14mm;display:grid;gap:3mm}
+.sc .facts{top:86mm;grid-template-columns:repeat(4,1fr)}.sc .facts div,.sc .stats div{border:.3mm solid #e1e1e6;border-radius:2mm;padding:3mm}.sc small{display:block;font-size:6.5pt;letter-spacing:.22em;color:#888;text-transform:uppercase}.sc .facts b{display:block;margin-top:1mm;font-size:10.5pt;font-weight:600}
+.sc .stats{top:112mm;grid-template-columns:repeat(6,1fr)}.sc .stats div{background:#f6f5f2;border-color:#ecebe6}.sc .stats b{display:block;font:400 20pt/1 var(--serif);margin-top:1.5mm}
+.sc .two{position:absolute;left:14mm;right:14mm;top:140mm;display:grid;grid-template-columns:.9fr 1.1fr;gap:8mm}
+.sc h3{margin:0 0 3mm;font-size:7pt;letter-spacing:.3em;text-transform:uppercase;color:#6b6f77}
+.sc ul{margin:0;padding:0;list-style:none}.sc li{position:relative;padding-left:5mm;font-size:9.5pt;line-height:1.5;margin-bottom:2.2mm}.sc li:before{content:"";position:absolute;left:0;top:2.2mm;width:2mm;height:.4mm;background:var(--g)}
+.sc .foot{color:#8a8d93;border-top:.3mm solid #e1e1e6;padding-top:3mm}
+.games{margin:0;padding:0;list-style:none}.games li{padding:0!important;margin-bottom:2mm!important}.games li:before{display:none}.games a{display:flex;align-items:center;gap:3mm;text-decoration:none;color:var(--ink);font-size:9pt;border:.3mm solid #dedcd6;border-radius:2mm;padding:2.4mm 3mm;background:#fff}.games a i{flex:none;width:5.5mm;height:5.5mm;border-radius:50%;background:var(--g);position:relative}.games a i:after{content:"";position:absolute;left:2.1mm;top:1.5mm;border-left:2mm solid #fff;border-top:1.25mm solid transparent;border-bottom:1.25mm solid transparent}.games a span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+*{box-sizing:border-box}
+body{margin:0;background:#16171b;font-family:var(--sans)}
+.tb{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;background:rgba(11,11,15,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08);color:#fff}
+.tb img{height:26px}.tb .nm{font:600 13px var(--sans);letter-spacing:.04em;flex:1;min-width:120px}.tb .nm small{display:block;color:#9aa0a8;font-weight:400;font-size:11px}
+.sg{display:inline-flex;background:rgba(255,255,255,.08);border-radius:9px;padding:3px}.sg button{border:0;background:none;color:#c9ccd2;padding:6px 10px;border-radius:7px;font:600 12px var(--sans);cursor:pointer}.sg button.on{background:#fff;color:#111}
+.pdf{border:0;border-radius:9px;padding:8px 13px;background:#fff;color:#111;font:700 12.5px var(--sans);cursor:pointer}
+.main{padding:22px 8px 40px;overflow:hidden}
+.stack{display:flex;flex-direction:column;align-items:center;gap:20px;transform-origin:top center}
+.page{box-shadow:0 20px 60px rgba(0,0,0,.5)}
+@media print{@page{size:A4;margin:0}body{background:#fff}.tb{display:none}.main{padding:0}.stack{gap:0;transform:none!important;height:auto!important}.page{box-shadow:none;break-after:page;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style><style>#dq-load{position:fixed;inset:0;z-index:9999;background:#0b0b0f;display:grid;place-items:center;transition:opacity .5s}#dq-load.hide{opacity:0;pointer-events:none}#dq-load i{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.15);border-top-color:#fff;animation:pl 1s linear infinite}@keyframes pl{to{transform:rotate(360deg)}}</style></head>
+<body><div id="dq-load"><i></i></div>
+<div class="tb"><img id="lg" alt=""><div class="nm" id="tn"></div>
+  <div class="sg" id="dg"><button data-doc="profile" class="on">Profilo</button><button data-doc="scout">Scheda</button></div>
+  <div class="sg" id="lgs"><button data-l="it">IT</button><button data-l="en">EN</button><button data-l="es">ES</button></div>
+  <button class="pdf" id="pdf">PDF</button></div>
+<div class="main"><div class="stack" id="out"></div></div>
+<script>
+const API = "https://script.google.com/macros/s/AKfycbyhZMVpTW09drWGodTUBtjCvWqbxEt29fpmDgbzyaaY91habK3yg_oRDaRf8U9Ehyyi/exec";
+const P = new URLSearchParams(location.search);
+async function api(params){ const r = await fetch(API + '?' + new URLSearchParams(params), {credentials:'omit'}); return r.json(); }
+function hideLoad(){ const l=document.getElementById('dq-load'); if(l){ l.classList.add('hide'); setTimeout(()=>l.remove(),650); } }
+function fail(msg){ hideLoad(); document.body.innerHTML = '<div style="font-family:-apple-system,Helvetica,Arial;max-width:520px;margin:60px auto;padding:0 20px;color:#333"><h2>DuPage Quotes</h2><p>'+msg+'</p></div>'; }
+(async()=>{
+const j = await api({api:'profile', p:P.get('p')||'', t:P.get('t')||'', src:P.get('src')||''});
+if(!j.ok){ fail(j.error||'This profile link is not valid.'); return; }
+const D = j.data;
+
+
+let LANG = 'it', DOC = 'profile', MARK = '';
+const T = {
+ it:{profile:'PROFILO GIOCATORE', scout:'SCHEDA SCOUTING', season:'Stagione', apps:'Presenze', goals:'Gol', assists:'Assist', starts:'Da titolare', mins:'Minuti giocati', age:'Età', yrs:'anni', nat:'Nazionalità', height:'Altezza', foot:'Piede', club:'Club', league:'Campionato', contract:'Contratto fino a', value:'Valore di mercato', born:'Nato a', profileH:'Profilo', notesH:'Punti di forza', careerH:'Carriera', posH:'Posizioni', main:'Principale', other:'Alternativa', statsH:'Dati stagione', physH:'Dati personali', video:'Guarda gli highlights', contactH:'Contatto', rep:'Rappresentato da', data:'Dati al', src:'Fonti', foot_r:'Destro', foot_l:'Sinistro', foot_b:'Ambidestro', yellow:'Ammonizioni', red:'Espulsioni', minutes:'Minuti', sample:'ESEMPIO', page:'Pag.'},
+ en:{profile:'PLAYER PROFILE', scout:'SCOUTING SHEET', season:'Season', apps:'Appearances', goals:'Goals', assists:'Assists', starts:'Starts', mins:'Minutes played', age:'Age', yrs:'yrs', nat:'Nationality', height:'Height', foot:'Foot', club:'Club', league:'League', contract:'Contract until', value:'Market value', born:'Born in', profileH:'Profile', notesH:'Key qualities', careerH:'Career', posH:'Positions', main:'Main', other:'Alternative', statsH:'Season data', physH:'Personal data', video:'Watch highlights', contactH:'Contact', rep:'Represented by', data:'Data as of', src:'Sources', foot_r:'Right', foot_l:'Left', foot_b:'Both', yellow:'Yellow cards', red:'Red cards', minutes:'Minutes', sample:'SAMPLE', page:'Page'},
+ es:{profile:'PERFIL DEL JUGADOR', scout:'FICHA DE SCOUTING', season:'Temporada', apps:'Partidos', goals:'Goles', assists:'Asistencias', starts:'Titular', mins:'Minutos jugados', age:'Edad', yrs:'años', nat:'Nacionalidad', height:'Altura', foot:'Pie', club:'Club', league:'Liga', contract:'Contrato hasta', value:'Valor de mercado', born:'Nacido en', profileH:'Perfil', notesH:'Cualidades', careerH:'Trayectoria', posH:'Posiciones', main:'Principal', other:'Alternativa', statsH:'Datos de la temporada', physH:'Datos personales', video:'Ver highlights', contactH:'Contacto', rep:'Representado por', data:'Datos al', src:'Fuentes', foot_r:'Derecho', foot_l:'Izquierdo', foot_b:'Ambidiestro', yellow:'Amarillas', red:'Rojas', minutes:'Minutos', sample:'MUESTRA', page:'Pág.'}};
+const POS = { // code: [x%, y% on a vertical pitch (attack up), it, en, es]
+ GK:[50,95,'Portiere','Goalkeeper','Portero'], CB:[50,84,'Difensore centrale','Centre-Back','Defensa central'], LB:[16,76,'Terzino sinistro','Left-Back','Lateral izquierdo'], RB:[84,76,'Terzino destro','Right-Back','Lateral derecho'],
+ DM:[50,66,'Mediano','Defensive Midfield','Mediocentro defensivo'], CM:[50,56,'Centrocampista','Central Midfield','Mediocentro'], LM:[18,54,'Esterno sinistro','Left Midfield','Volante izquierdo'], RM:[82,54,'Esterno destro','Right Midfield','Volante derecho'],
+ AM:[50,40,'Trequartista','Attacking Midfield','Mediapunta'], LW:[20,28,'Ala sinistra','Left Winger','Extremo izquierdo'], RW:[80,28,'Ala destra','Right Winger','Extremo derecho'], SS:[50,26,'Seconda punta','Second Striker','Segundo delantero'], CF:[50,16,'Centravanti','Centre-Forward','Delantero centro']};
+const NAT = {Italy:['Italia','Italy','Italia'], Bolivia:['Bolivia','Bolivia','Bolivia'], Peru:['Perù','Peru','Perú'], Venezuela:['Venezuela','Venezuela','Venezuela'], Panama:['Panamá','Panama','Panamá'], 'El Salvador':['El Salvador','El Salvador','El Salvador'], Kosovo:['Kosovo','Kosovo','Kosovo'], Argentina:['Argentina','Argentina','Argentina'], Brazil:['Brasile','Brazil','Brasil'], Colombia:['Colombia','Colombia','Colombia'], Mexico:['Messico','Mexico','México'], Spain:['Spagna','Spain','España'], Germany:['Germania','Germany','Alemania'], Albania:['Albania','Albania','Albania'], Uruguay:['Uruguay','Uruguay','Uruguay'], Paraguay:['Paraguay','Paraguay','Paraguay'], Ecuador:['Ecuador','Ecuador','Ecuador'], Chile:['Cile','Chile','Chile']};
+const LI = {it:2, en:3, es:4}, NI = {it:0, en:1, es:2};
+const BLANK = {name:'', number:'', photo:'', photo_id:'', games:'', extra:'', dob:'', birthplace:'', nat:'Italy', nat2:'', height:'', foot:'r', pos_main:'CM', pos_other:'', club:'', league:'', contract:'', value:'', season:'2026/27',
+  apps:'', starts_pct:'', mins_pct:'', goals:'', assists:'', yellow:'', red:'', intl:{it:'',en:'',es:''}, career:'', summary:{it:'',en:'',es:''}, notes:{it:'',en:'',es:''}, video:'', agent:'Giorgio Barbieri', email:'info@dkmanagementitaly.com', phone:'', data_date:'', sources:'', sample:true};
+const e = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function age(dob){ if(!dob) return ''; const d=new Date(dob), n=new Date(); let a=n.getFullYear()-d.getFullYear(); if(n<new Date(n.getFullYear(),d.getMonth(),d.getDate())) a--; return a; }
+function nat(n){ return n ? (NAT[n] ? NAT[n][NI[LANG]] : n) : ''; }
+function pos(c){ return POS[c] ? POS[c][LI[LANG]] : c; }
+function month(ym){ if(!ym) return ''; const [y,m]=ym.split('-'); return m ? m+'/'+y : y; }
+function dmy(d){ if(!d) return ''; const [y,m,dd]=d.split('-'); return dd+'/'+m+'/'+y; }
+function tr(o){ return typeof o === 'object' && o ? (o[LANG] || o.en || o.it || '') : (o || ''); }
+function others(p){ return String(p.pos_other||'').split(/[,\s]+/).filter(c=>POS[c]); }
+function footTxt(p){ const L=T[LANG]; return {r:L.foot_r, l:L.foot_l, b:L.foot_b}[p.foot] || ''; }
+function pitch(p, dark){ const ln = dark ? 'rgba(255,255,255,.35)' : '#b9b7af', fill = dark ? 'transparent' : '#efeee9';
+  const dot = (c, main) => { const q=POS[c]; if(!q) return ''; return `${main?`<circle cx="${q[0]}" cy="${q[1]*1.4}" r="7.5" fill="#1c1d22" fill-opacity=".12"/>`:''}<circle cx="${q[0]}" cy="${q[1]*1.4}" r="${main?4.2:3.4}" fill="${main?'#1c1d22':'#fff'}" stroke="#1c1d22" stroke-width="1.1"/>`; };
+  return `<svg class="pitch" viewBox="-4 -4 108 148"><rect x="0" y="0" width="100" height="140" rx="2" fill="${fill}" stroke="${ln}" stroke-width=".8"/>
+   <line x1="0" y1="70" x2="100" y2="70" stroke="${ln}" stroke-width=".8"/><circle cx="50" cy="70" r="11" fill="none" stroke="${ln}" stroke-width=".8"/>
+   <rect x="22" y="0" width="56" height="20" fill="none" stroke="${ln}" stroke-width=".8"/><rect x="22" y="120" width="56" height="20" fill="none" stroke="${ln}" stroke-width=".8"/>
+   <rect x="38" y="0" width="24" height="7" fill="none" stroke="${ln}" stroke-width=".8"/><rect x="38" y="133" width="24" height="7" fill="none" stroke="${ln}" stroke-width=".8"/>
+   ${others(p).map(c=>dot(c,false)).join('')}${dot(p.pos_main,true)}</svg>`; }
+function nameParts(n){ const w=String(n||'').trim().split(/\s+/); return w.length>1 ? [w.slice(0,-1).join(' '), w[w.length-1]] : ['', w[0]||'']; }
+function foot(p, pg){ const L=T[LANG]; return `<div class="foot"><span>dkmanagementitaly.com · ${e(p.email)}</span><span>${p.data_date?L.data+' '+e(dmy(p.data_date)):''}${pg?' · '+L.page+' '+pg:''}</span></div>`; }
+function stamp(p){ return p.sample ? `<div class="sample">${T[LANG].sample}</div>` : ''; }
+const PHOTOS = {};   // Drive photo id -> data URL (loaded by the page)
+function photoSrc(p){ return p.photo || (p.photo_id && PHOTOS[p.photo_id]) || ''; }
+function games(p, max){ return String(p.games||'').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(r=>r[0]&&/^https?:\/\//.test(r[r.length-1])).slice(0, max||20).map(r=>({label: r.length>1 ? r[0] : r[0].replace(/^https?:\/\/(www\.)?/,'').slice(0,40), url: r[r.length-1]})); }
+function extras(p){ return String(p.extra||'').split('\n').map(l=>l.split('|').map(x=>x.trim())).filter(r=>r[0]&&r[1]); }
+const GL = {it:'Partite e video', en:'Games & video', es:'Partidos y video'};
+function profile(p){
+  const L=T[LANG], [first,last]=nameParts(p.name), a=age(p.dob), oth=others(p);
+  const facts=[[L.age, a!==''?a+' '+L.yrs:''],[L.nat, [nat(p.nat),nat(p.nat2)].filter(Boolean).join(' / ')],[L.height, p.height?(p.height/100).toFixed(2).replace('.',LANG==='en'?'.':',')+' m':''],[L.foot, footTxt(p)],[L.club, p.club],[L.league, p.league],[L.contract, month(p.contract)],[L.value, p.value]];
+  const tiles=[[p.apps,L.apps],[p.goals,L.goals],[p.assists,L.assists],[p.starts_pct!==''?p.starts_pct+'%':'',L.starts],[p.mins_pct!==''?p.mins_pct+'%':'',L.mins]];
+  const career=String(p.career||'').split('\n').map(l=>l.split('|').map(s=>s.trim())).filter(r=>r[0]);
+  const notes=String(tr(p.notes)).split('\n').map(s=>s.trim()).filter(Boolean);
+  return `<div class="page dark cv"><div class="hex"></div><div class="spot"></div>${stamp(p)}
+   ${photoSrc(p)?`<canvas class="photo" data-src="${e(photoSrc(p))}" data-x="${e(p.photo_x||50)}" data-y="${e(p.photo_y||15)}"></canvas>`:''}
+   <div class="top"><img src="${MARK}" alt=""><div class="kind"><b>${L.profile}</b>${e(p.season?L.season+' '+p.season:'')}<div class="flag" style="justify-content:flex-end;margin-top:3mm"><i></i><i></i><i></i></div></div></div>
+   <div class="who">${p.number?`<div class="num">#${e(p.number)}</div>`:''}<div class="first">${e(first)}</div><div class="last chrome">${e(last)}</div>
+     <div class="pos">${e(pos(p.pos_main))}${oth.length?` <span>· ${oth.map(pos).map(e).join(' · ')}</span>`:''}</div>
+     ${tr(p.intl)?`<div class="intl">★ ${e(tr(p.intl))}</div>`:''}</div>
+   <div class="facts">${facts.map(f=>`<div><small>${f[0]}</small><b>${e(f[1]||'—')}</b></div>`).join('')}</div>
+   <div class="season"><h4>${L.season} ${e(p.season)} · ${e(p.club)}</h4><div class="tiles">${tiles.map(t=>`<div><b class="chrome">${e(t[0]===''||t[0]==null?'—':t[0])}</b><small>${t[1]}</small></div>`).join('')}</div></div>
+   ${foot(p,1)}</div>
+  <div class="page in">${stamp(p)}<div class="hd"><img src="${MARK}" alt=""><div class="nm">${e(p.name)}<small>${e(pos(p.pos_main))}</small></div></div>
+   <div class="cols"><div>
+     ${tr(p.summary)?`<div class="blk"><h3>${L.profileH}</h3><p>${e(tr(p.summary)).replace(/\n/g,'<br>')}</p></div>`:''}
+     ${notes.length?`<div class="blk"><h3>${L.notesH}</h3><ul>${notes.map(n=>`<li>${e(n)}</li>`).join('')}</ul></div>`:''}
+     <div class="blk"><h3>${L.statsH} · ${e(p.season)}</h3><table class="st">${[[L.apps,p.apps],[L.starts,p.starts_pct!==''?p.starts_pct+'%':''],[L.mins,p.mins_pct!==''?p.mins_pct+'%':''],[L.goals,p.goals],[L.assists,p.assists],[L.yellow,p.yellow],[L.red,p.red]].filter(r=>r[1]!==''&&r[1]!=null).map(r=>`<tr><td>${r[0]}</td><td>${e(r[1])}</td></tr>`).join('')}</table></div>
+     ${career.length?`<div class="blk"><h3>${L.careerH}</h3><div class="tl">${career.map((r,i)=>`<div class="${i===0?'now':''}"><small>${e(r[0])}</small><b>${e(r[1]||'')}</b><small>${e(r[2]||'')}</small></div>`).join('')}</div></div>`:''}
+   </div><div>
+     <div class="blk"><h3>${L.posH}</h3>${pitch(p)}<div style="display:flex;gap:5mm;font-size:8pt;margin-top:2mm;color:#555"><span>● ${L.main}: ${e(pos(p.pos_main))}</span>${oth.length?`<span>○ ${L.other}: ${oth.map(pos).map(e).join(', ')}</span>`:''}</div></div>
+     <div class="blk"><h3>${L.physH}</h3><div class="kv"><span>${L.born}</span><b>${e([p.birthplace, dmy(p.dob)].filter(Boolean).join(' · '))}</b><span>${L.height}</span><b>${e(facts[2][1])}</b><span>${L.foot}</span><b>${e(footTxt(p))}</b><span>${L.nat}</span><b>${e(facts[1][1])}</b>${extras(p).map(r=>`<span>${e(r[0])}</span><b>${e(r[1])}</b>`).join('')}</div></div>
+     ${p.video?`<div class="blk"><a class="vid" href="${e(p.video)}"><i></i>${L.video}</a></div>`:''}
+     ${games(p).length?`<div class="blk"><h3>${GL[LANG]}</h3><ul class="games">${games(p,8).map(g=>`<li><a href="${e(g.url)}" target="_blank" rel="noopener"><i></i><span>${e(g.label)}</span></a></li>`).join('')}</ul></div>`:''}
+     <div class="card"><div class="hex"></div><small>${L.contactH} · ${L.rep}</small><b>DK Management Italy</b><div>${e(p.agent)}<br>${e(p.email)}${p.phone?'<br>'+e(p.phone):''}</div></div>
+     ${p.sources?`<div style="font-size:7pt;color:#8a8d93;margin-top:4mm">${L.src}: ${e(p.sources)}</div>`:''}
+   </div></div>${foot(p,2)}</div>`;
+}
+function scout(p){
+  const L=T[LANG], [first,last]=nameParts(p.name), a=age(p.dob), oth=others(p), notes=String(tr(p.notes)).split('\n').map(s=>s.trim()).filter(Boolean);
+  const facts=[[L.age, a!==''?a+' '+L.yrs:''],[L.nat, [nat(p.nat),nat(p.nat2)].filter(Boolean).join(' / ')],[L.club, p.club],[L.contract, month(p.contract)]];
+  const stats=[[p.apps,L.apps],[p.goals,L.goals],[p.assists,L.assists],[p.starts_pct!==''?p.starts_pct+'%':'',L.starts],[p.mins_pct!==''?p.mins_pct+'%':'',L.mins],[p.height?(p.height/100).toFixed(2)+' m':'',L.height]];
+  return `<div class="page sc">${stamp(p)}<div class="band"><div class="hex"></div><div class="spot"></div><img class="mk" src="${MARK}" alt="">
+     ${photoSrc(p)?`<div class="ph" style="background-image:url('${e(photoSrc(p))}');background-size:${e(p.photo_zoom||100)}%;background-position:${e(p.photo_x||50)}% ${e(p.photo_y||15)}%;filter:grayscale(1) contrast(1.05)"></div>`:''}
+     <div class="who"><div class="first">${e(first)}</div><div class="last chrome">${e(last)}</div><div class="pos">${e(pos(p.pos_main))}${oth.length?` <span>· ${oth.map(pos).map(e).join(' · ')}</span>`:''}</div>
+     ${tr(p.intl)?`<div style="margin-top:3mm;font-size:8pt;color:#d6d9de">★ ${e(tr(p.intl))}</div>`:''}</div>
+     <div class="kind">${L.scout} · ${e(L.season+' '+p.season)}</div></div>
+   <div class="row facts">${facts.map(f=>`<div><small>${f[0]}</small><b>${e(f[1]||'—')}</b></div>`).join('')}</div>
+   <div class="row stats">${stats.map(s=>`<div><small>${s[1]}</small><b>${e(s[0]===''||s[0]==null?'—':s[0])}</b></div>`).join('')}</div>
+   <div class="two"><div><h3>${L.posH}</h3>${pitch(p)}</div><div>
+     ${tr(p.summary)?`<h3>${L.profileH}</h3><p style="font-size:9.5pt;line-height:1.55;margin:0 0 6mm">${e(tr(p.summary))}</p>`:''}
+     ${notes.length?`<h3>${L.notesH}</h3><ul>${notes.slice(0,5).map(n=>`<li>${e(n)}</li>`).join('')}</ul>`:''}
+     ${p.video?`<div style="margin-top:6mm"><a class="vid" href="${e(p.video)}"><i></i>${L.video}</a></div>`:''}
+     ${games(p).length?`<h3 style="margin-top:6mm">${GL[LANG]}</h3><ul class="games">${games(p,3).map(g=>`<li><a href="${e(g.url)}" target="_blank" rel="noopener"><i></i><span>${e(g.label)}</span></a></li>`).join('')}</ul>`:''}
+     <div class="card" style="margin-top:6mm"><div class="hex"></div><small>${L.contactH}</small><b>DK Management Italy</b><div>${e(p.agent)} · ${e(p.email)}${p.phone?' · '+e(p.phone):''}</div></div>
+   </div></div>${foot(p)}</div>`;
+}
+function drawPhotos(){   // photo blended into the dark page inside a canvas (prints cleanly as one image)
+  document.querySelectorAll('canvas.photo').forEach(cv => { const r = cv.getBoundingClientRect(), W = Math.round(cv.offsetWidth*2.2), H = Math.round(cv.offsetHeight*2.2); cv.width = W; cv.height = H;
+    const img = new Image(); img.onload = () => { const c = cv.getContext('2d'), fx = (+cv.dataset.x)/100, fy = (+cv.dataset.y)/100;
+      const s = Math.max(W/img.width, H/img.height), w = img.width*s, h = img.height*s;
+      c.filter = 'grayscale(1) contrast(1.08) brightness(.9)'; c.drawImage(img, (W-w)*fx, (H-h)*fy, w, h); c.filter = 'none';
+      c.globalCompositeOperation = 'destination-in';
+      c.save(); c.translate(W*0.64, H*0.36); c.scale(1, (H*0.72)/(W*0.74));
+      const g = c.createRadialGradient(0, 0, 0, 0, 0, W*0.74); g.addColorStop(0, 'rgba(0,0,0,1)'); g.addColorStop(0.45, 'rgba(0,0,0,1)'); g.addColorStop(0.72, 'rgba(0,0,0,.5)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+      c.fillStyle = g; c.fillRect(-W*2, -H*4, W*4, H*8); c.restore();
+      const t = c.createLinearGradient(0, 0, 0, H); t.addColorStop(0, 'rgba(0,0,0,.45)'); t.addColorStop(0.25, 'rgba(0,0,0,1)'); t.addColorStop(1, 'rgba(0,0,0,1)'); c.fillStyle = t; c.fillRect(0, 0, W, H);
+      const lf = c.createLinearGradient(0, 0, W, 0); lf.addColorStop(0, 'rgba(0,0,0,0)'); lf.addColorStop(0.38, 'rgba(0,0,0,1)'); lf.addColorStop(1, 'rgba(0,0,0,1)'); c.fillStyle = lf; c.fillRect(0, 0, W, H);
+      const bf = c.createLinearGradient(0, 0, 0, H); bf.addColorStop(0, 'rgba(0,0,0,1)'); bf.addColorStop(0.7, 'rgba(0,0,0,1)'); bf.addColorStop(1, 'rgba(0,0,0,0)'); c.fillStyle = bf; c.fillRect(0, 0, W, H);
+      c.globalCompositeOperation = 'source-over'; window.__photosDone = (window.__photosDone||0) + 1; };
+    img.src = cv.dataset.src; });
+}
+function renderDocs(p, out){ out.innerHTML = DOC==='profile' ? profile(p) : DOC==='scout' ? scout(p) : profile(p)+scout(p); fit(); drawPhotos(); }
+function fit(){ const m=document.querySelector('.main'), s=document.getElementById('out'); if(!m||!s) return; const w=m.clientWidth-(innerWidth<700?16:56), pw=794; s.style.transform = w<pw ? `scale(${w/pw})` : ''; s.style.height = w<pw ? (s.scrollHeight*w/pw)+'px' : ''; }
+
+(async () => {
+  const p = D.profile, P2 = new URLSearchParams(location.search);
+  LANG = ['it','en','es'].includes(P2.get('lang')) ? P2.get('lang') : (localStorage.getItem('plang') || 'it');
+  if (D.intro && /\.txt$/.test(D.intro.mark || '')) { try { MARK = (await (await fetch(D.intro.mark)).text()).trim(); } catch (x) {} }
+  if (!MARK) MARK = D.logo || '';
+  document.getElementById('lg').src = MARK; document.title = (p.name || 'Player') + ' – ' + D.contractor;
+  document.getElementById('tn').innerHTML = `${e(p.name)}<small>${e(D.contractor)}</small>`;
+  if (p.photo_id && typeof API !== 'undefined') { try { const j = await api({api:'pphoto', p:D.id, id:p.photo_id, t:P2.get('t')||''}); if (j.ok) PHOTOS[p.photo_id] = 'data:' + j.type + ';base64,' + j.data; } catch (x) {} }
+  const DL = {it:['Profilo','Scheda'], en:['Profile','Scout sheet'], es:['Perfil','Ficha']};
+  const draw = () => { document.documentElement.lang = LANG; document.querySelectorAll('#lgs button').forEach(b => b.classList.toggle('on', b.dataset.l === LANG));
+    document.querySelectorAll('#dg button').forEach((b, i) => { b.classList.toggle('on', b.dataset.doc === DOC); b.textContent = DL[LANG][i]; });
+    renderDocs(p, document.getElementById('out')); };
+  document.getElementById('lgs').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; LANG = b.dataset.l; localStorage.setItem('plang', LANG); draw(); };
+  document.getElementById('dg').onclick = ev => { const b = ev.target.closest('button'); if (!b) return; DOC = b.dataset.doc; draw(); };
+  document.getElementById('pdf').onclick = () => { document.title = (p.name || 'player').replace(/\s+/g, '_') + '_' + (DOC === 'scout' ? 'Scout' : 'Profile') + '_' + LANG.toUpperCase(); window.print(); };
+  window.addEventListener('resize', fit);
+  draw();
+  if (P2.get('print') === '1') setTimeout(() => window.print(), 1500);
+})();
+
+hideLoad();
+})();
+</script>
+</body></html>
