@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&display=swap" rel="stylesheet">
 <style>
 /* DuPage Quotes – contractor dashboard v2 ("very modern")
    Colors come from the contractor (--g brand, --a accent); everything else is neutral. */
@@ -295,6 +295,83 @@ textarea.nt:focus,input.tx:focus{border-color:var(--g);box-shadow:0 0 0 4px colo
 #toast.on{transform:translate(-50%,0)}
 .filt{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--mute);margin:-4px 2px 10px}
 .filt button{border:0;background:none;color:var(--g);font:600 12.5px Inter,-apple-system,sans-serif;cursor:pointer}
+/* ---------- calendar bits (all dashboards) ---------- */
+.vs{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line)}.ch+.vs{border-top:0}
+.vs .ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--tint);font-size:17px;flex:none}
+.vs .x2{border:0;background:none;color:var(--mute);font-size:20px;cursor:pointer;padding:4px 6px}
+.calbtn{display:inline-flex;align-items:center;gap:6px}
+.sub-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+/* ---------- wood skin (Lilac Wood Repair): light header, wood-grain week strip, purple tiles, wood job card, bottom nav ---------- */
+:root{--grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='320'%3E%3Cfilter id='a' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.005 .16' numOctaves='5' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 .13 0 0 0 0 .06 0 0 0 0 .01 2.4 0 0 0 -.95'/%3E%3C/filter%3E%3Cfilter id='b' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .85' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .98 0 0 0 0 .82 0 0 0 0 .6 2.2 0 0 0 -.95'/%3E%3C/filter%3E%3Cfilter id='c' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='turbulence' baseFrequency='.02 .06' numOctaves='3' seed='21'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .1 0 0 0 0 .03 1.6 0 0 0 -.55'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23a9763f'/%3E%3Crect width='100%25' height='100%25' filter='url(%23c)' opacity='.35'/%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23b)' opacity='.55'/%3E%3Cellipse cx='470' cy='120' rx='26' ry='11' fill='none' stroke='%232a1406' stroke-opacity='.45' stroke-width='2'/%3E%3Cellipse cx='470' cy='120' rx='14' ry='5' fill='%232a1406' fill-opacity='.5'/%3E%3C/svg%3E")}
+#bnav{display:none}
+body.wood{--bg:#eceef1;padding-bottom:128px;font-family:'Plus Jakarta Sans',Inter,-apple-system,Helvetica,Arial,sans-serif;letter-spacing:-.004em}
+.wood button,.wood input,.wood textarea,.wood select{font-family:inherit}
+.wood .hero{background:var(--bg);color:var(--ink);padding:calc(env(safe-area-inset-top) + 12px) 18px 0}
+.wood .hero:before{display:none}
+.wood .pill{background:#fff;border-color:var(--line);color:var(--g)}
+.wood .iconbtn{background:#fff;border-color:var(--line);color:var(--g)}
+.wood .bdot{box-shadow:0 0 0 2px #fff}
+.wood .card,.wood .sbox{background:#fff}
+.wood .id{margin-top:16px;gap:16px}
+.wood #logo{width:auto;min-width:84px;max-width:150px;height:84px;padding:8px 10px;border-radius:22px;background:#fff;box-shadow:0 10px 22px -8px rgba(60,40,20,.4),0 0 0 1px rgba(0,0,0,.05)}
+.wood #logo img{display:block;width:auto;height:100%;max-width:130px;max-height:68px;object-fit:contain}
+.wood .hi{color:var(--mute);opacity:1;font-size:15px}
+.wood h1{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:clamp(26px,7.4vw,34px);letter-spacing:-.02em;line-height:1.05}
+.wood .date{opacity:1;color:var(--mute);font-weight:500;margin:12px 0 14px}
+.wood .week{margin:0 -18px;padding:14px 14px 14px;gap:0;background:linear-gradient(180deg,rgba(0,0,0,.28),rgba(0,0,0,.05) 40%,rgba(0,0,0,.3)),var(--grain) 0 0/520px 260px,#6a4122;box-shadow:inset 0 3px 8px rgba(0,0,0,.4),inset 0 -2px 6px rgba(0,0,0,.25);align-items:center}
+.wood .dy{flex:none;width:calc((100vw - 28px)/7);background:none;border:0;border-radius:0;color:#f6e9d6;font-weight:600;font-size:13px;padding:4px 0}
+.wood .dy b{display:inline-block;font-size:21px;font-weight:600;margin-top:2px;padding:0 2px 2px;border-bottom:2px solid rgba(255,240,220,.5)}
+.wood .dy.today:not(.on){color:#fff}
+.wood .dy.on{background:radial-gradient(circle at 34% 28%,color-mix(in srgb,var(--g) 62%,white),var(--g) 58%,color-mix(in srgb,var(--g) 55%,black));color:#fff;width:calc((100vw - 28px)/7 + 8px);aspect-ratio:1;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 8px 18px rgba(0,0,0,.5),inset 0 2px 5px rgba(255,255,255,.35),0 0 0 2px rgba(255,255,255,.12);padding:0;margin:0 -2px}
+.wood .dy.on b{border-bottom-color:transparent;font-weight:700;font-size:23px;margin-top:0}
+.wood .dy i{background:#f6d58a;bottom:0}.wood .dy.on i{display:none}
+.wood .chips{margin:0 -18px;padding:12px 18px 12px;background:var(--bg)}
+.wood .chip2{color:var(--g);border-color:var(--tint2)}.wood .chip2.on{background:var(--g);color:#fff;border-color:var(--g)}
+.wood .hero.v3{padding-bottom:0}
+.wood .chips:empty{display:none}
+.wood main{margin-top:16px}
+.wood .kpis{gap:12px}
+.wood .kpi,.wood .kpi.hl{background:linear-gradient(160deg,color-mix(in srgb,var(--g) 92%,white),color-mix(in srgb,var(--g) 78%,black));color:#fff;border:0;border-radius:26px;padding:17px 17px 18px;
+  box-shadow:0 16px 26px -16px var(--g),0 3px 8px rgba(40,10,70,.25),inset 0 1px 0 rgba(255,255,255,.16)}
+.wood .kpi .l,.wood .kpi small{color:rgba(255,255,255,.8);font-size:13px}.wood .kpi .l svg{color:#fff}
+.wood .kpi b{color:#fff;font-size:34px;font-weight:700;margin-top:8px}.wood .kpi .go{color:#fff}
+.wood .seg{margin-top:18px}
+.wood #p-sched .card{background:linear-gradient(rgba(176,122,66,.3),rgba(176,122,66,.3)),linear-gradient(180deg,rgba(255,255,255,.14),rgba(0,0,0,0) 30%,rgba(0,0,0,.12)),repeating-linear-gradient(180deg,transparent 0 168px,rgba(30,14,4,.4) 168px 170px,rgba(255,220,170,.18) 170px 172px),var(--grain) 0 0/640px 320px,#a9763f;border:0;border-radius:26px;color:#2a1708;box-shadow:0 14px 28px -16px rgba(70,40,10,.7),inset 0 1px 0 rgba(255,255,255,.25);padding:8px 18px 12px}
+.wood #p-sched .ch h2{color:#24140a;font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:19px}
+.wood .ch h2{font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:18px}
+.wood .kpi b{font-family:'Fraunces',Georgia,serif;font-weight:700}.wood #p-sched .ch span,.wood #p-sched .filt{color:#4a2e14}
+.wood #p-sched .filt button{color:#24140a;text-decoration:underline}
+.wood #p-sched .job{border-top-color:rgba(60,30,8,.28)}
+.wood #p-sched .job .t{font-weight:800;font-size:16.5px}.wood #p-sched .job .p{color:#2a1708;font-weight:500}
+.wood #p-sched .day{background:#f1dcc0;color:#3a2410;box-shadow:inset 0 1px 0 #fff8}.wood #p-sched .day.nd{background:#f1dcc0;color:#6d5030}.wood #p-sched .day.soon{background:var(--g);color:#fff}
+.wood #p-sched .tag.br{background:rgba(255,248,236,.7);color:#3a2410}.wood #p-sched .tag.wait{background:rgba(255,248,236,.7);color:#8a4a00}.wood #p-sched .tag.ok{background:rgba(255,248,236,.7)}
+.wood #p-sched .prog{background:rgba(255,246,232,.5);border-color:rgba(60,30,8,.2)}
+.wood #p-sched .arow{border-top-color:rgba(60,30,8,.28)}.wood #p-sched .arow > *+*{border-left-color:rgba(60,30,8,.28)}
+.wood #p-sched .arow button,.wood #p-sched .arow a{color:#24140a}.wood #p-sched .arow svg{color:#3a2410}
+.wood #p-sched .empty{color:#3a2410}
+.wood #p-sched .addr .at{color:#2a1708}
+.wood #fab{bottom:calc(env(safe-area-inset-bottom) + 84px);background:linear-gradient(180deg,color-mix(in srgb,var(--g) 90%,white),color-mix(in srgb,var(--g) 85%,black));padding:15px 26px;box-shadow:0 14px 28px -8px var(--g),0 4px 12px rgba(0,0,0,.25)}
+.wood #bnav{display:grid;grid-template-columns:repeat(4,1fr);position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.94);backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);border-top:1px solid var(--line);padding:8px 8px calc(env(safe-area-inset-bottom) + 6px)}
+/* readable panels on the wood card: purple-bordered cream boxes */
+.wood #p-sched .ch{background:var(--g);border-radius:16px;padding:11px 16px;margin:10px 0 8px;box-shadow:0 6px 14px -8px rgba(30,8,55,.7),inset 0 1px 0 rgba(255,255,255,.18)}
+.wood #p-sched .ch h2,.wood #p-sched .ch span{color:#fff}
+.wood #p-sched .filt{background:#fffaf2;border:2px solid var(--g);border-radius:14px;padding:8px 14px;margin:0 0 10px}
+.wood #p-sched .filt,.wood #p-sched .filt button{color:var(--g);font-weight:700;text-decoration:none}
+.wood #p-sched .jc{background:#fffaf2;border:2.5px solid var(--g);border-radius:22px;padding:14px 16px 6px;margin:0 0 12px;box-shadow:0 10px 20px -10px rgba(30,8,55,.65),0 0 0 3px rgba(255,255,255,.18)}
+.wood #p-sched .jc .job{border-top:0;padding:0 0 10px}
+.wood #p-sched .jc .job .t,.wood #p-sched .jc .job .p{color:#1d1410}
+.wood #p-sched .jc .addr .at{color:#3a3e45}
+.wood #p-sched .jc .prog{background:#f6f0fa;border-color:var(--tint2)}
+.wood #p-sched .jc .arow{border-top-color:var(--line)}.wood #p-sched .jc .arow > *+*{border-left-color:var(--line)}
+.wood #p-sched .jc .arow button,.wood #p-sched .jc .arow a{color:var(--ink)}.wood #p-sched .jc .arow svg{color:var(--g)}
+.wood #p-sched .jc .day{background:var(--tint);color:var(--g)}.wood #p-sched .jc .day.nd{background:#f1f1f3;color:#8b8f97}.wood #p-sched .jc .day.soon{background:var(--g);color:#fff}
+.wood #p-sched .jc .tag.br{background:var(--tint);color:var(--g)}.wood #p-sched .jc .tag.wait{background:#fff4e0;color:#a15c00}.wood #p-sched .jc .tag.ok{background:#e6f6ec;color:#15803d}
+.wood #p-sched .vs{background:#fffaf2;border:2px solid var(--g);border-radius:16px;padding:10px 12px;margin-bottom:10px}
+.wood #p-sched .jc + div{display:none}
+.wood #p-sched .empty{background:#fffaf2;border:2px solid var(--g);border-radius:16px;margin-bottom:10px}
+#bnav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;font:600 12px Inter,-apple-system,sans-serif;color:#9a9ea6;padding:4px 0;cursor:pointer}
+#bnav button svg{width:26px;height:26px}#bnav button.on{color:var(--g)}
 </style><link rel="icon" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20120%20120%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Crect%20width%3D%22120%22%20height%3D%22120%22%20rx%3D%2226%22%20fill%3D%22%23222B45%22/%3E%3Cpath%20d%3D%22M33%2031a27%2023%200%200%201%2054%200z%22%20fill%3D%22%23E8913F%22/%3E%3Crect%20x%3D%2257.5%22%20y%3D%2210%22%20width%3D%225%22%20height%3D%2220%22%20rx%3D%222.5%22%20fill%3D%22%23C46F28%22/%3E%3Crect%20x%3D%2222%22%20y%3D%2228%22%20width%3D%2276%22%20height%3D%2210%22%20rx%3D%225%22%20fill%3D%22%23E8913F%22/%3E%3Crect%20x%3D%2232%22%20y%3D%2238%22%20width%3D%2256%22%20height%3D%2274%22%20rx%3D%227%22%20fill%3D%22%23FFFFFF%22/%3E%3Crect%20x%3D%2238.5%22%20y%3D%2244%22%20width%3D%2243%22%20height%3D%2262%22%20rx%3D%224%22%20fill%3D%22%23EEF1F8%22/%3E%3Cpath%20d%3D%22M47%2069l9%209%2018-20%22%20fill%3D%22none%22%20stroke%3D%22%23E8913F%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%2245%22%20y%3D%2286%22%20width%3D%2230%22%20height%3D%223.4%22%20rx%3D%221.7%22%20fill%3D%22%23B3B8CC%22/%3E%3Crect%20x%3D%2245%22%20y%3D%2294%22%20width%3D%2221%22%20height%3D%223.4%22%20rx%3D%221.7%22%20fill%3D%22%23B3B8CC%22/%3E%3C/svg%3E"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet"><style>
 /* DuPage Quotes loading screen v2 – navy #222B45 + orange #E8913F */
 #dq-load{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;overflow:hidden;
@@ -364,6 +441,10 @@ function brandIntro(host, c, name, mode){
 <main id="main"></main>
 <footer><span id="foott">Updated automatically when a quote is made or accepted</span><br>Powered by <b>DuPage Quotes</b> · dupagequotes@gmail.com</footer>
 <button id="fab" data-act="req"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span id="fabt">Request new estimate</span></button>
+<nav id="bnav"><button class="on" data-act="nav" data-v="dash"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="8" height="8" rx="2.4"/><rect x="13" y="3" width="8" height="8" rx="2.4"/><rect x="3" y="13" width="8" height="8" rx="2.4"/><rect x="13" y="13" width="8" height="8" rx="2.4"/></svg><span id="nv0">Dashboard</span></button>
+ <button data-act="nav" data-v="jobs"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 3h6a1 1 0 0 1 1 1v1h2a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h2V4a1 1 0 0 1 1-1zm1 2v1h4V5zm-2 6v2h8v-2zm0 4v2h6v-2z"/></svg><span id="nv1">Jobs</span></button>
+ <button data-act="nav" data-v="clients"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="8" r="3.6"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0z"/><circle cx="17.2" cy="9" r="2.8"/><path d="M17 14.2a5.2 5.2 0 0 1 4.6 5.8h-4.2a8 8 0 0 0-2.1-4.9 5 5 0 0 1 1.7-.9z"/></svg><span id="nv2">Clients</span></button>
+ <button data-act="nav" data-v="more"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg><span id="nv3">More</span></button></nav>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet"></div>
 <div id="toast"></div>
@@ -407,7 +488,7 @@ const TX = {
   reqTitle:'Request a new estimate', reqFree:'Free (one of your first 2)', reqIntro:'Talk or type what you know, add photos if you like, and tap Send. Your branded quote shows up here when it’s ready.',
   rName:'Client name', rNamePh:'e.g. Maria Lopez', rAddr:'Job address', rAddrPh:'Street, city', rEmail:'Client email (optional)', rJob:'The job – what you’ll do', rJobPh:'e.g. Replace 2 rotted deck boards, re-stain…', rPrice:'Your price', rSend:'Send request',
   msgCopied:'Message copied – paste it in a text ✓', crewUpd:'Crew updated ✓', crewName:'Crew member name', added:'Added {0} ✓',
-  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', langName:'English', kFree:'Free', kNone:'Nothing here yet.', kTot:'Total', langTitle:'Language', closedNoQ:'This request was closed without a quote. Text David if you still need one.', reqDetail:'Your request', youSent:'What you sent', seeAll:'See all {0}', yourQuote:'Your finished quote', viewYourQuote:'Open the quote', notYet2:'Your quote is being made – it shows up here when it’s done.', photosSent:'{0} photo(s) sent', recSent:'Voice recording sent', sentOn:'Sent {0}', qStatusAcc:'Client accepted ✓', qStatusWait:'Waiting for the client to sign', qStatusOpen:'Client opened it', addPhotos:'Add photos of the job', photosN:'{0} photo(s) added', removeP:'Remove', recSaved:'Voice recording saved ({0})', recDel:'Delete recording', sending:'Sending…', sentT:'Request sent!', sentS:'David has it. Your quote will show up here when it’s ready.', done:'Done', sendFail:'Couldn’t send: {0}', emailInstead:'Send by email instead', reqs:'Your quote requests', stNew:'Received', stWorking:'Being made', stDone:'Done', needSomething:'Talk, type or add a photo first.', photoBig:'Photo skipped (could not read it)', voiceBtn:'Tap and talk about the job', voiceStop:'Stop – I’m done talking', voiceHint:'Say the client’s name, the address, what you’ll do and your price. It writes it all down for you.', voiceLbl:'Your voice note (written out)', voicePh:'Your words show up here…', voiceOn:'Listening… talk now', micKb:'Tap the 🎤 on your keyboard and talk – it types for you.', micDenied:'Allow the microphone to use voice (phone Settings → Safari → Microphone).', micErr:'Voice stopped – tap the button to keep going.', orType:'Or type it:'},
+  justNow:'just now', mAgo:'{0}m ago', hAgo:'{0}h ago', dAgo:'{0}d ago', calPick:'Which calendar do you use?', calPickS:'Your dates and site visits will open there.', calGoogle:'Google Calendar', calApple:'Apple Calendar', calOpen:'Open in calendar', calAdd:'Add to {0}', calAddQ:'Add it to your calendar?', calNot:'Not now', calChange:'Change calendar', calMy:'my calendar', calSyncT:'Sync all my jobs', calSyncS:'Subscribe once: every job date, deadline and site visit keeps appearing in your calendar by itself.', calSyncG:'Subscribe in Google Calendar', calSyncA:'Subscribe in Apple Calendar', calSyncC:'Copy feed link', startEvt:'Job: {0}', dueEvt:'Deadline: {0}', addStart:'Add start date', addDue:'Add deadline', navDash:'Dashboard', navJobs:'Jobs', navClients:'Clients', navMore:'More', clientsT:'Clients', jobsOf:'{0} jobs', visits:'Site visits', visitAdd:'Add site visit', visitT:'Site visit', visitWhat:'Who / what are you going to see?', visitWhatPh:'e.g. Maria Lopez – measure deck', visitAddr:'Address (optional)', visitDate:'Date', visitTime:'Time (optional)', visitNote:'Note (optional)', visitSave:'Save site visit', visitSaved:'Site visit saved ✓', visitDel:'Site visit removed', visitNone:'No site visits yet.', moreT:'More', goAll:'All quotes', goWait:'Waiting on clients', calToday:'Open calendar', langName:'English', kFree:'Free', kNone:'Nothing here yet.', kTot:'Total', langTitle:'Language', closedNoQ:'This request was closed without a quote. Text David if you still need one.', reqDetail:'Your request', youSent:'What you sent', seeAll:'See all {0}', yourQuote:'Your finished quote', viewYourQuote:'Open the quote', notYet2:'Your quote is being made – it shows up here when it’s done.', photosSent:'{0} photo(s) sent', recSent:'Voice recording sent', sentOn:'Sent {0}', qStatusAcc:'Client accepted ✓', qStatusWait:'Waiting for the client to sign', qStatusOpen:'Client opened it', addPhotos:'Add photos of the job', photosN:'{0} photo(s) added', removeP:'Remove', recSaved:'Voice recording saved ({0})', recDel:'Delete recording', sending:'Sending…', sentT:'Request sent!', sentS:'David has it. Your quote will show up here when it’s ready.', done:'Done', sendFail:'Couldn’t send: {0}', emailInstead:'Send by email instead', reqs:'Your quote requests', stNew:'Received', stWorking:'Being made', stDone:'Done', needSomething:'Talk, type or add a photo first.', photoBig:'Photo skipped (could not read it)', voiceBtn:'Tap and talk about the job', voiceStop:'Stop – I’m done talking', voiceHint:'Say the client’s name, the address, what you’ll do and your price. It writes it all down for you.', voiceLbl:'Your voice note (written out)', voicePh:'Your words show up here…', voiceOn:'Listening… talk now', micKb:'Tap the 🎤 on your keyboard and talk – it types for you.', micDenied:'Allow the microphone to use voice (phone Settings → Safari → Microphone).', micErr:'Voice stopped – tap the button to keep going.', orType:'Or type it:'},
  es:{live:'En vivo · se actualiza solo', morning:'Buenos días', afternoon:'Buenas tardes', evening:'Buenas noches', reveal:'Cotizaciones y agenda',
   foot:'Se actualiza solo cuando se hace o se acepta una cotización', fab:'Pedir nueva cotización', free:'gratis', all:'Todos',
   setDate:'PONER<br>FECHA', today:'Hoy', tomorrow:'Mañana', started:'Empezado', inDays:'En {0} días', depPaid:'✓ Depósito {0} pagado', depDue:'Depósito {0} pendiente', due:'Entrega {0}',
@@ -433,7 +514,7 @@ const TX = {
   reqTitle:'Pedir una nueva cotización', reqFree:'Gratis (una de sus primeras 2)', reqIntro:'Hable o escriba lo que sepa, agregue fotos si quiere y toque Enviar. Su cotización con su marca aparece aquí cuando esté lista.',
   rName:'Nombre del cliente', rNamePh:'ej. María López', rAddr:'Dirección del trabajo', rAddrPh:'Calle, ciudad', rEmail:'Correo del cliente (opcional)', rJob:'El trabajo – qué va a hacer', rJobPh:'ej. Cambiar 2 tablas podridas de la terraza, volver a teñir…', rPrice:'Su precio', rSend:'Enviar pedido',
   msgCopied:'Mensaje copiado – péguelo en un texto ✓', crewUpd:'Equipo actualizado ✓', crewName:'Nombre del trabajador', added:'{0} agregado ✓',
-  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', langName:'Español', kFree:'Gratis', kNone:'Todavía no hay nada.', kTot:'Total', langTitle:'Idioma', closedNoQ:'Este pedido se cerró sin cotización. Mándele un texto a David si todavía la necesita.', reqDetail:'Su pedido', youSent:'Lo que mandó', seeAll:'Ver los {0}', yourQuote:'Su cotización terminada', viewYourQuote:'Abrir la cotización', notYet2:'Su cotización se está haciendo – aparece aquí cuando esté lista.', photosSent:'{0} foto(s) enviada(s)', recSent:'Grabación de voz enviada', sentOn:'Enviado {0}', qStatusAcc:'El cliente aceptó ✓', qStatusWait:'Esperando que el cliente firme', qStatusOpen:'El cliente la abrió', addPhotos:'Agregar fotos del trabajo', photosN:'{0} foto(s) agregada(s)', removeP:'Quitar', recSaved:'Grabación de voz guardada ({0})', recDel:'Borrar grabación', sending:'Enviando…', sentT:'¡Pedido enviado!', sentS:'David ya lo tiene. Su cotización aparecerá aquí cuando esté lista.', done:'Listo', sendFail:'No se pudo enviar: {0}', emailInstead:'Mandar por correo', reqs:'Sus pedidos de cotización', stNew:'Recibido', stWorking:'En proceso', stDone:'Listo', needSomething:'Primero hable, escriba o agregue una foto.', photoBig:'Foto omitida (no se pudo leer)', voiceBtn:'Toque y hable del trabajo', voiceStop:'Parar – ya terminé', voiceHint:'Diga el nombre del cliente, la dirección, qué va a hacer y su precio. Todo se escribe solo.', voiceLbl:'Su mensaje de voz (escrito)', voicePh:'Sus palabras salen aquí…', voiceOn:'Escuchando… hable ahora', micKb:'Toque el 🎤 del teclado y hable – escribe por usted.', micDenied:'Permita el micrófono para usar la voz (Ajustes → Safari → Micrófono).', micErr:'La voz se detuvo – toque el botón para seguir.', orType:'O escríbalo:'},
+  justNow:'ahora mismo', mAgo:'hace {0} min', hAgo:'hace {0} h', dAgo:'hace {0} d', calPick:'¿Qué calendario usa?', calPickS:'Sus fechas y visitas se abrirán ahí.', calGoogle:'Google Calendar', calApple:'Calendario de Apple', calOpen:'Abrir en el calendario', calAdd:'Agregar a {0}', calAddQ:'¿Agregarlo a su calendario?', calNot:'Ahora no', calChange:'Cambiar calendario', calMy:'mi calendario', calSyncT:'Sincronizar todos mis trabajos', calSyncS:'Suscríbase una vez: cada fecha de trabajo, entrega y visita aparece sola en su calendario.', calSyncG:'Suscribirse en Google Calendar', calSyncA:'Suscribirse en Calendario de Apple', calSyncC:'Copiar enlace', startEvt:'Trabajo: {0}', dueEvt:'Entrega: {0}', addStart:'Agregar fecha de inicio', addDue:'Agregar fecha de entrega', navDash:'Inicio', navJobs:'Trabajos', navClients:'Clientes', navMore:'Más', clientsT:'Clientes', jobsOf:'{0} trabajos', visits:'Visitas', visitAdd:'Agregar visita', visitT:'Visita', visitWhat:'¿A quién / qué va a ver?', visitWhatPh:'ej. María López – medir terraza', visitAddr:'Dirección (opcional)', visitDate:'Fecha', visitTime:'Hora (opcional)', visitNote:'Nota (opcional)', visitSave:'Guardar visita', visitSaved:'Visita guardada ✓', visitDel:'Visita eliminada', visitNone:'Todavía no hay visitas.', moreT:'Más', goAll:'Todas las cotizaciones', goWait:'Esperando clientes', calToday:'Abrir calendario', langName:'Español', kFree:'Gratis', kNone:'Todavía no hay nada.', kTot:'Total', langTitle:'Idioma', closedNoQ:'Este pedido se cerró sin cotización. Mándele un texto a David si todavía la necesita.', reqDetail:'Su pedido', youSent:'Lo que mandó', seeAll:'Ver los {0}', yourQuote:'Su cotización terminada', viewYourQuote:'Abrir la cotización', notYet2:'Su cotización se está haciendo – aparece aquí cuando esté lista.', photosSent:'{0} foto(s) enviada(s)', recSent:'Grabación de voz enviada', sentOn:'Enviado {0}', qStatusAcc:'El cliente aceptó ✓', qStatusWait:'Esperando que el cliente firme', qStatusOpen:'El cliente la abrió', addPhotos:'Agregar fotos del trabajo', photosN:'{0} foto(s) agregada(s)', removeP:'Quitar', recSaved:'Grabación de voz guardada ({0})', recDel:'Borrar grabación', sending:'Enviando…', sentT:'¡Pedido enviado!', sentS:'David ya lo tiene. Su cotización aparecerá aquí cuando esté lista.', done:'Listo', sendFail:'No se pudo enviar: {0}', emailInstead:'Mandar por correo', reqs:'Sus pedidos de cotización', stNew:'Recibido', stWorking:'En proceso', stDone:'Listo', needSomething:'Primero hable, escriba o agregue una foto.', photoBig:'Foto omitida (no se pudo leer)', voiceBtn:'Toque y hable del trabajo', voiceStop:'Parar – ya terminé', voiceHint:'Diga el nombre del cliente, la dirección, qué va a hacer y su precio. Todo se escribe solo.', voiceLbl:'Su mensaje de voz (escrito)', voicePh:'Sus palabras salen aquí…', voiceOn:'Escuchando… hable ahora', micKb:'Toque el 🎤 del teclado y hable – escribe por usted.', micDenied:'Permita el micrófono para usar la voz (Ajustes → Safari → Micrófono).', micErr:'La voz se detuvo – toque el botón para seguir.', orType:'O escríbalo:'},
  it:{live:'In diretta · si aggiorna da solo', morning:'Buongiorno', afternoon:'Buon pomeriggio', evening:'Buonasera', reveal:'Preventivi e agenda',
   foot:'Si aggiorna da solo quando un preventivo viene fatto o accettato', fab:'Chiedi un nuovo preventivo', free:'gratis', all:'Tutti',
   setDate:'METTI<br>DATA', today:'Oggi', tomorrow:'Domani', started:'Iniziato', inDays:'Tra {0} giorni', depPaid:'✓ Acconto {0} pagato', depDue:'Acconto {0} da pagare', due:'Consegna {0}',
@@ -459,7 +540,7 @@ const TX = {
   reqTitle:'Chiedi un nuovo preventivo', reqFree:'Gratis (uno dei tuoi primi 2)', reqIntro:'Parla o scrivi quello che sai, aggiungi foto se vuoi e tocca Invia. Il tuo preventivo col tuo marchio appare qui quando è pronto.',
   rName:'Nome del cliente', rNamePh:'es. Maria Rossi', rAddr:'Indirizzo del lavoro', rAddrPh:'Via, città', rEmail:'Email del cliente (facoltativa)', rJob:'Il lavoro – cosa farai', rJobPh:'es. Cambiare 2 tavole marce del deck, riverniciare…', rPrice:'Il tuo prezzo', rSend:'Invia richiesta',
   msgCopied:'Messaggio copiato – incollalo in un SMS ✓', crewUpd:'Squadra aggiornata ✓', crewName:'Nome del lavoratore', added:'{0} aggiunto ✓',
-  justNow:'proprio ora', mAgo:'{0} min fa', hAgo:'{0} h fa', dAgo:'{0} g fa', langName:'Italiano', kFree:'Gratis', kNone:'Ancora niente.', kTot:'Totale', langTitle:'Lingua', closedNoQ:'Questa richiesta è stata chiusa senza preventivo. Scrivi a David se ti serve ancora.', reqDetail:'La tua richiesta', youSent:'Cosa hai mandato', seeAll:'Vedi tutte ({0})', yourQuote:'Il tuo preventivo finito', viewYourQuote:'Apri il preventivo', notYet2:'Il tuo preventivo è in lavorazione – appare qui quando è pronto.', photosSent:'{0} foto inviate', recSent:'Registrazione vocale inviata', sentOn:'Inviata {0}', qStatusAcc:'Il cliente ha accettato ✓', qStatusWait:'In attesa della firma del cliente', qStatusOpen:'Il cliente l’ha aperto', addPhotos:'Aggiungi foto del lavoro', photosN:'{0} foto aggiunte', removeP:'Togli', recSaved:'Registrazione vocale salvata ({0})', recDel:'Elimina registrazione', sending:'Invio…', sentT:'Richiesta inviata!', sentS:'David l’ha ricevuta. Il tuo preventivo apparirà qui quando è pronto.', done:'Fatto', sendFail:'Invio non riuscito: {0}', emailInstead:'Invia per email', reqs:'Le tue richieste di preventivo', stNew:'Ricevuta', stWorking:'In lavorazione', stDone:'Fatta', needSomething:'Prima parla, scrivi o aggiungi una foto.', photoBig:'Foto saltata (non leggibile)',
+  justNow:'proprio ora', mAgo:'{0} min fa', hAgo:'{0} h fa', dAgo:'{0} g fa', calPick:'Quale calendario usi?', calPickS:'Le tue date e i sopralluoghi si apriranno lì.', calGoogle:'Google Calendar', calApple:'Calendario Apple', calOpen:'Apri nel calendario', calAdd:'Aggiungi a {0}', calAddQ:'Aggiungerlo al calendario?', calNot:'Non ora', calChange:'Cambia calendario', calMy:'il mio calendario', calSyncT:'Sincronizza tutti i miei lavori', calSyncS:'Iscriviti una volta: ogni data, scadenza e sopralluogo appare da solo nel tuo calendario.', calSyncG:'Iscriviti in Google Calendar', calSyncA:'Iscriviti nel Calendario Apple', calSyncC:'Copia link', startEvt:'Lavoro: {0}', dueEvt:'Scadenza: {0}', addStart:'Aggiungi data di inizio', addDue:'Aggiungi scadenza', navDash:'Home', navJobs:'Lavori', navClients:'Clienti', navMore:'Altro', clientsT:'Clienti', jobsOf:'{0} lavori', visits:'Sopralluoghi', visitAdd:'Aggiungi sopralluogo', visitT:'Sopralluogo', visitWhat:'Chi / cosa vai a vedere?', visitWhatPh:'es. Maria Rossi – misure deck', visitAddr:'Indirizzo (facoltativo)', visitDate:'Data', visitTime:'Ora (facoltativa)', visitNote:'Nota (facoltativa)', visitSave:'Salva sopralluogo', visitSaved:'Sopralluogo salvato ✓', visitDel:'Sopralluogo rimosso', visitNone:'Ancora nessun sopralluogo.', moreT:'Altro', goAll:'Tutti i preventivi', goWait:'In attesa dei clienti', calToday:'Apri calendario', langName:'Italiano', kFree:'Gratis', kNone:'Ancora niente.', kTot:'Totale', langTitle:'Lingua', closedNoQ:'Questa richiesta è stata chiusa senza preventivo. Scrivi a David se ti serve ancora.', reqDetail:'La tua richiesta', youSent:'Cosa hai mandato', seeAll:'Vedi tutte ({0})', yourQuote:'Il tuo preventivo finito', viewYourQuote:'Apri il preventivo', notYet2:'Il tuo preventivo è in lavorazione – appare qui quando è pronto.', photosSent:'{0} foto inviate', recSent:'Registrazione vocale inviata', sentOn:'Inviata {0}', qStatusAcc:'Il cliente ha accettato ✓', qStatusWait:'In attesa della firma del cliente', qStatusOpen:'Il cliente l’ha aperto', addPhotos:'Aggiungi foto del lavoro', photosN:'{0} foto aggiunte', removeP:'Togli', recSaved:'Registrazione vocale salvata ({0})', recDel:'Elimina registrazione', sending:'Invio…', sentT:'Richiesta inviata!', sentS:'David l’ha ricevuta. Il tuo preventivo apparirà qui quando è pronto.', done:'Fatto', sendFail:'Invio non riuscito: {0}', emailInstead:'Invia per email', reqs:'Le tue richieste di preventivo', stNew:'Ricevuta', stWorking:'In lavorazione', stDone:'Fatta', needSomething:'Prima parla, scrivi o aggiungi una foto.', photoBig:'Foto saltata (non leggibile)',
   voiceBtn:'Tocca e parla del lavoro', voiceStop:'Stop – ho finito', voiceHint:'Di’ il nome del cliente, l’indirizzo, cosa farai e il tuo prezzo. Scrive tutto da solo.', voiceLbl:'Il tuo messaggio vocale (scritto)', voicePh:'Le tue parole appaiono qui…', voiceOn:'Ti ascolto… parla ora', micKb:'Tocca il 🎤 sulla tastiera e parla – scrive per te.', micDenied:'Consenti il microfono per usare la voce (Impostazioni → Safari → Microfono).', micErr:'La voce si è fermata – tocca il pulsante per continuare.', orType:'Oppure scrivilo:'} };
 const lastLang = ((D.quotes||[]).slice(-1)[0]||{}).language;
 let LANG = localStorage.getItem('lang_' + ((typeof P!=='undefined' && P.get('d'))||'x')) || (/span/i.test(lastLang||D.language||'') ? 'es' : /ital/i.test(lastLang||D.language||'') ? 'it' : 'en');
@@ -480,6 +561,8 @@ const m0 = x => '$'+Math.round(Number(x)).toLocaleString('en-US');
 const m2 = x => '$'+Number(x).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const th = D.theme || {p:'#1F4D3A',a:'#C8892B',s:'#F1F4F2',f:'Inter,-apple-system,Helvetica,Arial,sans-serif'};
 const rs = document.documentElement.style; rs.setProperty('--g', th.p); rs.setProperty('--a', th.a);
+const WOOD = D.mode !== 'profiles' && (th.skin === 'wood' || /^lilac wood/i.test(D.contractor||''));   // opt-in look (Lilac Wood Repair); other contractors keep the standard look
+if (WOOD) document.body.classList.add('wood');
 const TOK = (typeof P !== 'undefined' && P.get('d')) || 'x';
 const ini = s => (String(s||'').match(/[A-Za-z]+/g)||['?']).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 document.getElementById('logo').innerHTML = D.logo ? '<img src="' + D.logo + '" alt="">' : '<b>' + ini(D.contractor) + '</b>';
@@ -526,6 +609,7 @@ function renderHeader(){
   g('nm').textContent = D.contractor;
   const sd = fd(new Date(today+'T12:00:00'),{weekday:'long',month:'long',day:'numeric'}); g('sub').textContent = sd.charAt(0).toUpperCase()+sd.slice(1);
   g('livet').textContent = t('live'); g('foott').textContent = t('foot'); g('fabt').textContent = t('fab');
+  ['Dash','Jobs','Clients','More'].forEach((k,i)=>{ const n=g('nv'+i); if(n) n.textContent=t('nav'+k); });
   g('langt').textContent = LANG.toUpperCase(); document.documentElement.lang = LANG;
 }
 renderHeader();
@@ -586,13 +670,100 @@ let pick; const pickDate = (val, cb) => { if(!pick){ pick=document.createElement
   pick.value = val || today; pick.onchange = () => cb(pick.value);
   try { pick.showPicker(); } catch(x){ pick.focus(); pick.click(); } };
 
+
+/* ---------- calendar: open the contractor's own calendar (Google or Apple), add dates / site visits, live feed ---------- */
+const CALK = 'cal_' + TOK, VISK = 'vis_' + TOK, p2 = n => String(n).padStart(2,'0');
+const IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const calPref = () => localStorage.getItem(CALK) || '';
+const calName = () => calPref() === 'apple' ? t('calApple') : calPref() === 'google' ? t('calGoogle') : t('calMy');
+const nextDay = s => { const d = dnum(s); d.setDate(d.getDate()+1); return d.getFullYear() + p2(d.getMonth()+1) + p2(d.getDate()); };
+function calGo(url){ if (/^https?:/.test(url)) window.open(url, '_blank', 'noopener'); else location.href = url; }
+function calDayUrl(iso){
+  const pr = calPref(), [y,m,d] = iso.split('-').map(Number);
+  if (pr === 'apple') return IOS ? 'calshow:' + Math.round((Date.UTC(y, m-1, d, 12) - Date.UTC(2001,0,1)) / 1000) : 'https://www.icloud.com/calendar/';
+  return `https://calendar.google.com/calendar/r/day/${y}/${m}/${d}`;
+}
+// ev = {title, date:'YYYY-MM-DD', time:'HH:MM' (optional), loc, note}
+function calEventUrl(ev){
+  const dt = ev.date.replace(/-/g,''), tm = (ev.time||'').replace(':','');
+  if (calPref() === 'apple') {
+    const esc = x => String(x||'').replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/([,;])/g,'\\$1');
+    let end = tm ? p2(Math.min(23, +tm.slice(0,2)+1)) + tm.slice(2) + '00' : '';
+    const l = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//DuPage Quotes//EN','BEGIN:VEVENT','UID:' + Date.now() + Math.random().toString(36).slice(2,8) + '@dupagequotes','DTSTAMP:' + new Date().toISOString().replace(/[-:]|\.\d+/g,''),
+      tm ? `DTSTART:${dt}T${tm}00` : `DTSTART;VALUE=DATE:${dt}`, tm ? `DTEND:${dt}T${end}` : `DTEND;VALUE=DATE:${nextDay(ev.date)}`, 'SUMMARY:' + esc(ev.title)];
+    if (ev.loc) l.push('LOCATION:' + esc(ev.loc)); if (ev.note) l.push('DESCRIPTION:' + esc(ev.note));
+    l.push('END:VEVENT','END:VCALENDAR');
+    return 'data:text/calendar;charset=utf8,' + encodeURIComponent(l.join('\r\n'));
+  }
+  const dates = tm ? `${dt}T${tm}00/${dt}T${p2(Math.min(23, +tm.slice(0,2)+1))}${tm.slice(2)}00` : `${dt}/${nextDay(ev.date)}`;
+  return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(ev.title) + '&dates=' + dates
+    + (ev.loc ? '&location=' + encodeURIComponent(ev.loc) : '') + (ev.note ? '&details=' + encodeURIComponent(ev.note) : '');
+}
+let CAL_CB = null;
+function calPrefSheet(cb){
+  CAL_CB = cb || null;
+  openSheet('📅 ' + t('calPick'), `<div style="font-size:13.5px;color:var(--mute);margin:-4px 2px 4px">${t('calPickS')}</div>
+    <button class="lopt ${calPref()==='google'?'on':''}" data-act="calset" data-v="google"><span class="fl2">🗓️</span>${t('calGoogle')}${calPref()==='google'?'<span class="ck">✓</span>':''}</button>
+    <button class="lopt ${calPref()==='apple'?'on':''}" data-act="calset" data-v="apple"><span class="fl2">📆</span>${t('calApple')}${calPref()==='apple'?'<span class="ck">✓</span>':''}</button>`);
+}
+const calEnsure = cb => calPref() ? cb() : calPrefSheet(cb);
+const evForJob = (q, kind) => { const n = c(q).name || ''; return kind === 'dl'
+  ? {title: t('dueEvt', n), date: q.deadline, loc: addrOf(q), note: q.project || ''}
+  : {title: t('startEvt', n + (q.project ? ' – ' + q.project : '')), date: q.sd, loc: addrOf(q), note: q.job_notes || ''}; };
+const evForVisit = v => ({title: v.title || t('visitT'), date: v.date, time: v.time || '', loc: v.address || '', note: v.note || ''});
+let PEND_EV = null;
+function calOffer(ev, label){
+  PEND_EV = ev;
+  openSheet('📅 ' + t('calAddQ'), `<div class="sbox" style="margin-top:0"><div style="font-weight:700;font-size:16px">${e(ev.title)}</div>
+    <div style="color:var(--mute);font-size:14px;margin-top:3px">${fd(dnum(ev.date),{weekday:'long',month:'long',day:'numeric'})}${ev.time?' · '+e(ev.time):''}</div>${ev.loc?`<div style="color:var(--mute);font-size:13px;margin-top:3px">${e(ev.loc)}</div>`:''}</div>
+    <div class="btns" style="grid-template-columns:1fr"><button class="btn pri" data-act="caladd">📅 ${t('calAdd', calName())}</button><button class="btn sec" data-act="close">${t('calNot')}</button></div>
+    <div class="filt" style="margin:10px 2px 0"><span></span><button data-act="calpref">${t('calChange')}</button></div>`);
+}
+const feedUrl = () => (typeof API !== 'undefined' ? API : '') + '?api=ical&d=' + encodeURIComponent(TOK);
+function calSyncSheet(){
+  const f = feedUrl(), web = 'webcal://' + f.replace(/^https?:\/\//,'');
+  const g = `<a class="btn ${calPref()!=='apple'?'pri':'sec'}" href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(web)}" target="_blank" rel="noopener">🗓️ ${t('calSyncG')}</a>`;
+  const a = `<a class="btn ${calPref()==='apple'?'pri':'sec'}" href="${e(web)}">📆 ${t('calSyncA')}</a>`;
+  openSheet('🔄 ' + t('calSyncT'), `<div style="font-size:14px;color:var(--mute);margin:-2px 2px 8px">${t('calSyncS')}</div>
+    <div class="btns" style="grid-template-columns:1fr">${calPref()==='apple'?a+g:g+a}<button class="btn sec" data-act="copy" data-v="${e(f)}">${I.copy}${t('calSyncC')}</button></div>`);
+}
+/* site visits (jobs / estimates to go see): saved online when the backend supports it, otherwise on this phone */
+const VIS_LOCAL = () => { try { return JSON.parse(localStorage.getItem(VISK) || '[]'); } catch(x) { return []; } };
+const visits = () => ((D.cal_feed ? D.visits : VIS_LOCAL()) || []).slice().sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+const visitsOn = d => visits().filter(v => v.date === d);
+function visitSheet(){
+  openSheet('📍 ' + t('visitAdd'), `<label class="fl">${t('visitWhat')}</label><input class="tx" id="vw" placeholder="${t('visitWhatPh')}">
+    <label class="fl">${t('visitAddr')}</label><input class="tx" id="va">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div><label class="fl">${t('visitDate')}</label><input class="tx" type="date" id="vd" value="${S.day||today}"></div><div><label class="fl">${t('visitTime')}</label><input class="tx" type="time" id="vt"></div></div>
+    <label class="fl">${t('visitNote')}</label><input class="tx" id="vn">
+    <div class="btns" style="grid-template-columns:1fr;margin-top:16px"><button class="btn pri" data-act="visitsave">${t('visitSave')}</button></div><div class="sferr" id="vse"></div>`);
+}
+async function visitSave(){
+  const g = id => document.getElementById(id).value.trim(), v = {id:'L'+Date.now().toString(36), title:g('vw')||t('visitT'), address:g('va'), date:g('vd'), time:g('vt'), note:g('vn')};
+  if (!v.date) { document.getElementById('vse').textContent = t('visitDate') + '?'; return; }
+  if (D.cal_feed && typeof API !== 'undefined') {
+    try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'dash_visit',d:TOK,title:v.title,address:v.address,date:v.date,time:v.time,note:v.note})});
+      const j = await r.json(); if (!j.ok) throw new Error(j.error||'error'); D.visits = j.visits; v.id = (j.visits[j.visits.length-1]||v).id; }
+    catch(x) { document.getElementById('vse').textContent = t('notSaved', x.message||t('tryAgain')); return; }
+  } else { const a = VIS_LOCAL(); a.push(v); localStorage.setItem(VISK, JSON.stringify(a.slice(-80))); }
+  haptic(); toast(t('visitSaved')); render(); calOffer(evForVisit(v));
+}
+async function visitDel(id){
+  if (D.cal_feed && typeof API !== 'undefined') { try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'dash_visit',d:TOK,remove:id})}); const j = await r.json(); if (j.ok) D.visits = j.visits; } catch(x) {} }
+  else localStorage.setItem(VISK, JSON.stringify(VIS_LOCAL().filter(v => v.id !== id)));
+  toast(t('visitDel')); render();
+}
+const visitRow = v => `<div class="vs"><div class="ic" data-act="visitcal" data-v="${e(v.id)}" style="cursor:pointer">📍</div><div style="flex:1;min-width:0;cursor:pointer" data-act="visitcal" data-v="${e(v.id)}"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e(v.title)}</div>
+  <div style="font-size:12.5px;color:var(--mute)">${fd(dnum(v.date),{weekday:'short',month:'short',day:'numeric'})}${v.time?' · '+e(v.time):''}${v.address?' · '+e(v.address):''}</div></div><button class="x2" data-act="visitdel" data-v="${e(v.id)}" aria-label="×">×</button></div>`;
+
 /* ---------- header: week strip + crew chips ---------- */
-const jobsOn = d => Q.filter(q=>q.status==='Accepted' && (q.sd===d || q.deadline===d));
+const jobsOn = d => Q.filter(q=>q.status==='Accepted' && (q.sd===d || q.deadline===d)).concat(visitsOn(d));
 function renderWeek(){
   const t0 = dnum(today), mon = new Date(t0); mon.setDate(t0.getDate() - ((t0.getDay()+6)%7));
   let h=''; for (let i=0;i<14;i++){ const d=new Date(mon); d.setDate(mon.getDate()+i); const iso=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-    h += `<button class="dy${iso===today?' today':''}${S.day===iso?' on':''}" data-act="day" data-v="${iso}">${fd(d,{weekday:'short'}).replace('.','')}<b>${d.getDate()}</b>${jobsOn(iso).length?'<i></i>':''}</button>`; }
-  document.getElementById('week').innerHTML = h;
+    h += `<button class="dy${iso===today?' today':''}${(S.day===iso || (WOOD && !S.day && iso===today))?' on':''}" data-act="day" data-v="${iso}">${fd(d,{weekday:'short'}).replace('.','')}<b>${d.getDate()}</b>${jobsOn(iso).length?'<i></i>':''}</button>`; }
+  const wk = document.getElementById('week'); wk.innerHTML = h;
+  if (WOOD && !window.__wk) { window.__wk = 1; const on = wk.querySelector('.on'); if (on) wk.scrollLeft = on.offsetLeft - wk.clientWidth/2 + on.offsetWidth/2; }
   const names = [...new Set([].concat(CREW, ...Q.map(q=>q.crew||[])))];
   document.getElementById('chips').innerHTML = names.length ? ['',...names].map(n=>`<button class="chip2${S.who===n?' on':''}" data-act="who" data-v="${e(n)}">${n?e(n):t('all')}</button>`).join('') : '';
 }
@@ -694,7 +865,7 @@ function render(){
     return `<div class="day${n!=null&&n<=7&&n>=0?' soon':''}" data-act="date" data-q="${e(q.quote_no)}"><small>${fd(d,{month:'short'}).replace('.','')}</small><b>${d.getDate()}</b><small>${fd(d,{weekday:'short'}).replace('.','')}</small></div>`; };
   const when = q => { const n=dTo(q.sd); if(n==null) return ''; return n===0?`<span class="tag br">${t('today')}</span>`:n===1?`<span class="tag br">${t('tomorrow')}</span>`:n<0?`<span class="tag br">${t('started')}</span>`:`<span class="tag br">${t('inDays',n)}</span>`; };
   const depTag = q => q.deposit_paid ? `<span class="tag ok">${t('depPaid',m0(q.deposit_paid))}</span>` : (q.deposit_pct?`<span class="tag wait">${t('depDue',m0(depAmt(q)))}</span>`:'');
-  const jobCard = q => { const p=Number(q.progress||0); return `<div class="job">${dayBox(q)}<div>
+  const jobCard = q => { const p=Number(q.progress||0); return `<div class="jc"><div class="job">${dayBox(q)}<div>
      <div class="t"><span>${e(c(q).name)}</span><span class="num">${m0(q.price)}</span></div>
      <div class="p">${e(q.project)}</div>
      <div class="m">${when(q)}${depTag(q)}${q.deadline?`<span class="tag br">${t('due',fd(dnum(q.deadline),{month:'short',day:'numeric'}))}</span>`:''}</div>
@@ -703,7 +874,7 @@ function render(){
        <input type="range" class="rg" min="0" max="100" step="5" value="${p}" style="--v:${p}%" data-act="prog" data-q="${e(q.quote_no)}"></div>
      <div class="arow"><button data-act="date" data-q="${e(q.quote_no)}">${I.cal}${q.sd?t('changeDate'):t('schedDate')}</button>
        <button data-act="job" data-q="${e(q.quote_no)}">${I.info}${t('jobDetails')}</button>
-       <a href="${link(q)}&src=k">${I.doc}${t('viewQuote')}</a></div>`; };
+       <a href="${link(q)}&src=k">${I.doc}${t('viewQuote')}</a></div></div>`; };
   const steps = q => { const v = !!q.viewed_at, sgn = q.status==='Accepted';
     return `<div class="trk"><span class="dt done">${I.tick}</span><span class="ln ${v?'done':''}"></span><span class="dt ${sgn?'done':v?'cur':''}">${sgn?I.tick:''}</span><span class="ln ${sgn?'done':''}"></span><span class="dt ${sgn?'done':''}">${sgn?I.tick:''}</span></div>
       <div class="trkl"><span><b>${t('sent')}</b></span><span>${v?`<b>${t('viewed')}</b> ${ago(q.last_viewed_at||q.viewed_at)}${q.views>1?` · ${q.views}×`:''}`:t('notOpened')}</span><span>${t('signed')}</span></div>`; };
@@ -732,8 +903,10 @@ function render(){
    <button class="${S.tab===0?'on':''}" data-act="tab" data-v="0">${t('schedule')}<em>${upcoming.length}</em></button><button class="${S.tab===1?'on':''}" data-act="tab" data-v="1">${t('waitTab')}<em>${waiting.length}</em></button><button class="${S.tab===2?'on':''}" data-act="tab" data-v="2">${t('allQuotes')}</button></div>
   <div class="grid"><div>
    <div class="panel ${S.tab===0?'on':''} rise" id="p-sched" style="--i:5;--d0:120ms"><div class="card"><div class="ch"><h2>${S.day?fd(dnum(S.day),{weekday:'long',month:'short',day:'numeric'}):t('upcoming')}</h2><span>${upcoming.length===1?t('job1'):t('jobsN',upcoming.length)}</span></div>
+    <div class="filt" style="margin-top:0"><button class="calbtn" data-act="calday" data-v="${S.day||today}">📅 ${t('calOpen')}</button><button class="calbtn" data-act="visitnew">📍 ${t('visitAdd')}</button></div>
     ${(S.day||S.who)?`<div class="filt"><span>${t('filtered')}${S.who?' · '+e(S.who):''}</span><button data-act="clear">${t('showAll')}</button></div>`:''}
-    ${upcoming.length?upcoming.map(jobCard).join('<div style="height:1px;background:var(--line);margin:6px 0"></div>'):`<div class="empty"><b>🗓️</b>${S.day||S.who?t('nothingHere'):t('noBooked')}</div>`}
+    ${upcoming.length?upcoming.map(jobCard).join('<div style="height:1px;background:var(--line);margin:6px 0"></div>'):(S.day&&visitsOn(S.day).length?'':`<div class="empty"><b>🗓️</b>${S.day||S.who?t('nothingHere'):t('noBooked')}</div>`)}
+    ${S.day&&visitsOn(S.day).length?visitsOn(S.day).map(visitRow).join(''):''}
    </div></div>
    <div class="panel ${S.tab===2?'on':''}" id="p-all"><div class="card"><div class="ch"><h2>${t('allQuotes')}</h2><span>${t('total',Q.length)}</span></div>
     ${Q.length?Q.slice().sort((a,b)=>b.iso.localeCompare(a.iso)).map(q=>`<a class="row" data-act="job" data-q="${e(q.quote_no)}" href="#"><div class="av">${ini(c(q).name)}</div>
@@ -744,6 +917,7 @@ function render(){
    <div class="panel ${S.tab===1?'on':''}" id="p-wait"><div class="card"><div class="ch"><h2>${t('waiting')}</h2><span>${m0(sum(waiting,q=>q.price))}</span></div>
     ${waiting.length?waiting.sort((a,b)=>a.iso.localeCompare(b.iso)).map(wCard).join(''):`<div class="empty"><b>👍</b>${t('nothingWait')}</div>`}
    </div></div>
+   ${(()=>{ const vs = visits().filter(v=>v.date>=today).slice(0,5); return `<div class="card rise" style="--i:6;--d0:120ms;margin-top:14px"><div class="ch"><h2>${t('visits')}</h2><span><button class="calbtn" data-act="visitnew" style="border:0;background:none;color:var(--g);font:600 12.5px Inter,sans-serif;cursor:pointer">+ ${t('visitAdd')}</button></span></div>${vs.length?vs.map(visitRow).join(''):`<div class="empty" style="padding:8px 0 14px">${t('visitNone')}</div>`}</div>`; })()}
    ${(D.requests||[]).length?`<div class="card rise" style="--i:6;--d0:120ms;margin-top:14px"><div class="ch" data-act="reqall"><h2>${t('reqs')}</h2><span>${(D.requests||[]).length}</span></div>
     ${(D.requests||[]).slice().reverse().slice(0,5).map(x=>`<div class="rq" data-act="reqview" data-v="${e(x.id)}" style="cursor:pointer"><div class="ic">${x.status==='Done'?'✅':x.status==='Working'?'🛠️':'📨'}</div><div class="mid" style="flex:1;min-width:0"><div class="n" style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e(x.client||x.job||'—')}</div><div class="s" style="font-size:12.5px;color:var(--mute)">${fd(new Date(x.created),{month:'short',day:'numeric'})} · ${ago(x.created)}</div></div><span class="tag ${x.status==='Done'?'ok':x.status==='Working'?'br':'wait'}">${t(x.status==='Done'?'stDone':x.status==='Working'?'stWorking':'stNew')}</span>${chev}</div>`).join('')}
     ${(D.requests||[]).length>5?`<div class="filt" style="margin:8px 0 6px"><span></span><button data-act="reqall">${t('seeAll',(D.requests||[]).length)}</button></div>`:''}</div>`:''}
@@ -789,7 +963,8 @@ function jobSheet(q){
      <input type="range" class="rg" id="srg" min="0" max="100" step="5" value="${p}" style="--v:${p}%"></div>
    <div class="sbox"><h4>${I.cal}${t('dates')}</h4>
      <div class="fld"><span>${t('startDate')}</span><input type="date" id="fsd" value="${e(q.sd||'')}"></div>
-     <div class="fld"><span>${t('deadline')}</span><input type="date" id="fdl" value="${e(q.deadline||'')}"></div></div>
+     <div class="fld"><span>${t('deadline')}</span><input type="date" id="fdl" value="${e(q.deadline||'')}"></div>
+     ${(q.sd||q.deadline)?`<div class="sub-row">${q.sd?`<button class="mb" data-act="caljob" data-q="${e(q.quote_no)}" data-v="sd">📅 ${t('addStart')}</button>`:''}${q.deadline?`<button class="mb" data-act="caljob" data-q="${e(q.quote_no)}" data-v="dl">📅 ${t('addDue')}</button>`:''}</div>`:''}</div>
    <div class="sbox"><h4>${I.crew}${t('crew')}</h4>
      <div class="crew" id="crew">${roster.map(n=>`<button class="cm${(q.crew||[]).includes(n)?' on':''}" data-act="crewt" data-v="${e(n)}"><span class="av2" style="background:${colorOf(n)}">${e(ini(n))}</span>${e(n)}</button>`).join('')}
        <button class="cm" data-act="crewadd"><span class="add">+</span>${t('add')}</button></div>
@@ -806,8 +981,8 @@ function jobSheet(q){
   const g = id => document.getElementById(id);
   if (g('srg')) { g('srg').oninput = ev => { ev.target.style.setProperty('--v', ev.target.value+'%'); g('sp').textContent = t('complete', ev.target.value); };
     g('srg').onchange = ev => { haptic(); save(q,{progress:+ev.target.value}, ev.target.value==100?t('done100'):t('progSaved')); render(); }; }
-  if (g('fsd')) g('fsd').onchange = ev => { save(q,{start_date:ev.target.value},t('sdSaved')); render(); };
-  if (g('fdl')) g('fdl').onchange = ev => { save(q,{deadline:ev.target.value},t('dlSaved')); render(); };
+  if (g('fsd')) g('fsd').onchange = ev => { save(q,{start_date:ev.target.value},t('sdSaved')); render(); if (ev.target.value) calOffer(evForJob(q,'sd')); };
+  if (g('fdl')) g('fdl').onchange = ev => { save(q,{deadline:ev.target.value},t('dlSaved')); render(); if (ev.target.value) calOffer(evForJob(q,'dl')); };
   if (g('fdp')) g('fdp').onchange = ev => { const v = ev.target.checked ? (dep||paid) : 0; haptic(); save(q,{deposit_paid:v}, v?t('depMarked'):t('depUnmarked'));
     g('bpaid').textContent=m0(v); g('bdue').textContent=m0(q.price-v); render(); };
   if (g('fnt')) { let nt; g('fnt').oninput = ev => { clearTimeout(nt); nt=setTimeout(()=>save(q,{job_notes:ev.target.value},t('notesSaved')),900); }; }
@@ -960,6 +1135,17 @@ async function sendRequest(){
   }
 }
 
+function clientsSheet(){
+  const by = {}; Q.forEach(q => { const n = c(q).name || '—'; (by[n] = by[n] || []).push(q); });
+  const rows = Object.keys(by).map(n => { const l = by[n].slice().sort((a,b)=>b.iso.localeCompare(a.iso)); return {n, l, tot: sum(l.filter(q=>q.status==='Accepted'), q=>q.price)}; }).sort((a,b)=>b.l[0].iso.localeCompare(a.l[0].iso));
+  openSheet(t('clientsT'), `<div class="sbox" style="margin-top:0;padding-top:4px;padding-bottom:4px">${rows.length ? rows.map(r=>`<a class="row" data-act="job" data-q="${e(r.l[0].quote_no)}" href="#"><div class="av">${ini(r.n)}</div><div class="mid"><div class="n">${e(r.n)}</div><div class="s">${e(addrOf(r.l[0])||r.l[0].project)} · ${t('jobsOf', r.l.length)}</div></div><div class="r"><div class="num">${m0(r.tot||sum(r.l,q=>q.price))}</div></div>${chev}</a>`).join('') : `<div class="empty">${t('noQuotes')}</div>`}</div>`);
+}
+function moreSheet(){
+  const b = (act, ic, label, v) => `<button class="lopt" data-act="${act}"${v!=null?` data-v="${v}"`:''}><span class="fl2">${ic}</span>${label}</button>`;
+  openSheet(t('moreT'), b('calday','📅',t('calToday'),today) + b('visitnew','📍',t('visitAdd')) + (D.cal_feed ? b('calsync','🔄',t('calSyncT')) : '') + b('calprefm','🗓️',t('calChange') + ' · ' + calName())
+    + b('goto','⏳',t('goWait'),1) + b('goto','📄',t('goAll'),2) + b('search','🔎',t('search')) + b('bell','🔔',t('activity')) + b('lang','🌐',t('langTitle')));
+}
+
 /* ---------- actions ---------- */
 function nudge(q){
   const n = (c(q).name||'').split(/[ &]/)[0] || 'there';
@@ -988,7 +1174,25 @@ document.addEventListener('click', ev => {
   else if (act==='who') { S.who = el.dataset.v; S.tab=0; haptic(); render(); }
   else if (act==='clear') { S.day=''; S.who=''; render(); }
   else if (act==='copy') copyText(el.dataset.v, /^https?:/.test(el.dataset.v)?t('linkCopied'):t('addrCopied'));
-  else if (act==='date' && q) pickDate(q.sd, v => { save(q,{start_date:v},t('sdSaved')); render(); });
+  else if (act==='date' && q) pickDate(q.sd, v => { save(q,{start_date:v},t('sdSaved')); render(); if (v) calOffer(evForJob(q,'sd')); });
+  else if (act==='calday') calEnsure(() => { calGo(calDayUrl(el.dataset.v)); closeSheet(); });
+  else if (act==='calset') { localStorage.setItem(CALK, el.dataset.v); haptic(); const cb = CAL_CB; CAL_CB = null; if (cb) cb(); else { closeSheet(); toast(calName() + ' ✓'); } }
+  else if (act==='calpref') calPrefSheet(() => PEND_EV ? calOffer(PEND_EV) : closeSheet());
+  else if (act==='calprefm') calPrefSheet(() => { closeSheet(); toast(calName() + ' ✓'); });
+  else if (act==='caladd') { if (PEND_EV) { calGo(calEventUrl(PEND_EV)); closeSheet(); } }
+  else if (act==='caljob' && q) calEnsure(() => calOffer(evForJob(q, el.dataset.v)));
+  else if (act==='calsync') calSyncSheet();
+  else if (act==='visitnew') visitSheet();
+  else if (act==='visitsave') visitSave();
+  else if (act==='visitdel') visitDel(el.dataset.v);
+  else if (act==='visitcal') { const v = visits().find(x=>x.id===el.dataset.v); if (v) calEnsure(() => calOffer(evForVisit(v))); }
+  else if (act==='goto') { S.tab = +el.dataset.v; S.day=''; S.who=''; closeSheet(); render(); document.getElementById('seg').scrollIntoView({behavior:'smooth',block:'start'}); }
+  else if (act==='nav') { const v = el.dataset.v; haptic();
+    const mark = () => document.querySelectorAll('#bnav button').forEach(b => b.classList.toggle('on', b === el));
+    if (v==='dash') { S.day=''; S.who=''; S.tab=0; closeSheet(); render(); window.scrollTo({top:0,behavior:'smooth'}); mark(); }
+    else if (v==='jobs') { S.tab=0; S.day=''; S.who=''; closeSheet(); render(); document.getElementById('seg').scrollIntoView({behavior:'smooth',block:'start'}); mark(); }
+    else if (v==='clients') { clientsSheet(); mark(); }
+    else if (v==='more') { moreSheet(); mark(); } }
   else if (act==='job' && q) jobSheet(q);
   else if (act==='nudge' && q) nudge(q);
   else if (act==='adjust' && q) adjust(q);
