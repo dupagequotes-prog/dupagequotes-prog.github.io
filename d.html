@@ -1212,8 +1212,9 @@ document.addEventListener('click', ev => {
   else if (act==='remind') remindSheet();
   else if (act==='remsave' || act==='remtest') { const g = id => document.getElementById(id), er = g('rmerr'); er.textContent = ''; el.disabled = true;
     const save = () => remPost({action:'dash_notify', email:g('rme').value.trim(), em_morning:g('rmm').checked, em_hour:g('rmh').checked, lang:LANG}).then(j => { D.notify = j.notify; });
-    (act==='remsave' ? save().then(()=>{ toast(D.notify.email ? t('remWillGet', D.notify.email) : t('remSaved')); closeSheet(); render(); }) : save().then(()=>remPost({action:'dash_notify_test'})).then(()=>toast(t('remTested'))))
-      .catch(y => { er.textContent = String(y.message||y); }).finally(()=>{ el.disabled = false; }); }
+    const lbl = el.textContent; if (act==='remtest') { el.textContent = t('sending'); er.style.color = ''; }
+    (act==='remsave' ? save().then(()=>{ toast(D.notify.email ? t('remWillGet', D.notify.email) : t('remSaved')); closeSheet(); render(); }) : save().then(()=>remPost({action:'dash_notify_test'})).then(()=>{ const m = t('remTested') + (D.notify && D.notify.email ? ' → ' + D.notify.email : ''); toast(m); er.style.color = '#1a7f37'; er.textContent = m; }))
+      .catch(y => { er.style.color = ''; er.textContent = String(y.message||y); }).finally(()=>{ el.disabled = false; el.textContent = lbl; }); }
   else if (act==='calreset') { if (!confirm(t('calResetQ'))) return; fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'dash_feedreset',d:TOK})}).then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); D.feed = j.feed; toast(t('calResetOk')); calSyncSheet(); }).catch(x=>toast(t('notSaved', x.message||t('tryAgain')))); }
   else if (act==='visitnew') visitSheet();
   else if (act==='visitsave') visitSave();
