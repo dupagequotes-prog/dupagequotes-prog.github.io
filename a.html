@@ -158,6 +158,25 @@ function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===
 const kav = (tok, sm) => { const k = kOf(tok), th = themeOf(tok); return `<div class="kav${sm?' sm':''}" style="--kc:${th.p}">${k.logo?`<img src="${k.logo}" alt="">`:ini(k.contractor)}</div>`; };
 const kname = tok => `<span class="kname" style="--kc:${themeOf(tok).p}"><i></i>${e(kOf(tok).contractor||'')}</span>`;
 const soft = hx => { const n = parseInt(hx.slice(1),16), m = c => Math.round(c + (255-c)*.93); return '#'+[n>>16&255,n>>8&255,n&255].map(m).map(v=>v.toString(16).padStart(2,'0')).join(''); };
+function schedForm(tok){   // David edits a contractor's schedule for them: job start/deadline, site visits
+  const k = kOf(tok), th = themeOf(tok), jobs = (D.quotes||[]).filter(q=>q.contractor_token===tok && q.status==='Accepted'),
+    vs = (k.visits||[]).slice().sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+  return `<div class="card kc" id="sc_${e(tok)}" style="--kc:${th.p}"><div class="rh"><div class="who">📅 ${e(k.contractor)} – schedule</div></div>
+   <div style="font-size:12.5px;color:#6b7079;margin:2px 0 8px">Changes show on their dashboard and in their calendar link right away.</div>
+   <label class="fl">Jobs</label>
+   ${jobs.length?jobs.map(q=>`<div class="row" style="display:block"><div style="font-weight:600">${e((q.client||{}).name)} · ${e(q.project)}</div>
+     <div class="g2"><div><label class="fl">Start date</label><input class="tx" type="date" data-sd="${e(tok)}" data-sq="${e(q.quote_no)}" data-sf="start_date" value="${e(String(q.start_date||'').slice(0,10))}"></div>
+     <div><label class="fl">Deadline</label><input class="tx" type="date" data-sd="${e(tok)}" data-sq="${e(q.quote_no)}" data-sf="deadline" value="${e(q.deadline||'')}"></div></div></div>`).join(''):'<div class="empty">No accepted jobs yet.</div>'}
+   <label class="fl" style="margin-top:14px">Site visits / estimates to go see</label>
+   ${vs.length?vs.map(v=>`<div class="row"><div class="mid"><div class="n">📍 ${e(v.title)}</div><div class="s">${e(v.date)}${v.time?' · '+e(v.time):''}${v.address?' · '+e(v.address):''}</div></div><button class="btn sec" data-act="svdel" data-v="${e(tok)}" data-id="${e(v.id)}">Remove</button></div>`).join(''):'<div class="empty" style="padding:8px 0">None yet.</div>'}
+   <div class="g2" style="margin-top:8px"><div><label class="fl">What / who</label><input class="tx" id="sv_t_${e(tok)}" placeholder="e.g. Maria Lopez – measure deck"></div><div><label class="fl">Address (optional)</label><input class="tx" id="sv_a_${e(tok)}"></div></div>
+   <div class="g2"><div><label class="fl">Date</label><input class="tx" type="date" id="sv_d_${e(tok)}" value="${e(D.today||'')}"></div><div><label class="fl">Time (optional)</label><input class="tx" type="time" id="sv_m_${e(tok)}"></div></div>
+   <label class="fl">Note (optional)</label><input class="tx" id="sv_n_${e(tok)}">
+   <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="svadd" data-v="${e(tok)}">+ Add to their schedule</button><button class="btn sec" data-act="lkcancel" data-v="${e(tok)}">Done</button></div></div>`;
+}
+const schedPost = (tok, sub, extra) => fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:'admin_dash', k:K, sub, d:tok}, extra))}).then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); return j; });
+document.addEventListener('change', ev => { const i = ev.target.closest && ev.target.closest('[data-sq]'); if (!i) return;
+  schedPost(i.dataset.sd, 'dash_update', {quote_no:i.dataset.sq, fields:{[i.dataset.sf]:i.value}}).then(()=>{ toast('📅 Saved ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); });
 function lookForm(tok){   // David's editor for a contractor's colors, logo, title and quote defaults
   const k = kOf(tok), lk = k.look||{}, th = themeOf(tok), f = BUILD['k_'+tok] || {};
   const v = (x, d) => e(f[x]!=null ? f[x] : (lk[x]!=null ? lk[x] : (d||'')));
@@ -308,8 +327,8 @@ function render(){
     ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
   ${TAB===1?`<div class="filter"><button class="${!QF?'on':''}" data-act="qf" data-v="">All (${Q.length})</button>${(D.contractors||[]).map(k=>`<button class="${QF===k.token?'on':''}" data-act="qf" data-v="${e(k.token)}" style="--kc:${themeOf(k.token).p}"><i></i>${e(k.contractor)} (${Q.filter(q=>q.contractor_token===k.token).length})</button>`).join('')}</div>
     <div class="card">${Q.filter(q=>!QF||q.contractor_token===QF).length?Q.filter(q=>!QF||q.contractor_token===QF).map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
-  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
-      <div class="acts"><button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button>${(o.k.look||{}).mode==='profiles'?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button></div></div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
+  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):EDIT['k_'+o.k.token]==='sched'?schedForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
+      <div class="acts"><button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button><button class="btn sec" data-act="sched" data-v="${e(o.k.token)}">📅 Their schedule</button>${(o.k.look||{}).mode==='profiles'?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button></div></div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
   ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
 }
 async function post(body, okMsg){ try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); const j = await r.json(); toast(j.ok ? okMsg : ('Not saved: '+(j.error||'try again'))); if (!j.ok) refresh(true); } catch(y) { toast('No connection – not saved'); } }
@@ -361,6 +380,11 @@ document.addEventListener('click', async ev => {
       delete BUILD[v]; delete EDIT[v]; toast('✅ '+qno+' updated – the client sees it now'); refresh(true); }
     catch(y) { toast('No connection – not saved'); el.disabled=false; el.textContent='💾 Save changes'; } }
   else if (act==='look') { EDIT['k_'+v]='look'; BUILD['k_'+v] = {}; render(); document.getElementById('lk_'+v).scrollIntoView({behavior:'smooth'}); }
+  else if (act==='sched') { EDIT['k_'+v]='sched'; render(); const sc = document.getElementById('sc_'+v); if (sc) sc.scrollIntoView({behavior:'smooth'}); }
+  else if (act==='svadd') { const g = id => (document.getElementById(id+'_'+v)||{}).value||'';
+    if (!g('sv_d')) { toast('Pick a date'); return; }
+    schedPost(v, 'dash_visit', {title:g('sv_t'), address:g('sv_a'), date:g('sv_d'), time:g('sv_m'), note:g('sv_n')}).then(()=>{ toast('📍 Added to their schedule ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
+  else if (act==='svdel') { schedPost(v, 'dash_visit', {remove:el.dataset.id}).then(()=>{ toast('Removed'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
   else if (act==='lkcancel') { delete EDIT['k_'+v]; delete BUILD['k_'+v]; render(); }
   else if (act==='savelook') { const f = readLook(v), k = kOf(v), mac = k.profile||{}, mt = mac.theme||{}, look = {}, lg = (BUILD['k_'+v]||{}).logo;
     if (f.p !== (mt.p||'').toLowerCase() || f.a !== (mt.a||'').toLowerCase()) look.theme = { p:f.p, a:f.a, s:soft(f.p), f:(mt.f||'Helvetica, Arial, sans-serif') };
