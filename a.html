@@ -110,8 +110,8 @@ input[type=color].tx{height:44px;padding:4px}.newbar{display:flex;gap:8px;flex-w
 @media(prefers-reduced-motion:reduce){#dq-load *{animation:none!important}}
 </style></head>
 <body><div id="dq-load"><div class="tile"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading…</div></div><script>
-(function(){ try { const k = new URLSearchParams(location.search).get('k'), n = k && localStorage.getItem('mgrname_' + k); if (!n) return;   // a manager who has opened their page before: the loading screen shows their own name
-  const l = document.getElementById('dq-load'); if (!l) return; l.querySelector('.wm').textContent = n + '’s'; l.querySelector('.wq').textContent = 'QUOTES'; document.title = n + '’s Quotes'; } catch (e) {} })();
+(function(){ try { const k = new URLSearchParams(location.search).get('k'), n = k && localStorage.getItem('mgrtitle_' + k); if (!n) return;   // a manager who has opened their page before: the loading screen shows their own page name
+  const l = document.getElementById('dq-load'); if (!l) return; const w = n.split(' '), last = w.pop(); l.querySelector('.wm').textContent = w.join(' ') || last; l.querySelector('.wq').textContent = w.length ? last.toUpperCase() : ''; document.title = n; } catch (e) {} })();
 </script>
 <section class="hero"><div class="wrap">
   <div class="top"><span class="pill"><i></i><span id="live">Live · checks every 30 seconds</span></span><button class="ib" id="rf" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button></div>
@@ -162,6 +162,14 @@ const kav = (tok, sm) => { const k = kOf(tok), th = themeOf(tok); return `<div c
 const kname = tok => `<span class="kname" style="--kc:${themeOf(tok).p}"><i></i>${e(kOf(tok).contractor||'')}</span>`;
 const soft = hx => { const n = parseInt(hx.slice(1),16), m = c => Math.round(c + (255-c)*.93); return '#'+[n>>16&255,n>>8&255,n&255].map(m).map(v=>v.toString(16).padStart(2,'0')).join(''); };
 const IS_MGR = () => (D.role||'admin') === 'manager';
+const TT = (key, def) => (IS_MGR() && D.manager && D.manager.text && D.manager.text[key]) || def;   // words David set for this manager's page (live)
+const brandHTML = t => { const w = String(t).trim().split(/\s+/); const last = w.pop(); return (w.length ? e(w.join(' ')) + ' ' : '') + '<span>' + e(last) + '</span>'; };
+const mgrTitle = () => TT('title', ((D.manager||{}).name||'') + '’s Quotes');
+const WORDS = [['title','Page name (big title)','e.g. Alonzo’s Quotes'],['greeting','Greeting name','Name after “Good evening,”'],['subtitle','Small line under the title','optional'],['tab_requests','Tab: Requests','Requests'],['tab_quotes','Tab: Quotes','Quotes'],['tab_contractors','Tab: Contractors','Contractors'],['tab_activity','Tab: Activity','Activity'],['new_quote','Button: New quote','New quote']];
+function wordsForm(m){ const t = m.text||{};
+  return `<div class="card" id="mw_${e(m.id)}"><div class="rh"><div class="who">✏️ Words on ${e(m.name)}’s page</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:6px">Change spelling or wording here – it shows on his page within seconds (no update needed). Leave a box empty to use the normal wording.</div>
+   ${WORDS.map(([k,l,ph])=>`<label class="fl">${e(l)}</label><input class="tx" data-w="${k}" maxlength="40" placeholder="${e(k==='title'?m.name+'’s Quotes':k==='greeting'?m.name:ph)}" value="${e(t[k]||'')}">`).join('')}
+   <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="wsave" data-v="${e(m.id)}">Save</button><button class="btn sec" data-act="wcancel">Cancel</button></div></div>`; }
 const hq = body => fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({k:K}, body))}).then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); return j; });
 const MONTH = () => String(D.today||'').slice(0,7), MONTHNAME = () => new Date((MONTH()||'2026-01')+'-15T12:00:00').toLocaleDateString('en-US',{month:'long'});
 const planRow = k => { const pl = k.plan; if (!pl) return ''; const paid = pl.paid, dm = D.manager && D.manager.monthly_default;
@@ -185,15 +193,15 @@ function addKForm(){
 }
 function mgrTab(){   // David only: managers, their links, who owns what, and what they've been doing
   const ms = D.managers||[];
-  const card = m => { const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
+  const card = m => { if (EDIT['mw_'+m.id]) return wordsForm(m); const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
     return `<div class="card"><div class="rh"><div class="who">${e(m.name)} ${m.active?'<span class="tag t-done">Active</span>':'<span class="tag t-wait">Switched off</span>'}</div></div>
      <div class="s" style="font-size:13px;color:#6b7079">${mine.length} contractor${mine.length===1?'':'s'} · plans ${m0(t.exp)}/month · collected ${m0(t.got)} · default ${m.monthly_default===''?'not set':m0(m.monthly_default)+'/month'}</div>
-     <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s HQ link</button><a class="btn org" target="_blank" rel="noopener" href="${e(link)}">Open ${e(m.name)}’s HQ ↗</a>
+     <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s link</button><a class="btn org" target="_blank" rel="noopener" href="${e(link)}">Open ${e(m.name)}’s page ↗</a>
      ${m.active?`<button class="btn sec" data-act="mgrrevoke" data-v="${e(m.id)}">Switch off</button>`:`<button class="btn sec" data-act="mgrenable" data-v="${e(m.id)}">Switch on</button>`}
-     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button><button class="btn sec del" data-act="mgrdelete" data-v="${e(m.id)}">🗑 Delete manager…</button></div></div>`; };
+     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button><button class="btn sec" data-act="wopen" data-v="${e(m.id)}">✏️ Page words</button><button class="btn sec del" data-act="mgrdelete" data-v="${e(m.id)}">🗑 Delete manager…</button></div></div>`; };
   const rows = ms.filter(m=>m.active).map(card).join(''), off = ms.filter(m=>!m.active);
   const mine = new Set((D.managers||[]).filter(m=>m.active).map(m=>m.name)), au = (D.audit||[]).filter(a=>mine.has(a.who)).slice(0,40).map(a=>`<div class="row"><div class="mid"><div style="font-size:14px"><b>${e(a.who)}</b> · ${e(a.action)}</div><div class="s">${e(a.target)} · ${when(a.t)}</div></div></div>`).join('');
-  return `<div class="card"><div class="rh"><div class="who">Managers</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:8px">A manager gets their own HQ link that shows only their own contractors. They can’t see yours, change colors/logos, or see keys. You can switch a link off at any time.</div>
+  return `<div class="card"><div class="rh"><div class="who">Managers</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:8px">A manager gets their own page link that shows only their own contractors. They can’t see yours, change colors/logos, or see keys. You can switch a link off at any time.</div>
      <label class="fl">New manager’s name</label><input class="tx" id="mg_n" placeholder="e.g. Alex"><div class="acts" style="margin-top:10px"><button class="btn pri" data-act="mgrnew">+ Create manager</button></div></div>
      ${rows||'<div class="card"><div class="empty">No active managers.</div></div>'}
      ${off.length?`<details class="card" style="padding:12px 16px"><summary style="cursor:pointer;font-weight:600;font-size:14px">Switched-off managers (${off.length})</summary><div style="margin-top:10px">${off.map(card).join('')}</div></details>`:''}
@@ -289,15 +297,15 @@ function readBuilder(key){   // reads the form back into a job; returns null (wi
   return pj;
 }
 function render(){
-  const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', ' + (D.role==='manager' && D.manager ? D.manager.name : 'David');
-  document.getElementById('upd').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', ' + (D.role==='manager' && D.manager ? TT('greeting', D.manager.name) : 'David');
+  document.getElementById('upd').textContent = (TT('subtitle','') ? TT('subtitle','') + ' · ' : '') + 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
   const ownOK = tok => !OWN || (((D.contractors||[]).find(k=>k.token===tok)||{}).owner||'david') === OWN;   // David: look at everyone, only his own, or one manager's
   const R = (D.requests||[]).filter(x=>ownOK(x.contractor_token)).sort((a,b)=>String(b.created).localeCompare(String(a.created)));
   const open = R.filter(x=>x.status!=='Done'), newR = R.filter(x=>x.status==='New');
   const Q = (D.quotes||[]).filter(x=>ownOK(x.contractor_token)).sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
   const waiting = Q.filter(q=>q.status!=='Accepted'), month = (D.today||'').slice(0,7), accM = Q.filter(q=>q.status==='Accepted' && (q.date_iso||'').slice(0,7)===month);
-  document.title = (newR.length ? '('+newR.length+') ' : '') + (IS_MGR() ? ((D.manager||{}).name||'') + '’s Quotes' : 'DuPage Quotes – HQ');
-  { const h = document.getElementById('ttl'); if (h) h.innerHTML = IS_MGR() ? e((D.manager||{}).name||'') + '’s <span>Quotes</span>' : 'DuPage <span>Quotes</span> HQ'; const am = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (am) am.content = IS_MGR() ? (((D.manager||{}).name || '') + '’s Quotes') : 'DuPage HQ'; if (IS_MGR()) { try { localStorage.setItem('mgrname_' + K, (D.manager||{}).name || ''); } catch(x) {} } }   // managers never see the word "HQ"
+  document.title = (newR.length ? '('+newR.length+') ' : '') + (IS_MGR() ? mgrTitle() : 'DuPage Quotes – HQ');
+  { const h = document.getElementById('ttl'); if (h) h.innerHTML = IS_MGR() ? brandHTML(mgrTitle()) : 'DuPage <span>Quotes</span> HQ'; const am = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (am) am.content = IS_MGR() ? mgrTitle() : 'DuPage HQ'; if (IS_MGR()) { try { localStorage.setItem('mgrtitle_' + K, mgrTitle()); } catch(x) {} } }   // managers never see the word "HQ"
   const done = R.filter(x=>x.status==='Done'); const list = RF==='open' ? open : RF==='new' ? newR : RF==='done' ? done : R;
   const reqCard = x => { const a=[x.address].filter(Boolean).join(''), th = themeOf(x.contractor_token), pj = x.polished, ed = EDIT[x.id];
     const qdone = x.quote_no && Q.find(q=>q.quote_no===x.quote_no);
@@ -365,12 +373,12 @@ function render(){
     <div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
-  <div class="seg">${['Requests','Quotes','Contractors','Activity'].concat(IS_MGR()?[]:['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
+  <div class="seg">${[TT('tab_requests','Requests'),TT('tab_quotes','Quotes'),TT('tab_contractors','Contractors'),TT('tab_activity','Activity')].concat(IS_MGR()?[]:['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
   ${(!IS_MGR() && (D.managers||[]).some(m=>m.active))?`<div class="filter" style="margin-top:2px"><span style="font-size:12.5px;color:#6b7079;align-self:center;margin-right:4px">View</span><button class="${!OWN?'on':''}" data-act="own" data-v="">Everyone</button><button class="${OWN==='david'?'on':''}" data-act="own" data-v="david">Mine</button>${(D.managers||[]).filter(m=>m.active).map(m=>`<button class="${OWN===m.id?'on':''}" data-act="own" data-v="${e(m.id)}">${e(m.name)} manager</button>`).join('')}</div>`:''}
   ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}${m.sent&&m.sent.length?' · 📧 emailed to '+e(m.sent.join(' and ')):' · not emailed'}${m.mailErr?' · ⚠️ email failed: '+e(m.mailErr):''}</div>
     <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
     <a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}">Open ↗</a><a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}&print=1">🖨 PDF / print</a><button class="btn sec" data-act="unmade" data-v="${e(m.quote_no)}">Hide</button></div></div>`).join('')}
-  ${TAB<2?`<div class="newbar"><button class="btn org" data-act="newq">+ New quote</button></div>${BUILD.new?builder('new'):''}`:''}
+  ${TAB<2?`<div class="newbar"><button class="btn org" data-act="newq">+ ${e(TT('new_quote','New quote'))}</button></div>${BUILD.new?builder('new'):''}`:''}
   ${TAB===0?`<div class="filter">${[['open','Open ('+open.length+')'],['new','New ('+newR.length+')'],['done','Finished ('+done.length+')'],['all','All']].map(([k,n])=>`<button class="${RF===k?'on':''}" data-act="rf" data-v="${k}">${n}</button>`).join('')}</div>
     ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
   ${TAB===1?`<div class="filter"><button class="${!QF?'on':''}" data-act="qf" data-v="">All (${Q.length})</button>${(D.contractors||[]).map(k=>`<button class="${QF===k.token?'on':''}" data-act="qf" data-v="${e(k.token)}" style="--kc:${themeOf(k.token).p}"><i></i>${e(k.contractor)} (${Q.filter(q=>q.contractor_token===k.token).length})</button>`).join('')}</div>
@@ -450,9 +458,13 @@ document.addEventListener('click', async ev => {
   else if (act==='plpaid') { hq({action:'mgr_plan', token:v, paid_month:MONTH(), paid:el.dataset.p==='1'}).then(()=>{ toast(el.dataset.p==='1'?'Marked paid ✓':'Marked unpaid'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
   else if (act==='mgrnew') { const n = (document.getElementById('mg_n')||{}).value||''; if (!n.trim()) { toast('Type a name first'); return; }
     hq({action:'admin_mgr', sub:'create', name:n}).then(j=>{ toast('Manager created ✓ – link copied'); try { navigator.clipboard.writeText(site()+'a.html?k='+encodeURIComponent(j.token)); } catch(x) {} refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
+  else if (act==='wopen') { EDIT['mw_'+v] = true; render(); const c = document.getElementById('mw_'+v); if (c) c.scrollIntoView({behavior:'smooth'}); }
+  else if (act==='wcancel') { Object.keys(EDIT).filter(k=>k.indexOf('mw_')===0).forEach(k=>delete EDIT[k]); render(); }
+  else if (act==='wsave') { const card = document.getElementById('mw_'+v), t = {}; card.querySelectorAll('[data-w]').forEach(i=>{ if (i.value.trim()) t[i.dataset.w] = i.value.trim(); }); el.disabled = true;
+    hq({action:'admin_mgr', sub:'text', id:v, text:t}).then(()=>{ delete EDIT['mw_'+v]; toast('Saved ✓ – shows on his page within seconds'); refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
   else if (act==='mgrdelete') { const m = (D.managers||[]).find(z=>z.id===v); if (!m) return;
     const cs = (D.contractors||[]).filter(k=>k.owner===v), toks = new Set(cs.map(k=>k.token)), nq = (D.quotes||[]).filter(q=>toks.has(q.contractor_token)).length, nr = (D.requests||[]).filter(r=>toks.has(r.contractor_token)).length;
-    const typed = prompt(`DELETE ${m.name} AND EVERYTHING?\n\nThis permanently removes:\n• ${m.name}’s HQ link\n• ${cs.length} contractor${cs.length===1?'':'s'} and their dashboards/links\n• ${nq} quote${nq===1?'':'s'} (client links stop working)\n• ${nr} request${nr===1?'':'s'}\n\nA private backup file is saved to Drive first. This cannot be undone.\n\nType “${m.name}” to confirm:`);
+    const typed = prompt(`DELETE ${m.name} AND EVERYTHING?\n\nThis permanently removes:\n• ${m.name}’s page link\n• ${cs.length} contractor${cs.length===1?'':'s'} and their dashboards/links\n• ${nq} quote${nq===1?'':'s'} (client links stop working)\n• ${nr} request${nr===1?'':'s'}\n\nA private backup file is saved to Drive first. This cannot be undone.\n\nType “${m.name}” to confirm:`);
     if (typed === null) return; if (typed.trim() !== m.name) { toast('Name didn’t match – nothing deleted'); return; }
     hq({action:'admin_mgr', sub:'delete', id:v, confirm:typed.trim()}).then(j=>{ OWN=''; toast('Deleted ✓ ('+j.removed.contractors+' contractors, '+j.removed.quotes+' quotes, '+j.removed.requests+' requests) – backup saved in Drive'); refresh(true); }).catch(y=>toast('Not deleted: '+(y.message||y))); }
   else if (act==='mgrrevoke' || act==='mgrenable' || act==='mgrrotate') { const sub = act==='mgrrevoke'?'revoke':act==='mgrenable'?'enable':'rotate';
