@@ -182,16 +182,18 @@ function addKForm(){
 }
 function mgrTab(){   // David only: managers, their links, who owns what, and what they've been doing
   const ms = D.managers||[];
-  const rows = ms.map(m => { const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
+  const card = m => { const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
     return `<div class="card"><div class="rh"><div class="who">${e(m.name)} ${m.active?'<span class="tag t-done">Active</span>':'<span class="tag t-wait">Switched off</span>'}</div></div>
      <div class="s" style="font-size:13px;color:#6b7079">${mine.length} contractor${mine.length===1?'':'s'} · plans ${m0(t.exp)}/month · collected ${m0(t.got)} · default ${m.monthly_default===''?'not set':m0(m.monthly_default)+'/month'}</div>
      <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s HQ link</button><a class="btn org" target="_blank" rel="noopener" href="${e(link)}">Open ${e(m.name)}’s HQ ↗</a>
      ${m.active?`<button class="btn sec" data-act="mgrrevoke" data-v="${e(m.id)}">Switch off</button>`:`<button class="btn sec" data-act="mgrenable" data-v="${e(m.id)}">Switch on</button>`}
-     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button></div></div>`; }).join('');
+     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button></div></div>`; };
+  const rows = ms.filter(m=>m.active).map(card).join(''), off = ms.filter(m=>!m.active);
   const mine = new Set((D.managers||[]).filter(m=>m.active).map(m=>m.name)), au = (D.audit||[]).filter(a=>mine.has(a.who)).slice(0,40).map(a=>`<div class="row"><div class="mid"><div style="font-size:14px"><b>${e(a.who)}</b> · ${e(a.action)}</div><div class="s">${e(a.target)} · ${when(a.t)}</div></div></div>`).join('');
   return `<div class="card"><div class="rh"><div class="who">Managers</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:8px">A manager gets their own HQ link that shows only their own contractors. They can’t see yours, change colors/logos, or see keys. You can switch a link off at any time.</div>
      <label class="fl">New manager’s name</label><input class="tx" id="mg_n" placeholder="e.g. Alex"><div class="acts" style="margin-top:10px"><button class="btn pri" data-act="mgrnew">+ Create manager</button></div></div>
-     ${rows||'<div class="card"><div class="empty">No managers yet.</div></div>'}
+     ${rows||'<div class="card"><div class="empty">No active managers.</div></div>'}
+     ${off.length?`<details class="card" style="padding:12px 16px"><summary style="cursor:pointer;font-weight:600;font-size:14px">Switched-off managers (${off.length})</summary><div style="margin-top:10px">${off.map(card).join('')}</div></details>`:''}
      <div class="card"><div class="rh"><div class="who">What managers did lately</div></div>${au||'<div class="empty">Nothing yet.</div>'}</div>`;
 }
 function schedForm(tok){   // David edits a contractor's schedule for them: job start/deadline, site visits
@@ -360,7 +362,7 @@ function render(){
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
   <div class="seg">${['Requests','Quotes','Contractors','Activity'].concat(IS_MGR()?[]:['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
-  ${(!IS_MGR() && (D.managers||[]).length)?`<div class="filter" style="margin-top:2px"><span style="font-size:12.5px;color:#6b7079;align-self:center;margin-right:4px">View</span><button class="${!OWN?'on':''}" data-act="own" data-v="">Everyone</button><button class="${OWN==='david'?'on':''}" data-act="own" data-v="david">Mine</button>${(D.managers||[]).map(m=>`<button class="${OWN===m.id?'on':''}" data-act="own" data-v="${e(m.id)}">${e(m.name)} manager${m.active?'':' (off)'}</button>`).join('')}</div>`:''}
+  ${(!IS_MGR() && (D.managers||[]).some(m=>m.active))?`<div class="filter" style="margin-top:2px"><span style="font-size:12.5px;color:#6b7079;align-self:center;margin-right:4px">View</span><button class="${!OWN?'on':''}" data-act="own" data-v="">Everyone</button><button class="${OWN==='david'?'on':''}" data-act="own" data-v="david">Mine</button>${(D.managers||[]).filter(m=>m.active).map(m=>`<button class="${OWN===m.id?'on':''}" data-act="own" data-v="${e(m.id)}">${e(m.name)} manager</button>`).join('')}</div>`:''}
   ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}${m.sent&&m.sent.length?' · 📧 emailed to '+e(m.sent.join(' and ')):' · not emailed'}${m.mailErr?' · ⚠️ email failed: '+e(m.mailErr):''}</div>
     <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
     <a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}">Open ↗</a><a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}&print=1">🖨 PDF / print</a><button class="btn sec" data-act="unmade" data-v="${e(m.quote_no)}">Hide</button></div></div>`).join('')}
