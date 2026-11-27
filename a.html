@@ -112,7 +112,7 @@ input[type=color].tx{height:44px;padding:4px}.newbar{display:flex;gap:8px;flex-w
 <body><div id="dq-load"><div class="tile"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div></div><div class="wm">DuPage</div><div class="wq">QUOTES</div><div class="tg">Loading DuPage HQ…</div></div>
 <section class="hero"><div class="wrap">
   <div class="top"><span class="pill"><i></i><span id="live">Live · checks every 30 seconds</span></span><button class="ib" id="rf" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg></button></div>
-  <div class="id"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div><div><div class="hi" id="hi"></div><h1>DuPage <span>Quotes</span> HQ</h1></div></div>
+  <div class="id"><div class="lg"><svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><path d="M33 31a27 23 0 0 1 54 0z" fill="#E8913F"/><rect x="57.5" y="10" width="5" height="20" rx="2.5" fill="#C46F28"/><rect x="22" y="28" width="76" height="10" rx="5" fill="#E8913F"/><rect x="32" y="38" width="56" height="74" rx="7" fill="#FFFFFF"/><rect x="38.5" y="44" width="43" height="62" rx="4" fill="#EEF1F8"/><path d="M47 69l9 9 18-20" fill="none" stroke="#E8913F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="45" y="86" width="30" height="3.4" rx="1.7" fill="#B3B8CC"/><rect x="45" y="94" width="21" height="3.4" rx="1.7" fill="#B3B8CC"/></svg></div><div><div class="hi" id="hi"></div><h1 id="ttl">DuPage <span>Quotes</span> HQ</h1></div></div>
   <div class="upd" id="upd"></div>
 </div></section>
 <main id="main"></main>
@@ -145,7 +145,7 @@ async function copy(t, msg){ try { await navigator.clipboard.writeText(t); } cat
 const stTag = s => s==='Done' ? '<span class="tag t-done">Done</span>' : s==='Working' ? '<span class="tag t-work">Working on it</span>' : '<span class="tag t-new">New</span>';
 
 const kOf = tok => (D.contractors||[]).find(k=>k.token===tok) || {};
-function ask(msg, yes){   // HQ's own confirm box (browser pop-ups get blocked in some apps)
+function ask(msg, yes){ if (IS_MGR()) msg = String(msg).replace(/\bHQ\b/g, 'your page');   // HQ's own confirm box (browser pop-ups get blocked in some apps)
   return new Promise(done => { const w = document.createElement('div'); w.className = 'askw';
     w.innerHTML = `<div class="askb"><div class="askm"></div><div class="acts"><button class="btn sec" data-no>Cancel</button><button class="btn org" data-yes>${e(yes||'Yes')}</button></div></div>`;
     w.querySelector('.askm').textContent = msg; document.body.appendChild(w);
@@ -293,7 +293,8 @@ function render(){
   const open = R.filter(x=>x.status!=='Done'), newR = R.filter(x=>x.status==='New');
   const Q = (D.quotes||[]).filter(x=>ownOK(x.contractor_token)).sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
   const waiting = Q.filter(q=>q.status!=='Accepted'), month = (D.today||'').slice(0,7), accM = Q.filter(q=>q.status==='Accepted' && (q.date_iso||'').slice(0,7)===month);
-  document.title = (newR.length ? '('+newR.length+') ' : '') + 'DuPage Quotes – HQ';
+  document.title = (newR.length ? '('+newR.length+') ' : '') + (IS_MGR() ? 'DuPage Quotes – ' + ((D.manager||{}).name||'') : 'DuPage Quotes – HQ');
+  if (IS_MGR()) { const h = document.getElementById('ttl'); if (h) h.innerHTML = 'DuPage <span>Quotes</span>'; const am = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (am) am.content = (D.manager||{}).name || 'DuPage Quotes'; }   // managers never see the word "HQ"
   const done = R.filter(x=>x.status==='Done'); const list = RF==='open' ? open : RF==='new' ? newR : RF==='done' ? done : R;
   const reqCard = x => { const a=[x.address].filter(Boolean).join(''), th = themeOf(x.contractor_token), pj = x.polished, ed = EDIT[x.id];
     const qdone = x.quote_no && Q.find(q=>q.quote_no===x.quote_no);
