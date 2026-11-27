@@ -158,6 +158,42 @@ function themeOf(tok){ const qs = (D.quotes||[]).filter(q=>q.contractor_token===
 const kav = (tok, sm) => { const k = kOf(tok), th = themeOf(tok); return `<div class="kav${sm?' sm':''}" style="--kc:${th.p}">${k.logo?`<img src="${k.logo}" alt="">`:ini(k.contractor)}</div>`; };
 const kname = tok => `<span class="kname" style="--kc:${themeOf(tok).p}"><i></i>${e(kOf(tok).contractor||'')}</span>`;
 const soft = hx => { const n = parseInt(hx.slice(1),16), m = c => Math.round(c + (255-c)*.93); return '#'+[n>>16&255,n>>8&255,n&255].map(m).map(v=>v.toString(16).padStart(2,'0')).join(''); };
+const IS_MGR = () => (D.role||'admin') === 'manager';
+const hq = body => fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({k:K}, body))}).then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); return j; });
+const MONTH = () => String(D.today||'').slice(0,7), MONTHNAME = () => new Date((MONTH()||'2026-01')+'-15T12:00:00').toLocaleDateString('en-US',{month:'long'});
+const planRow = k => { const pl = k.plan; if (!pl) return ''; const paid = pl.paid, dm = D.manager && D.manager.monthly_default;
+  return `<div class="acts" style="align-items:center;margin-top:8px"><span style="font-size:13px;font-weight:600">💳 Monthly</span><input class="tx" style="max-width:110px;width:110px" type="number" min="0" step="1" inputmode="decimal" placeholder="${e(dm!==''&&dm!=null?dm:'$')}" value="${pl.monthly==null?'':e(pl.monthly)}" data-plan="${e(k.token)}">
+   <button class="btn ${paid?'pri':'sec'}" data-act="plpaid" data-v="${e(k.token)}" data-p="${paid?0:1}">${paid?'✓ Paid for '+MONTHNAME():'Mark paid for '+MONTHNAME()}</button></div>`; };
+const planTotals = ks => { let exp = 0, got = 0; ks.forEach(k => { const pl = k.plan; if (pl && pl.monthly != null) { exp += Number(pl.monthly); if (pl.paid) got += Number(pl.monthly); } }); return {exp, got}; };
+function contactForm(tok){   // managers (and David) edit a contractor's contact info only
+  const k = kOf(tok), lk = k.look||{}, th = themeOf(tok), v = x => e(lk[x]||k[x]||'');
+  return `<div class="card kc" id="ct_${e(tok)}" style="--kc:${th.p}"><div class="rh"><div class="who">✏️ ${e(k.contractor)} – contact info</div></div>
+    <div class="g2"><div><label class="fl">Contact name</label><input class="tx" id="ct_c_${e(tok)}" value="${v('contact')}"></div><div><label class="fl">Phone</label><input class="tx" id="ct_p_${e(tok)}" inputmode="tel" value="${v('phone')}"></div></div>
+    <label class="fl">Email</label><input class="tx" id="ct_e_${e(tok)}" type="email" value="${v('email')}">
+    <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="ctsave" data-v="${e(tok)}">Save</button><button class="btn sec" data-act="lkcancel" data-v="${e(tok)}">Cancel</button></div></div>`;
+}
+function addKForm(){
+  return `<div class="card" id="addk"><div class="rh"><div class="who">+ Add a contractor</div></div>
+    <label class="fl">Business name</label><input class="tx" id="ak_n" placeholder="e.g. Oak & Pine Remodeling">
+    <div class="g2"><div><label class="fl">Contact name</label><input class="tx" id="ak_c"></div><div><label class="fl">Phone</label><input class="tx" id="ak_p" inputmode="tel"></div></div>
+    <label class="fl">Email</label><input class="tx" id="ak_e" type="email">
+    <div class="hint">They get their own dashboard link right away. Logo and colors can be added by David.</div>
+    <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="addksave">Create dashboard</button><button class="btn sec" data-act="addkcancel">Cancel</button></div></div>`;
+}
+function mgrTab(){   // David only: managers, their links, who owns what, and what they've been doing
+  const ms = D.managers||[];
+  const rows = ms.map(m => { const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
+    return `<div class="card"><div class="rh"><div class="who">${e(m.name)} ${m.active?'<span class="tag t-done">Active</span>':'<span class="tag t-wait">Switched off</span>'}</div></div>
+     <div class="s" style="font-size:13px;color:#6b7079">${mine.length} contractor${mine.length===1?'':'s'} · plans ${m0(t.exp)}/month · collected ${m0(t.got)} · default ${m.monthly_default===''?'not set':m0(m.monthly_default)+'/month'}</div>
+     <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s HQ link</button>
+     ${m.active?`<button class="btn sec" data-act="mgrrevoke" data-v="${e(m.id)}">Switch off</button>`:`<button class="btn sec" data-act="mgrenable" data-v="${e(m.id)}">Switch on</button>`}
+     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button></div></div>`; }).join('');
+  const au = (D.audit||[]).slice(0,40).map(a=>`<div class="row"><div class="mid"><div style="font-size:14px"><b>${e(a.who)}</b> · ${e(a.action)}</div><div class="s">${e(a.target)} · ${when(a.t)}</div></div></div>`).join('');
+  return `<div class="card"><div class="rh"><div class="who">Managers</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:8px">A manager gets their own HQ link that shows only their own contractors. They can’t see yours, change colors/logos, or see keys. You can switch a link off at any time.</div>
+     <label class="fl">New manager’s name</label><input class="tx" id="mg_n" placeholder="e.g. Alex"><div class="acts" style="margin-top:10px"><button class="btn pri" data-act="mgrnew">+ Create manager</button></div></div>
+     ${rows||'<div class="card"><div class="empty">No managers yet.</div></div>'}
+     <div class="card"><div class="rh"><div class="who">What managers did lately</div></div>${au||'<div class="empty">Nothing yet.</div>'}</div>`;
+}
 function schedForm(tok){   // David edits a contractor's schedule for them: job start/deadline, site visits
   const k = kOf(tok), th = themeOf(tok), jobs = (D.quotes||[]).filter(q=>q.contractor_token===tok && q.status==='Accepted'),
     vs = (k.visits||[]).slice().sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
@@ -175,7 +211,11 @@ function schedForm(tok){   // David edits a contractor's schedule for them: job 
    <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="svadd" data-v="${e(tok)}">+ Add to their schedule</button><button class="btn sec" data-act="lkcancel" data-v="${e(tok)}">Done</button></div></div>`;
 }
 const schedPost = (tok, sub, extra) => fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action:'admin_dash', k:K, sub, d:tok}, extra))}).then(r=>r.json()).then(j=>{ if (!j.ok) throw new Error(j.error||'error'); return j; });
-document.addEventListener('change', ev => { const i = ev.target.closest && ev.target.closest('[data-sq]'); if (!i) return;
+document.addEventListener('change', ev => { const t = ev.target; if (!t.dataset) return;
+  if (t.dataset.plan) { hq({action:'mgr_plan', token:t.dataset.plan, monthly:t.value}).then(()=>{ toast('Monthly price saved ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); return; }
+  if (t.dataset.defplan) { hq({action:'mgr_default_plan', monthly:t.value}).then(()=>{ toast('Default monthly price saved ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); return; }
+  if (t.dataset.owner) { hq({action:'admin_owner', token:t.dataset.owner, owner:t.value}).then(()=>{ toast('Owner changed ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); return; }
+  const i = ev.target.closest && ev.target.closest('[data-sq]'); if (!i) return;
   schedPost(i.dataset.sd, 'dash_update', {quote_no:i.dataset.sq, fields:{[i.dataset.sf]:i.value}}).then(()=>{ toast('📅 Saved ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); });
 function lookForm(tok){   // David's editor for a contractor's colors, logo, title and quote defaults
   const k = kOf(tok), lk = k.look||{}, th = themeOf(tok), f = BUILD['k_'+tok] || {};
@@ -294,8 +334,8 @@ function render(){
       ${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
       ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="editraw" data-v="${e(x.id)}">✏️ Edit request</button>`:''}
       ${x.status!=='Done'&&x.status!=='Approved'?`<button class="btn ${pj?'org':'pri'}" data-act="build" data-v="${e(x.id)}">${pj?'🚀 Review & generate pro quote':'🛠 Make the quote myself'}</button>`:''}
-      ${!pj&&x.polish!=='Requested'&&x.status!=='Done'?`<button class="btn org" data-act="polish" data-v="${e(x.id)}">✨ Polish</button>`:''}
-      ${pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn sec" data-act="approve" data-v="${e(x.id)}">Mac PDF instead (Claude)</button>`:''}
+      ${!IS_MGR()&&!pj&&x.polish!=='Requested'&&x.status!=='Done'?`<button class="btn org" data-act="polish" data-v="${e(x.id)}">✨ Polish</button>`:''}
+      ${!IS_MGR()&&pj&&x.status!=='Done'&&x.status!=='Approved'?`<button class="btn sec" data-act="repolish" data-v="${e(x.id)}">✨ Re-polish</button><button class="btn sec" data-act="approve" data-v="${e(x.id)}">Mac PDF instead (Claude)</button>`:''}
       <button class="btn sec" data-act="copyjob" data-v="${e(x.id)}">📋 Copy</button>
       ${x.status!=='Done'?`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="Done">Close</button>`:`<button class="btn sec" data-act="st" data-v="${e(x.id)}" data-s="New">Reopen</button>`}
       <a class="btn sec" target="_blank" rel="noopener" href="${dash(x.contractor_token)}">Their dashboard ↗</a>
@@ -315,10 +355,10 @@ function render(){
   <div class="kpis">
     <div class="kpi ${newR.length?'hot':''}"><div class="l">New requests</div><b class="num">${newR.length}</b><small>${open.length} open in total</small></div>
     <div class="kpi"><div class="l">Quotes waiting</div><b class="num">${waiting.length}</b><small>${m0(waiting.reduce((s,q)=>s+Number(q.price||0),0))} not signed</small></div>
-    <div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>
+    ${IS_MGR()?`<div class="kpi"><div class="l">Collected this month</div><b class="num">${m0(planTotals(D.contractors||[]).got)}</b><small>of ${m0(planTotals(D.contractors||[]).exp)} in plans</small></div>`:`<div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>`}
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
-  <div class="seg">${['Requests','Quotes','Contractors','Activity'].map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
+  <div class="seg">${['Requests','Quotes','Contractors','Activity'].concat(IS_MGR()?[]:['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
   ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}${m.sent&&m.sent.length?' · 📧 emailed to '+e(m.sent.join(' and ')):' · not emailed'}${m.mailErr?' · ⚠️ email failed: '+e(m.mailErr):''}</div>
     <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
     <a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}">Open ↗</a><a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}&print=1">🖨 PDF / print</a><button class="btn sec" data-act="unmade" data-v="${e(m.quote_no)}">Hide</button></div></div>`).join('')}
@@ -327,8 +367,11 @@ function render(){
     ${list.length?list.map(reqCard).join(''):'<div class="card"><div class="empty">No requests here yet. They pop up the moment a contractor taps Send.</div></div>'}`:''}
   ${TAB===1?`<div class="filter"><button class="${!QF?'on':''}" data-act="qf" data-v="">All (${Q.length})</button>${(D.contractors||[]).map(k=>`<button class="${QF===k.token?'on':''}" data-act="qf" data-v="${e(k.token)}" style="--kc:${themeOf(k.token).p}"><i></i>${e(k.contractor)} (${Q.filter(q=>q.contractor_token===k.token).length})</button>`).join('')}</div>
     <div class="card">${Q.filter(q=>!QF||q.contractor_token===QF).length?Q.filter(q=>!QF||q.contractor_token===QF).map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
-  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):EDIT['k_'+o.k.token]==='sched'?schedForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
-      <div class="acts"><button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button><button class="btn sec" data-act="sched" data-v="${e(o.k.token)}">📅 Their schedule</button>${(o.k.look||{}).mode==='profiles'?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button></div></div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
+  ${TAB===2?`<div class="newbar"><button class="btn org" data-act="addk">+ Add contractor</button>${IS_MGR()?`<span style="display:inline-flex;align-items:center;gap:6px;margin-left:8px;font-size:13px"><b>Default monthly</b><input class="tx" style="width:96px" type="number" min="0" step="1" inputmode="decimal" placeholder="$" value="${e((D.manager||{}).monthly_default)}" data-defplan="1"></span>`:''}</div>${EDIT.addk?addKForm():''}`:''}
+  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):EDIT['k_'+o.k.token]==='contact'?contactForm(o.k.token):EDIT['k_'+o.k.token]==='sched'?schedForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes${IS_MGR()?'':` · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”`}${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
+      ${IS_MGR()?'':`<div class="acts" style="margin-bottom:4px"><span style="font-size:13px;font-weight:600">Owner</span><select class="tx" style="max-width:180px;width:auto" data-owner="${e(o.k.token)}"><option value="david" ${(o.k.owner||'david')==='david'?'selected':''}>David</option>${(D.managers||[]).map(m=>`<option value="${e(m.id)}" ${o.k.owner===m.id?'selected':''}>${e(m.name)}</option>`).join('')}</select></div>`}
+      <div class="acts">${IS_MGR()?`<button class="btn pri" data-act="kcontact" data-v="${e(o.k.token)}">✏️ Edit contact</button>`:`<button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button>`}<button class="btn sec" data-act="sched" data-v="${e(o.k.token)}">📅 Their schedule</button>${(!IS_MGR()&&(o.k.look||{}).mode==='profiles')?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button></div>${planRow(o.k)}</div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
+  ${TAB===4&&!IS_MGR()?mgrTab():''}
   ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
 }
 async function post(body, okMsg){ try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); const j = await r.json(); toast(j.ok ? okMsg : ('Not saved: '+(j.error||'try again'))); if (!j.ok) refresh(true); } catch(y) { toast('No connection – not saved'); } }
@@ -385,6 +428,20 @@ document.addEventListener('click', async ev => {
     if (!g('sv_d')) { toast('Pick a date'); return; }
     schedPost(v, 'dash_visit', {title:g('sv_t'), address:g('sv_a'), date:g('sv_d'), time:g('sv_m'), note:g('sv_n')}).then(()=>{ toast('📍 Added to their schedule ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
   else if (act==='svdel') { schedPost(v, 'dash_visit', {remove:el.dataset.id}).then(()=>{ toast('Removed'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
+  else if (act==='kcontact') { EDIT['k_'+v]='contact'; render(); const c = document.getElementById('ct_'+v); if (c) c.scrollIntoView({behavior:'smooth'}); }
+  else if (act==='ctsave') { const g = id => (document.getElementById(id+'_'+v)||{}).value||''; el.disabled = true;
+    hq({action:'mgr_contact', token:v, look:{contact:g('ct_c'), phone:g('ct_p'), email:g('ct_e')}}).then(()=>{ delete EDIT['k_'+v]; toast('Contact info saved ✓'); refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
+  else if (act==='addk') { EDIT.addk = true; render(); const c = document.getElementById('addk'); if (c) c.scrollIntoView({behavior:'smooth'}); }
+  else if (act==='addkcancel') { delete EDIT.addk; render(); }
+  else if (act==='addksave') { const g = id => (document.getElementById(id)||{}).value||''; if (!g('ak_n').trim()) { toast('Business name needed'); return; } el.disabled = true;
+    if (!IS_MGR()) { toast('David: use the new-client setup on your Mac (it adds their logo and colors)'); el.disabled = false; return; }
+    hq({action:'mgr_add_contractor', name:g('ak_n'), contact:g('ak_c'), phone:g('ak_p'), email:g('ak_e')}).then(j=>{ delete EDIT.addk; toast('Created ✓ – link copied'); try { navigator.clipboard.writeText(j.link); } catch(x) {} refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
+  else if (act==='plpaid') { hq({action:'mgr_plan', token:v, paid_month:MONTH(), paid:el.dataset.p==='1'}).then(()=>{ toast(el.dataset.p==='1'?'Marked paid ✓':'Marked unpaid'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
+  else if (act==='mgrnew') { const n = (document.getElementById('mg_n')||{}).value||''; if (!n.trim()) { toast('Type a name first'); return; }
+    hq({action:'admin_mgr', sub:'create', name:n}).then(j=>{ toast('Manager created ✓ – link copied'); try { navigator.clipboard.writeText(site()+'a.html?k='+encodeURIComponent(j.token)); } catch(x) {} refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
+  else if (act==='mgrrevoke' || act==='mgrenable' || act==='mgrrotate') { const sub = act==='mgrrevoke'?'revoke':act==='mgrenable'?'enable':'rotate';
+    if (sub!=='enable' && !confirm(sub==='revoke'?'Switch this manager’s link off? They lose access immediately.':'Make a new link? The old one stops working immediately.')) return;
+    hq({action:'admin_mgr', sub, id:v}).then(j=>{ if (sub==='rotate') { toast('New link copied ✓'); try { const m=(D.managers||[]).find(z=>z.id===v); navigator.clipboard.writeText(site()+'a.html?k='+encodeURIComponent(j.token)); } catch(x) {} } else toast('Done ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
   else if (act==='lkcancel') { delete EDIT['k_'+v]; delete BUILD['k_'+v]; render(); }
   else if (act==='savelook') { const f = readLook(v), k = kOf(v), mac = k.profile||{}, mt = mac.theme||{}, look = {}, lg = (BUILD['k_'+v]||{}).logo;
     if (f.p !== (mt.p||'').toLowerCase() || f.a !== (mt.a||'').toLowerCase()) look.theme = { p:f.p, a:f.a, s:soft(f.p), f:(mt.f||'Helvetica, Arial, sans-serif') };
