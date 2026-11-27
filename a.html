@@ -129,7 +129,7 @@ if(!j.ok){ fail(j.error||'This link is not valid.'); return; }
 const D0 = j.data;
 
 
-let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {}, BUILD = {}; let MADE = [], QF = '';
+let OWN = ''; let D = D0, TAB = 0, RF = 'open', SEEN = null; const EDIT = {}, BUILD = {}; let MADE = [], QF = '';
 const K = (typeof P !== 'undefined' && P.get('k')) || '';
 const e = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const m0 = x => '$'+Math.round(Number(x)||0).toLocaleString('en-US');
@@ -185,7 +185,7 @@ function mgrTab(){   // David only: managers, their links, who owns what, and wh
   const rows = ms.map(m => { const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
     return `<div class="card"><div class="rh"><div class="who">${e(m.name)} ${m.active?'<span class="tag t-done">Active</span>':'<span class="tag t-wait">Switched off</span>'}</div></div>
      <div class="s" style="font-size:13px;color:#6b7079">${mine.length} contractor${mine.length===1?'':'s'} · plans ${m0(t.exp)}/month · collected ${m0(t.got)} · default ${m.monthly_default===''?'not set':m0(m.monthly_default)+'/month'}</div>
-     <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s HQ link</button>
+     <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s HQ link</button><a class="btn org" target="_blank" rel="noopener" href="${e(link)}">Open ${e(m.name)}’s HQ ↗</a>
      ${m.active?`<button class="btn sec" data-act="mgrrevoke" data-v="${e(m.id)}">Switch off</button>`:`<button class="btn sec" data-act="mgrenable" data-v="${e(m.id)}">Switch on</button>`}
      <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button></div></div>`; }).join('');
   const au = (D.audit||[]).slice(0,40).map(a=>`<div class="row"><div class="mid"><div style="font-size:14px"><b>${e(a.who)}</b> · ${e(a.action)}</div><div class="s">${e(a.target)} · ${when(a.t)}</div></div></div>`).join('');
@@ -284,11 +284,12 @@ function readBuilder(key){   // reads the form back into a job; returns null (wi
   return pj;
 }
 function render(){
-  const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', David';
-  document.getElementById('upd').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
-  const R = (D.requests||[]).slice().sort((a,b)=>String(b.created).localeCompare(String(a.created)));
+  const hr = new Date().getHours(); document.getElementById('hi').textContent = (hr<12?'Good morning':hr<17?'Good afternoon':'Good evening') + ', ' + (D.role==='manager' && D.manager ? D.manager.name : 'David');
+  document.getElementById('upd').textContent = (D.role==='manager' && D.manager ? D.manager.name + ' manager · ' : '') + 'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  const ownOK = tok => !OWN || (((D.contractors||[]).find(k=>k.token===tok)||{}).owner||'david') === OWN;   // David: look at everyone, only his own, or one manager's
+  const R = (D.requests||[]).filter(x=>ownOK(x.contractor_token)).sort((a,b)=>String(b.created).localeCompare(String(a.created)));
   const open = R.filter(x=>x.status!=='Done'), newR = R.filter(x=>x.status==='New');
-  const Q = (D.quotes||[]).slice().sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
+  const Q = (D.quotes||[]).filter(x=>ownOK(x.contractor_token)).sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
   const waiting = Q.filter(q=>q.status!=='Accepted'), month = (D.today||'').slice(0,7), accM = Q.filter(q=>q.status==='Accepted' && (q.date_iso||'').slice(0,7)===month);
   document.title = (newR.length ? '('+newR.length+') ' : '') + 'DuPage Quotes – HQ';
   const done = R.filter(x=>x.status==='Done'); const list = RF==='open' ? open : RF==='new' ? newR : RF==='done' ? done : R;
@@ -347,7 +348,7 @@ function render(){
     <div class="mid"><div class="n">${e((q.client||{}).name)}</div><div class="s">${kname(q.contractor_token)} · ${e(q.quote_no)} · ${e(q.date)} · ${e(q.project)}</div></div>
     <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?'<span class="tag t-done">Accepted</span>':q.viewed_at?`<span class="tag t-view">Opened ${ago(q.last_viewed_at||q.viewed_at)}</span>`:'<span class="tag t-wait">Waiting</span>'}</div></div>
     <div class="qacts"><a class="mb" target="_blank" rel="noopener" href="${quote(q)}">Open ↗</a><button class="mb" data-act="editq" data-v="${e(q.quote_no)}">✏️ Edit</button><button class="mb" data-act="sendq" data-v="${e(q.quote_no)}">📧 ${q.emailed?'Email again':'Email it'}</button><a class="mb" target="_blank" rel="noopener" href="${quote(q)}&print=1">🖨 PDF</a><button class="mb" data-act="copy" data-v="${e(cl)}">Copy client link</button><a class="mb" target="_blank" rel="noopener" href="${dash(q.contractor_token)}">Their dashboard ↗</a><button class="mb" style="color:#b42318" data-act="qdel" data-v="${e(q.quote_no)}">🗑 Delete</button></div>`; };
-  const ks = (D.contractors||[]).map(k => { const kq = Q.filter(q=>q.contractor_token===k.token); return {k, n:kq.length, won:kq.filter(q=>q.status==='Accepted').reduce((s,q)=>s+Number(q.price||0),0), open:R.filter(x=>x.contractor_token===k.token && x.status!=='Done').length}; });
+  const ks = (D.contractors||[]).filter(k=>ownOK(k.token)).map(k => { const kq = Q.filter(q=>q.contractor_token===k.token); return {k, n:kq.length, won:kq.filter(q=>q.status==='Accepted').reduce((s,q)=>s+Number(q.price||0),0), open:R.filter(x=>x.contractor_token===k.token && x.status!=='Done').length}; });
   const events = []; R.forEach(x=>events.push({t:x.created, h:`📨 New request · <b>${e(x.contractor)}</b>${x.client?' – '+e(x.client):''}`}));
   Q.forEach(q=>{ if(q.viewed_at) events.push({t:q.last_viewed_at||q.viewed_at, h:`👀 <b>${e((q.client||{}).name)}</b> opened ${e(q.quote_no)} (${e(q.contractor)})`}); if(q.status==='Accepted'){ const d=new Date(q.accepted_at); events.push({t:isNaN(d)?(q.date_iso||''):d.toISOString(), h:`✅ <b>${e((q.client||{}).name)}</b> accepted ${m0(q.price)} (${e(q.contractor)})`}); } if(q.created_iso) events.push({t:q.created_iso, h:`📄 Quote ${e(q.quote_no)} made for <b>${e(q.contractor)}</b>`}); });
   events.sort((a,b)=>String(b.t).localeCompare(String(a.t)));
@@ -355,10 +356,11 @@ function render(){
   <div class="kpis">
     <div class="kpi ${newR.length?'hot':''}"><div class="l">New requests</div><b class="num">${newR.length}</b><small>${open.length} open in total</small></div>
     <div class="kpi"><div class="l">Quotes waiting</div><b class="num">${waiting.length}</b><small>${m0(waiting.reduce((s,q)=>s+Number(q.price||0),0))} not signed</small></div>
-    ${IS_MGR()?`<div class="kpi"><div class="l">Collected this month</div><b class="num">${m0(planTotals(D.contractors||[]).got)}</b><small>of ${m0(planTotals(D.contractors||[]).exp)} in plans</small></div>`:`<div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>`}
+    <div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
   <div class="seg">${['Requests','Quotes','Contractors','Activity'].concat(IS_MGR()?[]:['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
+  ${(!IS_MGR() && (D.managers||[]).length)?`<div class="filter" style="margin-top:2px"><span style="font-size:12.5px;color:#6b7079;align-self:center;margin-right:4px">View</span><button class="${!OWN?'on':''}" data-act="own" data-v="">Everyone</button><button class="${OWN==='david'?'on':''}" data-act="own" data-v="david">Mine</button>${(D.managers||[]).map(m=>`<button class="${OWN===m.id?'on':''}" data-act="own" data-v="${e(m.id)}">${e(m.name)} manager${m.active?'':' (off)'}</button>`).join('')}</div>`:''}
   ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}${m.sent&&m.sent.length?' · 📧 emailed to '+e(m.sent.join(' and ')):' · not emailed'}${m.mailErr?' · ⚠️ email failed: '+e(m.mailErr):''}</div>
     <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
     <a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}">Open ↗</a><a class="btn sec" target="_blank" rel="noopener" href="${e(m.view)}&print=1">🖨 PDF / print</a><button class="btn sec" data-act="unmade" data-v="${e(m.quote_no)}">Hide</button></div></div>`).join('')}
@@ -368,9 +370,9 @@ function render(){
   ${TAB===1?`<div class="filter"><button class="${!QF?'on':''}" data-act="qf" data-v="">All (${Q.length})</button>${(D.contractors||[]).map(k=>`<button class="${QF===k.token?'on':''}" data-act="qf" data-v="${e(k.token)}" style="--kc:${themeOf(k.token).p}"><i></i>${e(k.contractor)} (${Q.filter(q=>q.contractor_token===k.token).length})</button>`).join('')}</div>
     <div class="card">${Q.filter(q=>!QF||q.contractor_token===QF).length?Q.filter(q=>!QF||q.contractor_token===QF).map(qRow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`:''}
   ${TAB===2?`<div class="newbar"><button class="btn org" data-act="addk">+ Add contractor</button>${IS_MGR()?`<span style="display:inline-flex;align-items:center;gap:6px;margin-left:8px;font-size:13px"><b>Default monthly</b><input class="tx" style="width:96px" type="number" min="0" step="1" inputmode="decimal" placeholder="$" value="${e((D.manager||{}).monthly_default)}" data-defplan="1"></span>`:''}</div>${EDIT.addk?addKForm():''}`:''}
-  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):EDIT['k_'+o.k.token]==='contact'?contactForm(o.k.token):EDIT['k_'+o.k.token]==='sched'?schedForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes${IS_MGR()?'':` · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”`}${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
+  ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):EDIT['k_'+o.k.token]==='contact'?contactForm(o.k.token):EDIT['k_'+o.k.token]==='sched'?schedForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
       ${IS_MGR()?'':`<div class="acts" style="margin-bottom:4px"><span style="font-size:13px;font-weight:600">Owner</span><select class="tx" style="max-width:180px;width:auto" data-owner="${e(o.k.token)}"><option value="david" ${(o.k.owner||'david')==='david'?'selected':''}>David</option>${(D.managers||[]).map(m=>`<option value="${e(m.id)}" ${o.k.owner===m.id?'selected':''}>${e(m.name)}</option>`).join('')}</select></div>`}
-      <div class="acts">${IS_MGR()?`<button class="btn pri" data-act="kcontact" data-v="${e(o.k.token)}">✏️ Edit contact</button>`:`<button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button>`}<button class="btn sec" data-act="sched" data-v="${e(o.k.token)}">📅 Their schedule</button>${(!IS_MGR()&&(o.k.look||{}).mode==='profiles')?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button>${(!IS_MGR()&&(o.k.owner||'david')!=='david'&&!o.n&&!o.open)?`<button class="btn sec del" data-act="kremove" data-v="${e(o.k.token)}">🗑 Remove (no quotes yet)</button>`:''}</div>${planRow(o.k)}</div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
+      <div class="acts"><button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button><button class="btn sec" data-act="sched" data-v="${e(o.k.token)}">📅 Their schedule</button>${(!IS_MGR()&&(o.k.look||{}).mode==='profiles')?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button>${(!IS_MGR()&&(o.k.owner||'david')!=='david'&&!o.n&&!o.open)?`<button class="btn sec del" data-act="kremove" data-v="${e(o.k.token)}">🗑 Remove (no quotes yet)</button>`:''}</div>${planRow(o.k)}</div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
   ${TAB===4&&!IS_MGR()?mgrTab():''}
   ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
 }
@@ -428,6 +430,7 @@ document.addEventListener('click', async ev => {
     if (!g('sv_d')) { toast('Pick a date'); return; }
     schedPost(v, 'dash_visit', {title:g('sv_t'), address:g('sv_a'), date:g('sv_d'), time:g('sv_m'), note:g('sv_n')}).then(()=>{ toast('📍 Added to their schedule ✓'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
   else if (act==='svdel') { schedPost(v, 'dash_visit', {remove:el.dataset.id}).then(()=>{ toast('Removed'); refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
+  else if (act==='own') { OWN = v; render(); }
   else if (act==='kcontact') { EDIT['k_'+v]='contact'; render(); const c = document.getElementById('ct_'+v); if (c) c.scrollIntoView({behavior:'smooth'}); }
   else if (act==='ctsave') { const g = id => (document.getElementById(id+'_'+v)||{}).value||''; el.disabled = true;
     hq({action:'mgr_contact', token:v, look:{contact:g('ct_c'), phone:g('ct_p'), email:g('ct_e')}}).then(()=>{ delete EDIT['k_'+v]; toast('Contact info saved ✓'); refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
