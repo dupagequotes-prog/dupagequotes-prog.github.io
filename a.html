@@ -193,12 +193,12 @@ function addKForm(){
 }
 function mgrTab(){   // David only: managers, their links, who owns what, and what they've been doing
   const ms = D.managers||[];
-  const card = m => { if (EDIT['mw_'+m.id]) return wordsForm(m); const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
+  const card = m => { if (EDIT['mw_'+m.id]) return wordsForm(m); if (EDIT['ma_'+m.id]) return accessForm(m); const mine = (D.contractors||[]).filter(k=>k.owner===m.id), t = planTotals(mine), link = site()+'a.html?k='+encodeURIComponent(m.token);
     return `<div class="card"><div class="rh"><div class="who">${e(m.name)} ${m.active?'<span class="tag t-done">Active</span>':'<span class="tag t-wait">Switched off</span>'}</div></div>
      <div class="s" style="font-size:13px;color:#6b7079">${mine.length} contractor${mine.length===1?'':'s'} · plans ${m0(t.exp)}/month · collected ${m0(t.got)} · default ${m.monthly_default===''?'not set':m0(m.monthly_default)+'/month'}</div>
      <div class="acts" style="margin-top:8px"><button class="btn pri" data-act="copy" data-v="${e(link)}">Copy ${e(m.name)}’s link</button><a class="btn org" target="_blank" rel="noopener" href="${e(link)}">Open ${e(m.name)}’s page ↗</a>
      ${m.active?`<button class="btn sec" data-act="mgrrevoke" data-v="${e(m.id)}">Switch off</button>`:`<button class="btn sec" data-act="mgrenable" data-v="${e(m.id)}">Switch on</button>`}
-     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button><button class="btn sec" data-act="wopen" data-v="${e(m.id)}">✏️ Page words</button><button class="btn sec del" data-act="mgrdelete" data-v="${e(m.id)}">🗑 Delete manager…</button></div></div>`; };
+     <button class="btn sec" data-act="mgrrotate" data-v="${e(m.id)}">New link (old one stops)</button><button class="btn sec" data-act="aopen" data-v="${e(m.id)}">🔑 Email & access</button><button class="btn sec" data-act="wopen" data-v="${e(m.id)}">✏️ Page words</button><button class="btn sec del" data-act="mgrdelete" data-v="${e(m.id)}">🗑 Delete manager…</button></div></div>`; };
   const rows = ms.filter(m=>m.active).map(card).join(''), off = ms.filter(m=>!m.active);
   const mine = new Set((D.managers||[]).filter(m=>m.active).map(m=>m.name)), au = (D.audit||[]).filter(a=>mine.has(a.who)).slice(0,40).map(a=>`<div class="row"><div class="mid"><div style="font-size:14px"><b>${e(a.who)}</b> · ${e(a.action)}</div><div class="s">${e(a.target)} · ${when(a.t)}</div></div></div>`).join('');
   return `<div class="card"><div class="rh"><div class="who">Managers</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:8px">A manager gets their own page link that shows only their own contractors. They can’t see yours, change colors/logos, or see keys. You can switch a link off at any time.</div>
@@ -206,6 +206,43 @@ function mgrTab(){   // David only: managers, their links, who owns what, and wh
      ${rows||'<div class="card"><div class="empty">No active managers.</div></div>'}
      ${off.length?`<details class="card" style="padding:12px 16px"><summary style="cursor:pointer;font-weight:600;font-size:14px">Switched-off managers (${off.length})</summary><div style="margin-top:10px">${off.map(card).join('')}</div></details>`:''}
      <div class="card"><div class="rh"><div class="who">What managers did lately</div></div>${au||'<div class="empty">Nothing yet.</div>'}</div>`;
+}
+function accessForm(m){   // David: a manager's email (alerts) and team-lead access
+  return `<div class="card" id="ma_${e(m.id)}"><div class="rh"><div class="who">🔑 ${e(m.name)} – email & access</div></div>
+   <label class="fl">Email (alerts go here)</label><input class="tx" id="ma_e_${e(m.id)}" type="email" value="${e(m.email||'')}" placeholder="name@email.com">
+   <label class="chk" style="margin-top:12px"><input type="checkbox" id="ma_l_${e(m.id)}" ${m.lead?'checked':''}> <span><b>Team lead</b> – can see David’s contractors’ requests and quotes (never their dashboard links), fix wording, approve quotes and send confirmed quotes. Nothing else of David’s.</span></label>
+   <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="masave" data-v="${e(m.id)}">Save</button><button class="btn sec" data-act="wcancel">Cancel</button></div></div>`; }
+const pcur = x => x==null||x===''?'':(/^[0-9]/.test(String(x))?'$'+e(x):e(x));
+function teamEditForm(x){
+  const pj = x.polished, f = v => e(v==null?'':v);
+  return `<div class="card" id="tr_${e(x.id)}"><div class="rh"><div class="who">✏️ Wording – ${e(x.contractor)}${x.client?' · '+e(x.client):''}</div></div><div class="s" style="font-size:13px;color:#6b7079;margin-bottom:6px">Fix spelling and wording. Prices can’t be changed here.</div>
+   <div class="g2"><div><label class="fl">Client</label><input class="tx" data-tf="client" value="${f(x.client)}"></div><div><label class="fl">Client email</label><input class="tx" data-tf="email" value="${f(x.email)}"></div></div>
+   <label class="fl">Address</label><input class="tx" data-tf="address" value="${f(x.address)}">
+   <label class="fl">Job (what they asked for)</label><textarea class="tx" rows="3" data-tf="job">${f(x.job)}</textarea>
+   ${pj?`<label class="fl" style="margin-top:12px">Polished quote – title</label><input class="tx" data-tp="project" value="${f(pj.project)}">
+   ${(pj.items||[]).map((it,i)=>`<div class="g2"><div><label class="fl">Line ${i+1} title</label><input class="tx" data-tp="i${i}.title" value="${f(it.title)}"></div><div><label class="fl">Line ${i+1} price</label><input class="tx" value="${it.amount!=null&&it.amount!==''?'$'+f(it.amount):'—'}" disabled></div></div><label class="fl">Line ${i+1} description</label><textarea class="tx" rows="2" data-tp="i${i}.description">${f(it.description)}</textarea>`).join('')}
+   <label class="fl">Notes</label><textarea class="tx" rows="2" data-tp="notes">${f(pj.notes)}</textarea>`:''}
+   <div class="acts" style="margin-top:12px"><button class="btn pri" data-act="tsave" data-v="${e(x.id)}">Save wording</button><button class="btn sec" data-act="tcancel">Cancel</button></div></div>`;
+}
+function teamTab(){
+  const S = D.shared || {contractors:[],requests:[],quotes:[]}, cc = cid => S.contractors.find(c=>c.cid===cid)||{};
+  const reqs = S.requests.slice().sort((a,b)=>String(b.created).localeCompare(String(a.created))), open = reqs.filter(x=>x.status!=='Done'), qs = S.quotes.slice().sort((a,b)=>String(b.date_iso||'').localeCompare(String(a.date_iso||'')));
+  const rcard = x => { if (EDIT['te_'+x.id]) return teamEditForm(x); const c = cc(x.cid), pj = x.polished;
+    return `<div class="card kc" id="tr_${e(x.id)}" style="--kc:${e(c.p||'#222B45')}"><div class="rh"><div class="who">${e(x.contractor)}${x.client?' – '+e(x.client):''}</div><span class="tag ${x.status==='New'?'t-wait':'t-view'}">${e(x.status)}</span></div>
+     <div class="s" style="font-size:13px;color:#6b7079">${x.created?when(x.created):''}${x.address?' · '+e(x.address):''}${x.price!==''&&x.price!=null?' · '+pcur(x.price):''}</div>
+     ${x.job?`<div style="margin:8px 0;font-size:14px">${e(x.job)}</div>`:''}${x.voice_text?`<div class="voice"><b>Voice note (written out)</b>${e(x.voice_text)}</div>`:''}
+     ${pj?`<div class="hint"><b>Polished draft:</b> ${e(pj.project||'')} · ${pcur(pj.price)}${(pj.items||[]).length?' · '+pj.items.length+' lines':''}</div>`:`<div class="hint">No polished draft yet.</div>`}
+     <div id="media_${e(x.id)}"></div>
+     <div class="acts">${x.audio?`<button class="btn sec" data-act="audio" data-v="${e(x.id)}">▶ Play recording</button>`:''}${x.photos&&x.photos.length?`<button class="btn sec" data-act="photos" data-v="${e(x.id)}">📷 ${x.photos.length} photo${x.photos.length>1?'s':''}</button>`:''}
+     ${x.status!=='Done'?`<button class="btn sec" data-act="tedit" data-v="${e(x.id)}">✏️ Fix wording</button>`:''}${(pj&&x.status!=='Done')?`<button class="btn org" data-act="tapprove" data-v="${e(x.id)}">✓ Approve quote</button>`:''}
+     ${x.quote_no?`<span class="tag t-done">Quote ${e(x.quote_no)} made</span>`:''}</div></div>`; };
+  const qrow = q => { const c = cc(q.cid), cl = site()+'q.html?q='+encodeURIComponent(q.quote_no)+'&t='+encodeURIComponent(q.token)+'&src=k';
+    return `<div class="qrow" style="--kc:${e(c.p||'#222B45')}"><div class="mid"><div class="n">${e((q.client||{}).name)}</div><div class="s">${e(q.contractor)} · ${e(q.quote_no)} · ${e(q.date)} · ${e(q.project)}</div></div>
+     <div class="r"><div class="num">${m0(q.price)}</div>${q.status==='Accepted'?'<span class="tag t-done">Accepted</span>':q.viewed_at?'<span class="tag t-view">Opened</span>':'<span class="tag t-wait">Waiting</span>'}</div></div>
+     <div class="qacts"><a class="mb" target="_blank" rel="noopener" href="${cl}">Open ↗</a><a class="mb" target="_blank" rel="noopener" href="${cl}&print=1">🖨 PDF</a><button class="mb" data-act="tsend" data-v="${e(q.quote_no)}">📧 ${q.emailed&&q.emailed.client?'Send again':'Send to client'}</button></div>`; };
+  return `<div class="card"><div class="rh"><div class="who">Team queue – David’s contractors</div></div><div class="s" style="font-size:13px;color:#6b7079">Requests and quotes you can review. You can fix wording, approve a polished draft, and send confirmed quotes. Nothing else.</div></div>
+   ${open.length?open.map(rcard).join(''):'<div class="card"><div class="empty">No open requests right now.</div></div>'}
+   <div class="card"><div class="rh"><div class="who">Quotes</div></div>${qs.length?qs.map(qrow).join(''):'<div class="empty">No quotes yet.</div>'}</div>`;
 }
 function schedForm(tok){   // David edits a contractor's schedule for them: job start/deadline, site visits
   const k = kOf(tok), th = themeOf(tok), jobs = (D.quotes||[]).filter(q=>q.contractor_token===tok && q.status==='Accepted'),
@@ -373,7 +410,7 @@ function render(){
     <div class="kpi"><div class="l">Won this month</div><b class="num">${m0(accM.reduce((s,q)=>s+Number(q.price||0),0))}</b><small>${accM.length} accepted</small></div>
     <div class="kpi"><div class="l">Contractors</div><b class="num">${(D.contractors||[]).length}</b><small>with a dashboard</small></div>
   </div>
-  <div class="seg">${[TT('tab_requests','Requests'),TT('tab_quotes','Quotes'),TT('tab_contractors','Contractors'),TT('tab_activity','Activity')].concat(IS_MGR()?[]:['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
+  <div class="seg">${[TT('tab_requests','Requests'),TT('tab_quotes','Quotes'),TT('tab_contractors','Contractors'),TT('tab_activity','Activity')].concat(IS_MGR()?(D.shared?['Team']:[]):['Managers']).map((n,i)=>`<button class="${TAB===i?'on':''}" data-act="tab" data-v="${i}">${n}${i===0&&newR.length?`<em>${newR.length}</em>`:''}</button>`).join('')}</div>
   ${(!IS_MGR() && (D.managers||[]).some(m=>m.active))?`<div class="filter" style="margin-top:2px"><span style="font-size:12.5px;color:#6b7079;align-self:center;margin-right:4px">View</span><button class="${!OWN?'on':''}" data-act="own" data-v="">Everyone</button><button class="${OWN==='david'?'on':''}" data-act="own" data-v="david">Mine</button>${(D.managers||[]).filter(m=>m.active).map(m=>`<button class="${OWN===m.id?'on':''}" data-act="own" data-v="${e(m.id)}">${e(m.name)} manager</button>`).join('')}</div>`:''}
   ${MADE.map(m=>`<div class="card made"><div class="who">✅ Quote ${e(m.quote_no)} is online · ${e(m.contractor)}</div><div class="sub">${e(m.client)} · ${m0(m.price)}${m.sent&&m.sent.length?' · 📧 emailed to '+e(m.sent.join(' and ')):' · not emailed'}${m.mailErr?' · ⚠️ email failed: '+e(m.mailErr):''}</div>
     <div class="acts"><button class="btn pri" data-act="copy" data-v="${e(m.link)}">Copy client link</button><button class="btn sec" data-act="copy" data-v="${e(m.msg)}">Copy text for ${e(m.contractor)}</button>
@@ -387,7 +424,7 @@ function render(){
   ${TAB===2?(ks.length?ks.map(o=>EDIT['k_'+o.k.token]==='look'?lookForm(o.k.token):EDIT['k_'+o.k.token]==='contact'?contactForm(o.k.token):EDIT['k_'+o.k.token]==='sched'?schedForm(o.k.token):`<div class="card kc" style="--kc:${themeOf(o.k.token).p}"><div class="kcard">${kav(o.k.token)}<div class="mid"><div class="n">${e(o.k.contractor)}</div><div class="s">${o.n} quotes · ${m0(o.won)} accepted · title “${e(themeOf(o.k.token).doc)}”${o.open?` · <b style="color:#b4570f">${o.open} open request${o.open>1?'s':''}</b>`:''}</div></div></div>
       ${IS_MGR()?'':`<div class="acts" style="margin-bottom:4px"><span style="font-size:13px;font-weight:600">Owner</span><select class="tx" style="max-width:180px;width:auto" data-owner="${e(o.k.token)}"><option value="david" ${(o.k.owner||'david')==='david'?'selected':''}>David</option>${(D.managers||[]).map(m=>`<option value="${e(m.id)}" ${o.k.owner===m.id?'selected':''}>${e(m.name)}</option>`).join('')}</select></div>`}
       <div class="acts"><button class="btn pri" data-act="look" data-v="${e(o.k.token)}">🎨 Edit look & info</button><button class="btn sec" data-act="sched" data-v="${e(o.k.token)}">📅 Their schedule</button>${(!IS_MGR()&&(o.k.look||{}).mode==='profiles')?`<a class="btn org" target="_blank" rel="noopener" href="${site()}s.html?k=${encodeURIComponent(K)}&d=${encodeURIComponent(o.k.token)}">🧑‍💼 Player profiles editor ↗</a>`:`<button class="btn sec" data-act="kquotes" data-v="${e(o.k.token)}">Their quotes</button>`}<a class="btn sec" target="_blank" rel="noopener" href="${dash(o.k.token)}">Open their dashboard ↗</a><button class="btn sec" data-act="copy" data-v="${e(dash(o.k.token))}">Copy link</button>${(!IS_MGR()&&(o.k.owner||'david')!=='david'&&!o.n&&!o.open)?`<button class="btn sec del" data-act="kremove" data-v="${e(o.k.token)}">🗑 Remove (no quotes yet)</button>`:''}</div>${planRow(o.k)}</div>`).join(''):'<div class="card"><div class="empty">No contractors yet.</div></div>'):''}
-  ${TAB===4&&!IS_MGR()?mgrTab():''}
+  ${TAB===4?(IS_MGR()?(D.shared?teamTab():''):mgrTab()):''}
   ${TAB===3?`<div class="card">${events.length?events.slice(0,40).map(x=>`<div class="row"><div class="mid"><div style="font-size:14px">${x.h}</div><div class="s">${when(x.t)} · ${ago(x.t)}</div></div></div>`).join(''):'<div class="empty">Nothing yet.</div>'}</div>`:''}`;
 }
 async function post(body, okMsg){ try { const r = await fetch(API,{method:'POST',credentials:'omit',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}); const j = await r.json(); toast(j.ok ? okMsg : ('Not saved: '+(j.error||'try again'))); if (!j.ok) refresh(true); } catch(y) { toast('No connection – not saved'); } }
@@ -404,7 +441,7 @@ document.addEventListener('input', ev => { const el = ev.target; if (!el.dataset
   if (el.dataset.l==='doc_title') pv.querySelector('.d').textContent = el.value.toUpperCase(); });
 document.addEventListener('click', async ev => {
   const el = ev.target.closest('[data-act]'); if (!el) return; const act = el.dataset.act, v = el.dataset.v; ev.preventDefault();
-  const x = (D.requests||[]).find(r=>r.id===v);
+  const x = (D.requests||[]).find(r=>r.id===v) || ((D.shared||{}).requests||[]).find(r=>r.id===v);
   if (act==='tab') { TAB=+v; render(); }
   else if (act==='rf') { RF=v; render(); }
   else if (act==='copy') copy(v, /^https?:/.test(v)?'Link copied ✓':'Address copied ✓');
@@ -459,7 +496,20 @@ document.addEventListener('click', async ev => {
   else if (act==='mgrnew') { const n = (document.getElementById('mg_n')||{}).value||''; if (!n.trim()) { toast('Type a name first'); return; }
     hq({action:'admin_mgr', sub:'create', name:n}).then(j=>{ toast('Manager created ✓ – link copied'); try { navigator.clipboard.writeText(site()+'a.html?k='+encodeURIComponent(j.token)); } catch(x) {} refresh(true); }).catch(y=>toast('Not saved: '+(y.message||y))); }
   else if (act==='wopen') { EDIT['mw_'+v] = true; render(); const c = document.getElementById('mw_'+v); if (c) c.scrollIntoView({behavior:'smooth'}); }
-  else if (act==='wcancel') { Object.keys(EDIT).filter(k=>k.indexOf('mw_')===0).forEach(k=>delete EDIT[k]); render(); }
+  else if (act==='wcancel') { Object.keys(EDIT).filter(k=>k.indexOf('mw_')===0||k.indexOf('ma_')===0).forEach(k=>delete EDIT[k]); render(); }
+  else if (act==='aopen') { EDIT['ma_'+v] = true; render(); const c = document.getElementById('ma_'+v); if (c) c.scrollIntoView({behavior:'smooth'}); }
+  else if (act==='masave') { const em = (document.getElementById('ma_e_'+v)||{}).value||'', ld = !!(document.getElementById('ma_l_'+v)||{}).checked; el.disabled = true;
+    hq({action:'admin_mgr', sub:'edit', id:v, email:em, lead:ld}).then(()=>{ delete EDIT['ma_'+v]; toast('Saved ✓'); refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
+  else if (act==='tedit') { EDIT['te_'+v] = true; render(); const c = document.getElementById('tr_'+v); if (c) c.scrollIntoView({behavior:'smooth'}); }
+  else if (act==='tcancel') { Object.keys(EDIT).filter(k=>k.indexOf('te_')===0).forEach(k=>delete EDIT[k]); render(); }
+  else if (act==='tsave') { const card = document.getElementById('tr_'+v), r = ((D.shared||{}).requests||[]).find(z=>z.id===v); if (!r) return; const fields = {}, np = r.polished ? JSON.parse(JSON.stringify(r.polished)) : null;
+    card.querySelectorAll('[data-tf]').forEach(i=>fields[i.dataset.tf]=i.value); if (np) card.querySelectorAll('[data-tp]').forEach(i=>{ const k = i.dataset.tp, m = k.match(/^i(\d+)\.(\w+)$/); if (m) { if (np.items && np.items[+m[1]]) np.items[+m[1]][m[2]] = i.value; } else np[k] = i.value; });
+    el.disabled = true; hq(Object.assign({action:'lead_req_edit', id:v, fields}, np?{polished:np}:{})).then(()=>{ delete EDIT['te_'+v]; toast('Wording saved ✓'); refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
+  else if (act==='tapprove') { const r = ((D.shared||{}).requests||[]).find(z=>z.id===v); if (!r || !await ask(`Approve this quote for ${r.contractor}${r.client?' ('+r.client+')':''}?\n\nIt becomes the final online quote. Nothing is emailed yet.`)) return;
+    hq({action:'lead_approve', id:v}).then(j=>{ toast('Approved ✓ – quote '+j.quote_no+' is online'); refresh(true); }).catch(y=>toast('Not approved: '+(y.message||y))); }
+  else if (act==='tsend') { const q = ((D.shared||{}).quotes||[]).find(z=>z.quote_no===v); if (!q) return; const cE = (q.client||{}).email||''; if (!cE) { toast('This client has no email on file'); return; }
+    if (!await ask(`Email quote ${q.quote_no} to ${(q.client||{}).name||'the client'} (${cE})?\n\nIt goes out right now from ${q.contractor}.`)) return;
+    hq({action:'lead_send_quote', quote_no:v, send:{client:true}}).then(j=>{ toast(j.sent&&j.sent.client?'Sent ✓':'Not sent – check the email'); refresh(true); }).catch(y=>toast('Not sent: '+(y.message||y))); }
   else if (act==='wsave') { const card = document.getElementById('mw_'+v), t = {}; card.querySelectorAll('[data-w]').forEach(i=>{ if (i.value.trim()) t[i.dataset.w] = i.value.trim(); }); el.disabled = true;
     hq({action:'admin_mgr', sub:'text', id:v, text:t}).then(()=>{ delete EDIT['mw_'+v]; toast('Saved ✓ – shows on his page within seconds'); refresh(true); }).catch(y=>{ toast('Not saved: '+(y.message||y)); el.disabled=false; }); }
   else if (act==='mgrdelete') { const m = (D.managers||[]).find(z=>z.id===v); if (!m) return;
@@ -536,6 +586,7 @@ document.addEventListener('change', async ev => { const el = ev.target;
       render(); const pv = document.querySelector('#lk_'+CSS.escape(tok)+' .kav'); if (pv) pv.innerHTML = `<img src="${d}" alt="">`; toast('Logo ready – tap Save'); } catch(x) { toast('Could not use that picture'); } return; } if (el.dataset.pick && BUILD.new) { BUILD.new.job = Object.assign(readBuilder('new'), {deposit_pct: starter(null, el.value).deposit_pct, language: undefined}); BUILD.new.tok = el.value; render(); } });
 document.getElementById('rf').onclick = ev => { ev.currentTarget.classList.add('spin'); setTimeout(()=>ev.currentTarget.classList.remove('spin'), 800); refresh(true); };
 render();
+{ const rid = P.get('r'); if (rid && IS_MGR() && D.shared) { TAB = 4; render(); setTimeout(() => { const c = document.getElementById('tr_'+rid); if (c) { c.scrollIntoView({behavior:'smooth', block:'center'}); c.style.boxShadow = '0 0 0 3px #E8913F'; } }, 400); } }   // alert-email link: opens the Team tab on that request
 setInterval(() => { if (!document.hidden) refresh(false); }, 30000);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(false); });
 
